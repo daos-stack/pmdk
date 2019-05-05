@@ -76,6 +76,17 @@ RUN zypper --non-interactive ar --gpgcheck-allow-unsigned -f https://build.hpdd.
     zypper --non-interactive --gpg-auto-import-keys ref dpdk fio
 RUN zypper --non-interactive install dpdk-devel fio-src libiscsi-devel cunit-devel
 
+# meson
+RUN zypper --non-interactive install python-rpm-macros python3-base
+
+# fuse
+RUN zypper --non-interactive ar --gpgcheck-allow-unsigned -f https://build.hpdd.intel.com/job/daos-stack/job/meson/job/PR-1/lastSuccessfulBuild/artifact/artifacts/sles12.3/ meson; \
+    zypper --non-interactive --gpg-auto-import-keys ref meson
+RUN zypper --non-interactive install meson ninja
+
+# pmdk
+RUN zypper --non-interactive install man libunwind-devel
+
 # force an upgrade to get any newly built RPMs
 ARG CACHEBUST=1
 RUN zypper --non-interactive up
