@@ -85,7 +85,7 @@ RUN zypper --non-interactive ar --gpgcheck-allow-unsigned -f https://build.hpdd.
 RUN zypper --non-interactive install meson ninja
 
 # pmdk
-RUN zypper --non-interactive install man libunwind-devel
+RUN zypper --non-interactive install man libunwind-devel gdb bc
 
 # force an upgrade to get any newly built RPMs
 ARG CACHEBUST=1
