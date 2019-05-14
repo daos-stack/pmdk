@@ -11,7 +11,7 @@
 	%define dist .suse%{suse_version}
 %endif
 
-%if (0%{?suse_version} > 1315) || (0%{?fedora} >= 27) || (0%{?rhel} >= 7)
+%if (0%{?suse_version} >= 1315) || (0%{?fedora} >= 27) || (0%{?rhel} >= 7)
 %bcond_without fabric
 %else
 %bcond_with fabric
@@ -33,7 +33,7 @@
 
 Name:		pmdk
 Version:	1.5.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -724,6 +724,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue May 14 2019 Brian J. Murrell <brian.murrell@intel.com> - 1.5.1-4
+- Fix SLES 12.3 OS conditionals >= 1315
+
 * Sat May 04 2019 Brian J. Murrell <brian.murrell@intel.com> - 1.5.1-3
 - fix Source URL
 - add a requires for ndctl-libs
