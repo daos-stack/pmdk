@@ -31,16 +31,18 @@ pipeline {
                         }
                     }
                     steps {
-                        sh '''rm -rf artifacts/
-                              mkdir -p artifacts/
+                        sh '''rm -rf artifacts/centos7/
+                              mkdir -p artifacts/centos7/
                               if make srpm; then
                                   if make mockbuild; then
-                                      (cd /var/lib/mock/epel-7-x86_64/result/ && cp -r . $OLDPWD/artifacts/)
-                                      createrepo artifacts/
+                                      (cd /var/lib/mock/epel-7-x86_64/result/ &&
+                                       cp -r . $OLDPWD/artifacts/centos7/)
+                                      createrepo artifacts/centos7/
                                   else
                                       rc=\${PIPESTATUS[0]}
-                                      (cd /var/lib/mock/epel-7-x86_64/result/ && cp -r . $OLDPWD/artifacts/)
-                                      cp -af _topdir/SRPMS artifacts/
+                                      (cd /var/lib/mock/epel-7-x86_64/result/ &&
+                                       cp -r . $OLDPWD/artifacts/centos7/)
+                                      cp -af _topdir/SRPMS artifacts/centos7/
                                       exit \$rc
                                   fi
                               else
@@ -49,7 +51,37 @@ pipeline {
                     }
                     post {
                         always {
-                            archiveArtifacts artifacts: 'artifacts/**'
+                            archiveArtifacts artifacts: 'artifacts/centos7/**'
+                        }
+                    }
+                }
+                stage('Build on SLES 12.3') {
+                    agent {
+                        dockerfile {
+                            filename 'Dockerfile.sles.12.3'
+                            label 'docker_runner'
+                            additionalBuildArgs  '--build-arg UID=$(id -u)'
+                        }
+                    }
+                    steps {
+                        sh '''rm -rf artifacts/sles12.3/
+                              mkdir -p artifacts/sles12.3/
+                              rm -rf _topdir/SRPMS
+                              if make srpm; then
+                                  rm -rf _topdir/RPMS
+                                  if make rpms; then
+                                      ln _topdir/{RPMS/*,SRPMS}/*  artifacts/sles12.3/
+                                      createrepo artifacts/sles12.3/
+                                  else
+                                      exit \${PIPESTATUS[0]}
+                                  fi
+                              else
+                                  exit \${PIPESTATUS[0]}
+                              fi'''
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'artifacts/sles12.3/**'
                         }
                     }
                 }

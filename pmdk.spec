@@ -33,12 +33,13 @@
 
 Name:		pmdk
 Version:	1.5.1
-Release:	1%{?dist}
+Release:	3%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
-Source0:	https://github.com/pmem/%{name}/archive/%{upstreamversion}.tar.gz#/%{name}-%{upstreamversion}.tar.gz
+Source0:	https://github.com/pmem/%{name}/archive/%{upstreamversion}.tar.gz
+
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -51,6 +52,7 @@ BuildRequires:	pkgconfig
 %if %{with ndctl}
 BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
 BuildRequires:	daxctl-devel >= %{min_ndctl_ver}
+Requires: ndctl-libs >= %{min_ndctl_ver}
 %endif
 
 %if %{with fabric}
@@ -722,6 +724,13 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Sat May 04 2019 Brian J. Murrell <brian.murrell@intel.com> - 1.5.1-3
+- fix Source URL
+- add a requires for ndctl-libs
+
+* Wed Apr 17 2019 Brian J. Murrell <brian.murrell@intel.com> - 1.5.1-2
+- add a Reqires: for ndctl-libs
+
 * Wed Apr 03 2019 Brian J. Murrell <brian.murrell@intel.com> - 1.5.1-1
 - pass down --without ndctl to the make commands
 - add a --without rpmem switch
