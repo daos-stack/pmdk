@@ -25,11 +25,13 @@ RUN zypper --non-interactive install make rpm-build curl createrepo git    \
                                      lsb-release autoconf automake libtool \
                                      ca-certificates-mozilla
 # pmdk
+RUN zypper --non-interactive ar --gpgcheck-allow-unsigned -f https://build.hpdd.intel.com/job/daos-stack/job/libfabric/job/master/lastSuccessfulBuild/artifact/artifacts/sles12.3/ libfabric; \
+    zypper --non-interactive ref libfabric
 # our libfabric conflicts with libfabric1
 # TODO: consider if we should rename ours or replace libfabric1, etc.
 RUN if rpm -q libfabric1; then zypper --non-interactive remove libfabric1; fi; \
     zypper --non-interactive --no-gpg-check install libfabric-devel;           \
-    zypper --non-interactive install man libunwind-devel gdb bc
+    zypper --non-interactive install man libunwind-devel bc gdb
 
 # force an upgrade to get any newly built RPMs
 ARG CACHEBUST=1
