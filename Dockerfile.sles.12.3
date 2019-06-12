@@ -25,7 +25,9 @@ RUN zypper --non-interactive install make rpm-build curl createrepo git    \
                                      lsb-release autoconf automake libtool \
                                      ca-certificates-mozilla
 # pmdk
-RUN zypper --non-interactive ar --gpgcheck-allow-unsigned -f https://build.hpdd.intel.com/job/daos-stack/job/libfabric/job/master/lastSuccessfulBuild/artifact/artifacts/sles12.3/ libfabric; \
+ARG JENKINS_URL=""
+RUN zypper --non-interactive ar --gpgcheck-allow-unsigned -f \
+    ${JENKINS_URL}job/daos-stack/job/libfabric/job/master/lastSuccessfulBuild/artifact/artifacts/sles12.3/ libfabric; \
     zypper --non-interactive ref libfabric
 # our libfabric conflicts with libfabric1
 # TODO: consider if we should rename ours or replace libfabric1, etc.
