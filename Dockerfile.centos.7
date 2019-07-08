@@ -35,13 +35,12 @@ ARG JENKINS_URL=""
 
 RUN echo -e "config_opts['yum.conf'] += \"\"\"\n" >> /etc/mock/default.cfg;  \
     for repo in libfabric; do                                                \
-        if [[ $repo = *:* ]]; then                                           \
-            branch="${repo#*:}";                                             \
-            repo="${repo%:*}";                                               \
+        if [[ $repo = *@* ]]; then                                           \
+            branch="${repo#*@}";                                             \
+            repo="${repo%@*}";                                               \
         else                                                                 \
             branch="master";                                                 \
         fi;                                                                  \
-        JENKINS_URL=$JENKINS_URL;                                            \
         echo -e "[$repo:$branch:lastSuccessful]\n\
 name=$repo:$branch:lastSuccessful\n\
 baseurl=${JENKINS_URL}job/daos-stack/job/$repo/job/$branch/lastSuccessfulBuild/artifact/artifacts/centos7/\n\
