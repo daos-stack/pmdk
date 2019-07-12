@@ -1,0 +1,7 @@
+usr/bin/pmempool
+usr/bin/rpmemd
+usr/bin/daxio
+usr/share/man/man1/pmempool-*.1
+usr/share/man/man1/pmempool.1
+usr/share/man/man1/rpmemd.1
+usr/share/man/man1/daxio.1

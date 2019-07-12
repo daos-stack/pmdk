@@ -1,0 +1,45 @@
+#
+# Copyright 2019, Intel Corporation
+#
+# 'recipe' for Docker to build an Debian package
+#
+# Pull base image
+FROM ubuntu:18.04
+Maintainer John.E.Malmberg <John.E.Malmberg@intel.com>
+
+# Install basic tools
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            autoconf bash curl debhelper dh-make dpkg-dev doxygen gcc \
+            git git-buildpackage locales make patch rpm wget
+
+# libfabric
+
+ENV UBUNTU_URL="https://launchpad.net/ubuntu/+archive/primary/+files"
+RUN curl -sS -f -L -O ${UBUNTU_URL}/libpsm2-2_10.3.58-1_amd64.deb; \
+    curl -sS -f -L -O ${UBUNTU_URL}/libpsm2-dev_10.3.58-1_amd64.deb; \
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    ./libpsm2-2_10.3.58-1_amd64.deb ./libpsm2-dev_10.3.58-1_amd64.deb
+
+ARG JENKINS_URL=""
+ENV JENKINS_PATH="${JENKINS_URL}/job/daos-stack/job"
+ENV JENKINS_ART="lastSuccessfulBuild/artifact/artifacts"
+
+ARG OFIBRANCH="master"
+ENV OFI_ART=\
+"${JENKINS_PATH}/libfabric/job/${OFIBRANCH}/${JENKINS_ART}/ubuntu18.04"
+
+RUN curl -sS -f -L -O ${OFI_ART}/libfabric1_1.7.1%7Erc1-1_amd64.deb; \
+    curl -sS -f -L -O ${OFI_ART}/libfabric-dev_1.7.1%7Erc1-1_amd64.deb; \
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      ./libfabric*_amd64.deb
+
+# pmdk / libpmem
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    bash-completion dh-exec doxygen graphviz pkg-config \
+    libdaxctl-dev libndctl-dev
+
+# force an upgrade to get any newly built packages
+ARG CACHEBUST=1
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y; \
+    apt-get autoremove -y

@@ -1,0 +1,42 @@
+pmdk (1.5.1-1) unstable; urgency=medium
+
+  [ John Malmberg]
+  * Patched pmdk fork of upstream release.
+  * Experimental build for daos-stack project.
+
+ -- John Malmberg <john.e.malmberg@intel.com>  Thu, 11 Jul 2019 19:53:00 +0000
+
+pmdk (1.4.1-0ubuntu1~18.04.1) bionic; urgency=medium
+
+  * Backport to bionic (LP: #1781269)
+
+ -- Andreas Hasenack <andreas@canonical.com>  Fri, 03 Aug 2018 11:02:48 -0300
+
+pmdk (1.4.1-0ubuntu1) cosmic; urgency=medium
+
+  * New upstream release
+  * d/rules: skip the test suite if DEB_BUILD_OPTIONS has "nocheck"
+  * d/p/spelling-fixes.patch, d/p/manpage-debug-packages.patch,
+    d/p/do-not-build-examples.patch: refreshed for new upstream version
+  * d/p/drop-shebang-from-bash-completion.patch: dropped, applied
+    upstream.
+  * d/p/manpages-bad-whatis.patch: patch to fix the
+    manpage-has-bad-whatis-entry lintian warning.
+  * d/control: bumped standards-version to 4.1.5. No changes necessary.
+  * d/pmdk-tools.bash-completion: no need to rename while installing anymore.
+  * d/rules: added comment about bug #1765851 and why we are still keeping the
+    workaround
+  * d/control, d/pmdk-tools.install: added build-depends for libndctl-dev and
+    libdaxctl-dev in order to enable daxio
+  * d/control, d/t/daxio-version: added simple daxio test to check that
+    the tool runs. Other tests would require hardware support.
+  * d/t/control, d/t/rpmemd-version: added simple rpmemd test just to
+    verify that the tool runs.
+
+ -- Andreas Hasenack <andreas@canonical.com>  Thu, 12 Jul 2018 19:19:08 +0000
+
+pmdk (1.4-0ubuntu1) cosmic; urgency=medium
+
+  * Initial release. Closes: LP: #1752378.
+
+ -- Andreas Hasenack <andreas@canonical.com>  Thu, 24 May 2018 12:40:11 -0300

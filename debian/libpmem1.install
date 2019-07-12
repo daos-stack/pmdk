@@ -1,0 +1,3 @@
+usr/lib/*/libpmem.so.1*
+usr/share/man/man5/poolset.5
+usr/share/pmdk/pmdk.magic

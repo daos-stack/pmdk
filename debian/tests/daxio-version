@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -ex
+
+pkg_version=$(dpkg-query -f '${Version}\n' -W pmdk-tools | cut -d - -f 1)
+echo "pmdk-tools package version: ${pkg_version}"
+daxio_version=$(daxio -V)
+echo "daxio version: ${daxio_version}"
+if [ "$pkg_version" = "$daxio_version" ]; then
+    echo "Version match, OK"
+else
+    echo "Version mismatch, FAIL"
+    exit 1
+fi

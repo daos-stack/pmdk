@@ -1,0 +1,91 @@
+#!/bin/sh
+
+set -e
+
+POOL_TYPES="blk log obj"
+BLK_POOL_SIZE=512
+
+create_pool() {
+    local pool_type="$1"
+    local pool_file="$2"
+
+    if [ "$pool_type" = "blk" ]; then
+        pmempool create "$pool_type" "$BLK_POOL_SIZE" "$pool_file"
+    else
+        pmempool create "$pool_type" "$pool_file"
+    fi
+}
+
+check_pool_info() {
+    local pool_file="$1"
+    local pool_type="$2"
+    local info_data
+    local result=0
+
+    info_data=$(pmempool info "$pool_file" 2>&1) || result=$?
+    if [ "$result" -ne "0" ]; then
+        echo "ERROR: pmempool info failed:"
+        echo "$info_data"
+        exit "$result"
+    fi
+    echo "$info_data" | grep -qE "^path.*${pool_file}$"
+    echo "$info_data" | grep -qE "^type.*regular file$"
+    case "$pool_type" in
+        blk)
+            echo "$info_data" | grep -qE "^Block size.*$BLK_POOL_SIZE$"
+            echo "$info_data" | grep -qE "^Signature.*PMEMBLK$"
+            echo "$info_data" | grep -qE "^PMEM BLK Header"
+            ;;
+        log)
+            echo "$info_data" | grep -qE "^Signature.*PMEMLOG$"
+            echo "$info_data" | grep -qE "^PMEM LOG Header"
+            ;;
+        obj)
+            echo "$info_data" | grep -qE "^Signature.*PMEMOBJ$"
+            echo "$info_data" | grep -qE "^PMEM OBJ Header"
+            ;;
+    esac
+}
+
+pool_check() {
+    local pool_file="$1"
+    local check_output
+    local result=0
+
+    check_output=$(pmempool check -v "$pool_file" 2>&1) || result=$?
+    if [ "$result" -ne "0" ]; then
+        echo "ERROR: pmempool check failed:"
+        echo "$check_output"
+        exit "$result"
+    fi
+    echo "$check_output" | grep -qE "^${pool_file}: consistent"
+}
+
+pool_remove() {
+    local pool_file="$1"
+
+    pmempool rm "$pool_file"
+    if [ -f "$pool_file" ]; then
+        return 1
+    fi
+    return 0
+}
+
+pool_directory=$(mktemp -d)
+pool_file="${pool_directory}/pool"
+for pool_type in $POOL_TYPES; do
+    echo "Testing pool type ${pool_type}"
+    echo "Pool create"
+    create_pool "$pool_type" "$pool_file"
+    echo "Pool info"
+    check_pool_info "$pool_file" "$pool_type"
+    echo "Pool check"
+    pool_check "$pool_file"
+    echo "Pool remove"
+    pool_remove "$pool_file"
+    echo
+done
+
+rmdir "${pool_directory}"
+
+echo "Tests succeeded."

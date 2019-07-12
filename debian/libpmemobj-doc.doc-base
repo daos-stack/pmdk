@@ -1,0 +1,9 @@
+Document: libpmemobj
+Title: PMDK libpmemobj C++ bindings Manual
+Author: PMDK Developers
+Abstract: This is the HTML docs for the C++ bindings for PMDK's libpmemobj.
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/libpmemobj-doc/html/index.html
+Files: /usr/share/doc/libpmemobj-doc/html/*

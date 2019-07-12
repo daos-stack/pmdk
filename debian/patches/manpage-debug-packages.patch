@@ -1,0 +1,124 @@
+Description: Mention the -debug package split in Ubuntu systems
+ In Ubuntu systems, the special debug libraries (with extra assertions,
+ checks and logging, not suitable for production) are placed in a separate
+ binary package with the "-debug" suffix. These are only meant to be
+ installed when specific troubleshooting is required. Instructions for this
+ troubleshooting are included in the library manpages, and we add a note
+ explaining that the respective -debug package should be installed.
+Author: Andreas Hasenack <andreas@canonical.com>
+Forwarded: no
+Last-Update: 2018-04-18
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/doc/generated/libpmem.7
++++ b/doc/generated/libpmem.7
+@@ -322,6 +322,11 @@
+ is created.
+ If \f[B]PMEM_LOG_FILE\f[] is not set, output is written to
+ \f[I]stderr\f[].
++.RS
++.PP
++NOTE: on Ubuntu systems, this extra debug version of the library is
++shipped in the respective \f[B]-debug\f[] Debian package and placed in
++the \f[B]/usr/lib/$ARCH/pmdk_dbg/\f[] directory.
+ .SH EXAMPLE
+ .PP
+ The following example uses \f[B]libpmem\f[] to flush changes made to
+--- a/doc/generated/libpmemblk.7
++++ b/doc/generated/libpmemblk.7
+@@ -260,6 +260,11 @@
+ .PP
+ See also \f[B]libpmem\f[](7) for information on other environment
+ variables that may affect \f[B]libpmemblk\f[] behavior.
++.RS
++.PP
++NOTE: on Ubuntu systems, this extra debug version of the library is
++shipped in the respective \f[B]-debug\f[] Debian package and placed in
++the \f[B]/usr/lib/$ARCH/pmdk_dbg/\f[] directory.
+ .SH EXAMPLE
+ .PP
+ The following example illustrates how the \f[B]libpmemblk\f[] API is
+--- a/doc/generated/libpmemlog.7
++++ b/doc/generated/libpmemlog.7
+@@ -259,6 +259,11 @@
+ .PP
+ See also \f[B]libpmem\f[](7) for information about other environment
+ variables affecting \f[B]libpmemlog\f[] behavior.
++.RS
++.PP
++NOTE: on Ubuntu systems, this extra debug version of the library is
++shipped in the respective \f[B]-debug\f[] Debian package and placed in
++the \f[B]/usr/lib/$ARCH/pmdk_dbg/\f[] directory.
+ .SH EXAMPLE
+ .PP
+ The following example illustrates how the \f[B]libpmemlog\f[] API is
+--- a/doc/generated/libpmemobj.7
++++ b/doc/generated/libpmemobj.7
+@@ -264,6 +264,11 @@
+ .PP
+ See also \f[B]libpmem\f[](7) to get information about other environment
+ variables affecting \f[B]libpmemobj\f[] behavior.
++.RS
++.PP
++NOTE: on Ubuntu systems, this extra debug version of the library is
++shipped in the respective \f[B]-debug\f[] Debian package and placed in
++the \f[B]/usr/lib/$ARCH/pmdk_dbg/\f[] directory.
+ .SH EXAMPLE
+ .PP
+ See <http://pmem.io/pmdk/libpmemobj> for examples using the
+--- a/doc/generated/libpmempool.7
++++ b/doc/generated/libpmempool.7
+@@ -205,6 +205,11 @@
+ is created.
+ If \f[B]PMEMPOOL_LOG_FILE\f[] is not set, output is written to
+ \f[I]stderr\f[].
++.RS
++.PP
++NOTE: on Ubuntu systems, this extra debug version of the library is
++shipped in the respective \f[B]-debug\f[] Debian package and placed in
++the \f[B]/usr/lib/$ARCH/pmdk_dbg/\f[] directory.
+ .SH EXAMPLE
+ .PP
+ The following example illustrates how the \f[B]libpmempool\f[] API is
+--- a/doc/generated/librpmem.7
++++ b/doc/generated/librpmem.7
+@@ -364,6 +364,11 @@
+ is created.
+ If \f[B]RPMEM_LOG_FILE\f[] is not set, logging output is written to
+ \f[I]stderr\f[].
++.RS
++.PP
++NOTE: on Ubuntu systems, this extra debug version of the library is
++shipped in the respective \f[B]-debug\f[] Debian package and placed in
++the \f[B]/usr/lib/$ARCH/pmdk_dbg/\f[] directory.
+ .SH EXAMPLE
+ .PP
+ The following example uses \f[B]librpmem\f[] to create a remote pool on
+--- a/doc/generated/libvmem.7
++++ b/doc/generated/libvmem.7
+@@ -245,6 +245,11 @@
+ is created.
+ If \f[B]VMEM_LOG_FILE\f[] is not set, output is written to
+ \f[I]stderr\f[].
++.RS
++.PP
++NOTE: on Ubuntu systems, this extra debug version of the library is
++shipped in the respective \f[B]-debug\f[] Debian package and placed in
++the \f[B]/usr/lib/$ARCH/pmdk_dbg/\f[] directory.
+ .SH EXAMPLE
+ .PP
+ The following example creates a memory pool, allocates some memory to
+--- a/doc/generated/libvmmalloc.7
++++ b/doc/generated/libvmmalloc.7
+@@ -271,6 +271,11 @@
+ .PP
+ Setting \f[B]VMMALLOC_LOG_STATS\f[] to 1 enables logging human\-readable
+ summary statistics at program termination.
++.RS
++.PP
++NOTE: on Ubuntu systems, this extra debug version of the library is
++shipped in the respective \f[B]-debug\f[] Debian package and placed in
++the \f[B]/usr/lib/$ARCH/pmdk_dbg/\f[] directory.
+ .SH NOTES
+ .PP
+ Unlike the normal \f[B]malloc\f[](3), which asks the system for

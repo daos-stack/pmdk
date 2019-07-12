@@ -105,6 +105,8 @@ pipeline {
                     }
                 }
                 stage('Build on SLES 12.3') {
+                    when { beforeAgent true
+                           environment name: 'SLES12_3_DOCKER', value: 'true' }
                     agent {
                         dockerfile {
                             filename 'Dockerfile.sles.12.3'
@@ -172,10 +174,81 @@ pipeline {
                 }
                 stage('Build on Ubuntu 18.04') {
                     agent {
-                        label 'docker_runner'
+                        dockerfile {
+                            filename 'Dockerfile.ubuntu.18.04'
+                            label 'docker_runner'
+                            additionalBuildArgs  '--build-arg UID=$(id -u) ' +
+                                                 '--build-arg JENKINS_URL=' +
+                                                 env.JENKINS_URL +
+                                                 ' --build-arg CACHEBUST=' +
+                                                 currentBuild.startTimeInMillis
+                        }
                     }
                     steps {
-                        echo "Building on Ubuntu is not implemented for the moment"
+                        sh '''rm -rf artifacts/ubuntu18.04/
+                              mkdir -p artifacts/ubuntu18.04/
+                              : "${DEBEMAIL:="$env.DAOS_EMAIL"}"
+                              : "${DEBFULLNAME:="$env.DAOS_FULLNAME"}"
+                              export DEBEMAIL
+                              export DEBFULLNAME
+                              make debs'''
+                    }
+                    post {
+                        success {
+                            sh '''ln -v \
+                                   _topdir/BUILD/*{.build,.changes,.deb,.dsc,.gz,.xz} \
+                                   artifacts/ubuntu18.04/
+                                  pushd artifacts/ubuntu18.04/
+                                    dpkg-scanpackages . /dev/null | \
+                                      gzip -9c > Packages.gz
+                                  popd'''
+                            archiveArtifacts artifacts: 'artifacts/ubuntu18.04/**'
+                        }
+                        failure {
+                            sh script: "cat _topdir/BUILD/*.build",
+                               returnStatus: true
+                            archiveArtifacts artifacts: 'artifacts/ubuntu18.04/**'
+                        }
+                    }
+                }
+                stage('Build on Ubuntu 18.10') {
+                    agent {
+                        dockerfile {
+                            filename 'Dockerfile.ubuntu.18.10'
+                            label 'docker_runner'
+                            additionalBuildArgs  '--build-arg UID=$(id -u) ' +
+                                                 '--build-arg JENKINS_URL=' +
+                                                 env.JENKINS_URL +
+                                                 ' --build-arg CACHEBUST=' +
+                                                 currentBuild.startTimeInMillis
+                        }
+                    }
+                    steps {
+                        sh '''rm -rf artifacts/ubuntu18.10/
+                              mkdir -p artifacts/ubuntu18.10/
+                              mkdir -p _topdir
+                              : "${DEBEMAIL:="$env.DAOS_EMAIL"}"
+                              : "${DEBFULLNAME:="$env.DAOS_FULLNAME"}"
+                              export DEBEMAIL
+                              export DEBFULLNAME
+                              make debs'''
+                    }
+                    post {
+                        success {
+                            sh '''ln -v \
+                                   _topdir/BUILD/*{.build,.changes,.deb,.dsc,.gz,.xz} \
+                                   artifacts/ubuntu18.10/
+                                  pushd artifacts/ubuntu18.10/
+                                    dpkg-scanpackages . /dev/null | \
+                                      gzip -9c > Packages.gz
+                                  popd'''
+                            archiveArtifacts artifacts: 'artifacts/ubuntu18.10/**'
+                        }
+                        failure {
+                            sh script: "cat _topdir/BUILD/*.build",
+                               returnStatus: true
+                            archiveArtifacts artifacts: 'artifacts/ubuntu18.10/**'
+                        }
                     }
                 }
             }
