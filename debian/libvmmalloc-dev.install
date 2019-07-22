@@ -1,0 +1,5 @@
+usr/include/libvmmalloc.h
+usr/lib/*/libvmmalloc.a
+usr/lib/*/libvmmalloc.so
+usr/lib/*/pkgconfig/libvmmalloc.pc
+usr/share/man/man7/libvmmalloc.7

@@ -1,0 +1,11 @@
+Tests: manage-pools
+Depends: pmdk-tools
+Restrictions: isolation-container
+
+Tests: daxio-version
+Depends: pmdk-tools
+Restrictions: isolation-container, allow-stderr
+
+Tests: rpmemd-version
+Depends: pmdk-tools
+Restrictions: isolation-container, allow-stderr

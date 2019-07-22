@@ -1,0 +1,10 @@
+libpmempool.so.1 libpmempool1 #MINVER#
+ LIBPMEMPOOL_1.0@LIBPMEMPOOL_1.0 1.4
+ pmempool_check@LIBPMEMPOOL_1.0 1.4
+ pmempool_check_end@LIBPMEMPOOL_1.0 1.4
+ pmempool_check_init@LIBPMEMPOOL_1.0 1.4
+ pmempool_check_version@LIBPMEMPOOL_1.0 1.4
+ pmempool_errormsg@LIBPMEMPOOL_1.0 1.4
+ pmempool_rm@LIBPMEMPOOL_1.0 1.4
+ pmempool_sync@LIBPMEMPOOL_1.0 1.4
+ pmempool_transform@LIBPMEMPOOL_1.0 1.4
