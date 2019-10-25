@@ -29,7 +29,7 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.5.1
+%define upstreamversion 1.6
 
 Name:		pmdk
 Version:	1.6
