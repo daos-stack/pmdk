@@ -33,7 +33,7 @@
 
 Name:		pmdk
 Version:	1.6
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -583,7 +583,8 @@ and facilitates access to persistent memory over RDMA.
 %{_bindir}/rpmemd
 %{_mandir}/man1/rpmemd.1.gz
 
-%endif # _with_fabric
+%endif
+#%endif _with_fabric
 
 
 %package -n pmempool
@@ -629,7 +630,8 @@ a device.
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-%endif # _with_ndctl
+%endif
+#%endif _with_ndctl
 
 %if %{with pmemcheck}
 %package -n pmreorder
@@ -649,7 +651,8 @@ provided in the command line options to check whether files are in a consistent 
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-%endif # _with_pmemcheck
+%endif
+#%endif _with_pmemcheck
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
@@ -759,6 +762,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Nov 07 2019 John E. Malmberg <john.e.malmberg@intel.com> - 1.6-2
+- Cleanup rpmlint issues.
+
 * Mon Oct 21 2019 Brian J. Murrell <brian.murrell@intel.com> - 1.6-1
 - Update to PMDK version 1.6
 
