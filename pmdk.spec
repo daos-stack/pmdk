@@ -2,8 +2,12 @@
 # rpmbuild options:
 #   --with | --without fabric
 #   --with | --without ndctl
-#   --with | --without rpmem
 #   --define _testconfig <path to custom testconfig.sh>
+#   --define _skip_check 1
+#   --define _pmem2_install 1
+
+# do not terminate build if files in the $RPM_BUILD_ROOT
+# directory are not found in the %files (without rpmem case)
 
 # disable 'make check' on suse
 %if %{defined suse_version}
@@ -11,7 +15,10 @@
 	%define dist .suse%{suse_version}
 %endif
 
-%if (0%{?suse_version} >= 1315) || (0%{?fedora} >= 27) || (0%{?rhel} >= 7)
+# libfabric v1.4.2 is available on:
+#   openSUSE Tumbleweed, Leap 15.0, Leap 42.3; SLE 12 SP3, 15
+#   Fedora >=27; RHEL >=7.5
+%if (0%{?suse_version} > 1315) || (0%{?fedora} >= 27) || (0%{?rhel} >= 7)
 %bcond_without fabric
 %else
 %bcond_with fabric
@@ -20,26 +27,19 @@
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
-# by default build with rpmem, unless explicitly disabled
-%bcond_without rpmem
-
-# by default build without pmemcheck, unless explicitly enabled
-# pmemcheck is not packaged by Fedora
-%bcond_with pmemcheck
-
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.6
 
 Name:		pmdk
-Version:	1.6
-Release:	1%{?dist}
-Summary:	Persistent Memory Development Kit (formerly NVML)
+Version:	1.8
+Release:	0.1%{?dist}
+Summary:	Persistent Memory Development Kit
+Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
+Group:		System Environment/Libraries
 License:	BSD
 URL:		http://pmem.io/pmdk
 
-Source0:	https://github.com/pmem/%{name}/archive/%{upstreamversion}.tar.gz
-
+Source0:	https://github.com/pmem/%{name}/releases/download/%{version}-rc1/%{name}-%{version}-rc1.tar.gz
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -48,25 +48,26 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
-%if (0%{?rhel} >= 7)
-BuildRequires:	epel-rpm-macros
+BuildRequires:	gdb
+
+# fdupes package is available only on 'openSUSE Tumbleweed' and 'openSUSE Leap 15.1'
+%if (0%{?suse_version} > 1500) || (0%{?sles_version} >= 150100 && 0%{?is_opensuse})
+BuildRequires: fdupes
 %endif
 
 %if %{with ndctl}
+%if %{defined suse_version}
+BuildRequires:	libndctl-devel >= %{min_ndctl_ver}
+%else
 BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
 BuildRequires:	daxctl-devel >= %{min_ndctl_ver}
-Requires: ndctl-libs >= %{min_ndctl_ver}
+%endif
 %endif
 
 %if %{with fabric}
 BuildRequires:	libfabric-devel >= %{min_libfabric_ver}
 %endif
 
-# for tests
-BuildRequires:	gdb
-BuildRequires:	bc
-BuildRequires:	libunwind-devel
-#BuildRequires:	valgrind
 
 # Debug variants of the libraries should be filtered out of the provides.
 %global __provides_exclude_from ^%{_libdir}/pmdk_debug/.*\\.so.*$
@@ -94,14 +95,85 @@ using memory-mapped persistence, optimized specifically for persistent memory.
 %if 0%{?suse_version} >= 01315
 %define libmajor 1
 %endif
+
+%if 0%{?_pmem2_install} == 1
+
+%package -n libpmem2
+Summary: Low-level persistent memory support library (EXPERIMENTAL)
+Group: System Environment/Libraries
+%description -n libpmem2
+The libpmem2 provides low level persistent memory support. In particular,
+support for the persistent memory instructions for flushing changes
+to pmem is provided.
+
+%files -n libpmem2
+%defattr(-,root,root,-)
+%dir %{_datadir}/pmdk
+%{_libdir}/libpmem2.so.*
+%{_datadir}/pmdk/pmdk.magic
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmem2-devel
+Summary: Development files for the low-level persistent memory library (EXPERIMENTAL)
+Group: Development/Libraries
+Requires: libpmem2 = %{version}-%{release}
+%description -n libpmem2-devel
+The libpmem2 provides low level persistent memory support. In particular,
+support for the persistent memory instructions for flushing changes
+to pmem is provided.
+
+This library is provided for software which tracks every store to
+pmem and needs to flush those changes to durability. Most developers
+will find higher level libraries like libpmemobj to be much more
+convenient.
+
+%files -n libpmem2-devel
+%defattr(-,root,root,-)
+%{_libdir}/libpmem2.so
+%{_libdir}/pkgconfig/libpmem2.pc
+%{_includedir}/libpmem2.h
+%{_mandir}/man7/libpmem2.7.gz
+%{_mandir}/man3/pmem2_*.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmem2-debug
+Summary: Debug variant of the low-level persistent memory library (EXPERIMENTAL)
+Group: Development/Libraries
+Requires: libpmem2 = %{version}-%{release}
+%description -n libpmem2-debug
+The libpmem provides low level persistent memory support. In particular,
+support for the persistent memory instructions for flushing changes
+to pmem is provided.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/pmdk_debug.
+
+%files -n libpmem2-debug
+%defattr(-,root,root,-)
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libpmem2.so
+%{_libdir}/pmdk_debug/libpmem2.so.*
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+%endif #_pmem2_install
+
+
 %package -n libpmem%{?libmajor}
 Summary: Low-level persistent memory support library
+Group: System Environment/Libraries
 %description -n libpmem%{?libmajor}
 The libpmem provides low level persistent memory support. In particular,
 support for the persistent memory instructions for flushing changes
 to pmem is provided.
 
 %files -n libpmem%{?libmajor}
+%defattr(-,root,root,-)
 %dir %{_datadir}/pmdk
 %{_libdir}/libpmem.so.*
 %{_datadir}/pmdk/pmdk.magic
@@ -111,6 +183,7 @@ to pmem is provided.
 
 %package -n libpmem-devel
 Summary: Development files for the low-level persistent memory library
+Group: Development/Libraries
 Requires: libpmem%{?libmajor} = %{version}-%{release}
 %description -n libpmem-devel
 The libpmem provides low level persistent memory support. In particular,
@@ -123,6 +196,7 @@ will find higher level libraries like libpmemobj to be much more
 convenient.
 
 %files -n libpmem-devel
+%defattr(-,root,root,-)
 %{_libdir}/libpmem.so
 %{_libdir}/pkgconfig/libpmem.pc
 %{_includedir}/libpmem.h
@@ -135,6 +209,7 @@ convenient.
 
 %package -n libpmem-debug
 Summary: Debug variant of the low-level persistent memory library
+Group: Development/Libraries
 Requires: libpmem%{?libmajor} = %{version}-%{release}
 %description -n libpmem-debug
 The libpmem provides low level persistent memory support. In particular,
@@ -147,6 +222,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 /usr/lib64/pmdk_debug.
 
 %files -n libpmem-debug
+%defattr(-,root,root,-)
 %dir %{_libdir}/pmdk_debug
 %{_libdir}/pmdk_debug/libpmem.so
 %{_libdir}/pmdk_debug/libpmem.so.*
@@ -156,6 +232,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libpmemblk%{?libmajor}
 Summary: Persistent Memory Resident Array of Blocks library
+Group: System Environment/Libraries
 Requires: libpmem%{?libmajor} >= %{version}-%{release}
 %description -n libpmemblk%{?libmajor}
 The libpmemblk implements a pmem-resident array of blocks, all the same
@@ -163,6 +240,7 @@ size, where a block is updated atomically with respect to power
 failure or program interruption (no torn blocks).
 
 %files -n libpmemblk%{?libmajor}
+%defattr(-,root,root,-)
 %{_libdir}/libpmemblk.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -170,6 +248,7 @@ failure or program interruption (no torn blocks).
 
 %package -n libpmemblk-devel
 Summary: Development files for the Persistent Memory Resident Array of Blocks library
+Group: Development/Libraries
 Requires: libpmemblk%{?libmajor} = %{version}-%{release}
 Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmemblk-devel
@@ -184,6 +263,7 @@ developers will find higher level libraries like libpmemobj to be
 more generally useful.
 
 %files -n libpmemblk-devel
+%defattr(-,root,root,-)
 %{_libdir}/libpmemblk.so
 %{_libdir}/pkgconfig/libpmemblk.pc
 %{_includedir}/libpmemblk.h
@@ -196,6 +276,7 @@ more generally useful.
 
 %package -n libpmemblk-debug
 Summary: Debug variant of the Persistent Memory Resident Array of Blocks library
+Group: Development/Libraries
 Requires: libpmemblk%{?libmajor} = %{version}-%{release}
 %description -n libpmemblk-debug
 The libpmemblk implements a pmem-resident array of blocks, all the same
@@ -208,6 +289,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 /usr/lib64/pmdk_debug.
 
 %files -n libpmemblk-debug
+%defattr(-,root,root,-)
 %dir %{_libdir}/pmdk_debug
 %{_libdir}/pmdk_debug/libpmemblk.so
 %{_libdir}/pmdk_debug/libpmemblk.so.*
@@ -217,6 +299,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libpmemlog%{?libmajor}
 Summary: Persistent Memory Resident Log File library
+Group: System Environment/Libraries
 Requires: libpmem%{?libmajor} >= %{version}-%{release}
 %description -n libpmemlog%{?libmajor}
 The libpmemlog library provides a pmem-resident log file. This is
@@ -224,6 +307,7 @@ useful for programs like databases that append frequently to a log
 file.
 
 %files -n libpmemlog%{?libmajor}
+%defattr(-,root,root,-)
 %{_libdir}/libpmemlog.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -231,6 +315,7 @@ file.
 
 %package -n libpmemlog-devel
 Summary: Development files for the Persistent Memory Resident Log File library
+Group: Development/Libraries
 Requires: libpmemlog%{?libmajor} = %{version}-%{release}
 Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmemlog-devel
@@ -240,13 +325,12 @@ record variable length entries. Most developers will find higher
 level libraries like libpmemobj to be more generally useful.
 
 %files -n libpmemlog-devel
+%defattr(-,root,root,-)
 %{_libdir}/libpmemlog.so
 %{_libdir}/pkgconfig/libpmemlog.pc
 %{_includedir}/libpmemlog.h
 %{_mandir}/man7/libpmemlog.7.gz
-%if %{undefined suse_version}
 %{_mandir}/man5/poolset.5.gz
-%endif
 %{_mandir}/man3/pmemlog_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -254,6 +338,7 @@ level libraries like libpmemobj to be more generally useful.
 
 %package -n libpmemlog-debug
 Summary: Debug variant of the Persistent Memory Resident Log File library
+Group: Development/Libraries
 Requires: libpmemlog%{?libmajor} = %{version}-%{release}
 %description -n libpmemlog-debug
 The libpmemlog library provides a pmem-resident log file. This
@@ -267,6 +352,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 /usr/lib64/pmdk_debug.
 
 %files -n libpmemlog-debug
+%defattr(-,root,root,-)
 %dir %{_libdir}/pmdk_debug
 %{_libdir}/pmdk_debug/libpmemlog.so
 %{_libdir}/pmdk_debug/libpmemlog.so.*
@@ -276,6 +362,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libpmemobj%{?libmajor}
 Summary: Persistent Memory Transactional Object Store library
+Group: System Environment/Libraries
 Requires: libpmem%{?libmajor} >= %{version}-%{release}
 %description -n libpmemobj%{?libmajor}
 The libpmemobj library provides a transactional object store,
@@ -283,6 +370,7 @@ providing memory allocation, transactions, and general facilities for
 persistent memory programming.
 
 %files -n libpmemobj%{?libmajor}
+%defattr(-,root,root,-)
 %{_libdir}/libpmemobj.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -290,6 +378,7 @@ persistent memory programming.
 
 %package -n libpmemobj-devel
 Summary: Development files for the Persistent Memory Transactional Object Store library
+Group: Development/Libraries
 Requires: libpmemobj%{?libmajor} = %{version}-%{release}
 Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmemobj-devel
@@ -299,15 +388,13 @@ persistent memory programming. Developers new to persistent memory
 probably want to start with this library.
 
 %files -n libpmemobj-devel
+%defattr(-,root,root,-)
 %{_libdir}/libpmemobj.so
 %{_libdir}/pkgconfig/libpmemobj.pc
 %{_includedir}/libpmemobj.h
-%dir %{_includedir}/libpmemobj
 %{_includedir}/libpmemobj/*.h
 %{_mandir}/man7/libpmemobj.7.gz
-%if %{undefined suse_version}
 %{_mandir}/man5/poolset.5.gz
-%endif
 %{_mandir}/man3/pmemobj_*.3.gz
 %{_mandir}/man3/pobj_*.3.gz
 %{_mandir}/man3/oid_*.3.gz
@@ -321,6 +408,7 @@ probably want to start with this library.
 
 %package -n libpmemobj-debug
 Summary: Debug variant of the Persistent Memory Transactional Object Store library
+Group: Development/Libraries
 Requires: libpmemobj%{?libmajor} = %{version}-%{release}
 %description -n libpmemobj-debug
 The libpmemobj library provides a transactional object store,
@@ -334,6 +422,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 /usr/lib64/pmdk_debug.
 
 %files -n libpmemobj-debug
+%defattr(-,root,root,-)
 %dir %{_libdir}/pmdk_debug
 %{_libdir}/pmdk_debug/libpmemobj.so
 %{_libdir}/pmdk_debug/libpmemobj.so.*
@@ -341,123 +430,9 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
-%package -n libvmem%{?libmajor}
-Summary: Volatile Memory allocation library
-%description -n libvmem%{?libmajor}
-The libvmem library turns a pool of persistent memory into a volatile
-memory pool, similar to the system heap but kept separate and with
-its own malloc-style API.
-
-%files -n libvmem%{?libmajor}
-%{_libdir}/libvmem.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmem-devel
-Summary: Development files for the Volatile Memory allocation library
-Requires: libvmem%{?libmajor} = %{version}-%{release}
-%description -n libvmem-devel
-The libvmem library turns a pool of persistent memory into a volatile
-memory pool, similar to the system heap but kept separate and with
-its own malloc-style API.
-
-This sub-package contains libraries and header files for developing
-applications that want to make use of libvmem.
-
-%files -n libvmem-devel
-%{_libdir}/libvmem.so
-%{_libdir}/pkgconfig/libvmem.pc
-%{_includedir}/libvmem.h
-%{_mandir}/man7/libvmem.7.gz
-%{_mandir}/man3/vmem_*.3.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmem-debug
-Summary: Debug variant of the Volatile Memory allocation library
-Requires: libvmem%{?libmajor} = %{version}-%{release}
-%description -n libvmem-debug
-The libvmem library turns a pool of persistent memory into a volatile
-memory pool, similar to the system heap but kept separate and with
-its own malloc-style API.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n libvmem-debug
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/libvmem.so
-%{_libdir}/pmdk_debug/libvmem.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmmalloc%{?libmajor}
-Summary: Dynamic to Persistent Memory allocation translation library
-%description -n libvmmalloc%{?libmajor}
-The libvmmalloc library transparently converts all the dynamic memory
-allocations into persistent memory allocations. This allows the use
-of persistent memory as volatile memory without modifying the target
-application.
-
-The typical usage of libvmmalloc is to load it via the LD_PRELOAD
-environment variable.
-
-%files -n libvmmalloc%{?libmajor}
-%{_libdir}/libvmmalloc.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmmalloc-devel
-Summary: Development files for the Dynamic-to-Persistent allocation library
-Requires: libvmmalloc%{?libmajor} = %{version}-%{release}
-%description -n libvmmalloc-devel
-The libvmmalloc library transparently converts all the dynamic memory
-allocations into persistent memory allocations. This allows the use
-of persistent memory as volatile memory without modifying the target
-application.
-
-This sub-package contains libraries and header files for developing
-applications that want to specifically make use of libvmmalloc.
-
-%files -n libvmmalloc-devel
-%{_libdir}/libvmmalloc.so
-%{_libdir}/pkgconfig/libvmmalloc.pc
-%{_includedir}/libvmmalloc.h
-%{_mandir}/man7/libvmmalloc.7.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmmalloc-debug
-Summary: Debug variant of the Dynamic-to-Persistent allocation library
-Requires: libvmmalloc%{?libmajor} = %{version}-%{release}
-%description -n libvmmalloc-debug
-The libvmmalloc library transparently converts all the dynamic memory
-allocations into persistent memory allocations. This allows the use
-of persistent memory as volatile memory without modifying the target
-application.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n libvmmalloc-debug
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/libvmmalloc.so
-%{_libdir}/pmdk_debug/libvmmalloc.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
 %package -n libpmempool%{?libmajor}
 Summary: Persistent Memory pool management library
+Group: System Environment/Libraries
 Requires: libpmem%{?libmajor} >= %{version}-%{release}
 %description -n libpmempool%{?libmajor}
 The libpmempool library provides a set of utilities for off-line
@@ -465,6 +440,7 @@ administration, analysis, diagnostics and repair of persistent memory
 pools created by libpmemlog, libpemblk and libpmemobj libraries.
 
 %files -n libpmempool%{?libmajor}
+%defattr(-,root,root,-)
 %{_libdir}/libpmempool.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -472,6 +448,7 @@ pools created by libpmemlog, libpemblk and libpmemobj libraries.
 
 %package -n libpmempool-devel
 Summary: Development files for Persistent Memory pool management library
+Group: Development/Libraries
 Requires: libpmempool%{?libmajor} = %{version}-%{release}
 Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmempool-devel
@@ -480,13 +457,12 @@ administration, analysis, diagnostics and repair of persistent memory
 pools created by libpmemlog, libpemblk and libpmemobj libraries.
 
 %files -n libpmempool-devel
+%defattr(-,root,root,-)
 %{_libdir}/libpmempool.so
 %{_libdir}/pkgconfig/libpmempool.pc
 %{_includedir}/libpmempool.h
 %{_mandir}/man7/libpmempool.7.gz
-%if %{undefined suse_version}
 %{_mandir}/man5/poolset.5.gz
-%endif
 %{_mandir}/man3/pmempool_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -494,6 +470,7 @@ pools created by libpmemlog, libpemblk and libpmemobj libraries.
 
 %package -n libpmempool-debug
 Summary: Debug variant of the Persistent Memory pool management library
+Group: Development/Libraries
 Requires: libpmempool%{?libmajor} = %{version}-%{release}
 %description -n libpmempool-debug
 The libpmempool library provides a set of utilities for off-line
@@ -506,6 +483,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 /usr/lib64/pmdk_debug.
 
 %files -n libpmempool-debug
+%defattr(-,root,root,-)
 %dir %{_libdir}/pmdk_debug
 %{_libdir}/pmdk_debug/libpmempool.so
 %{_libdir}/pmdk_debug/libpmempool.so.*
@@ -513,18 +491,24 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
-%if %{with fabric} && %{with rpmem}
+%if %{with fabric}
 
 %package -n librpmem%{?libmajor}
 Summary: Remote Access to Persistent Memory library
+Group: System Environment/Libraries
 Requires: libfabric >= %{min_libfabric_ver}
+%if %{defined suse_version}
+Requires: openssh
+%else
 Requires: openssh-clients
+%endif
 %description -n librpmem%{?libmajor}
 The librpmem library provides low-level support for remote access
 to persistent memory utilizing RDMA-capable NICs. It can be used
 to replicate persistent memory regions over RDMA protocol.
 
 %files -n librpmem%{?libmajor}
+%defattr(-,root,root,-)
 %{_libdir}/librpmem.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -532,6 +516,7 @@ to replicate persistent memory regions over RDMA protocol.
 
 %package -n librpmem-devel
 Summary: Development files for the Remote Access to Persistent Memory library
+Group: Development/Libraries
 Requires: librpmem%{?libmajor} = %{version}-%{release}
 %description -n librpmem-devel
 The librpmem library provides low-level support for remote access
@@ -542,6 +527,7 @@ This sub-package contains libraries and header files for developing
 applications that want to specifically make use of librpmem.
 
 %files -n librpmem-devel
+%defattr(-,root,root,-)
 %{_libdir}/librpmem.so
 %{_libdir}/pkgconfig/librpmem.pc
 %{_includedir}/librpmem.h
@@ -553,6 +539,7 @@ applications that want to specifically make use of librpmem.
 
 %package -n librpmem-debug
 Summary: Debug variant of the Remote Access to Persistent Memory library
+Group: Development/Libraries
 Requires: librpmem%{?libmajor} = %{version}-%{release}
 %description -n librpmem-debug
 The librpmem library provides low-level support for remote access
@@ -565,6 +552,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 /usr/lib64/pmdk_debug.
 
 %files -n librpmem-debug
+%defattr(-,root,root,-)
 %dir %{_libdir}/pmdk_debug
 %{_libdir}/pmdk_debug/librpmem.so
 %{_libdir}/pmdk_debug/librpmem.so.*
@@ -573,6 +561,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 
 %package -n rpmemd
+Group: System Environment/Base
 Summary: Target node process executed by librpmem
 Requires: libfabric >= %{min_libfabric_ver}
 %description -n rpmemd
@@ -585,9 +574,9 @@ and facilitates access to persistent memory over RDMA.
 
 %endif # _with_fabric
 
-
 %package -n pmempool
 Summary: Utilities for Persistent Memory
+Group: System Environment/Base
 Requires: libpmem%{?libmajor} >= %{version}-%{release}
 Requires: libpmemlog%{?libmajor} >= %{version}-%{release}
 Requires: libpmemblk%{?libmajor} >= %{version}-%{release}
@@ -609,11 +598,29 @@ and users of the applications based on PMDK libraries.
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
+%package -n pmreorder
+Summary: Consistency Checker for Persistent Memory
+Group: System Environment/Base
+%description -n pmreorder
+The pmreorder tool is a collection of python scripts designed to parse
+and replay operations logged by pmemcheck - a persistent memory checking tool.
+Pmreorder performs the store reordering between persistent memory barriers -
+a sequence of flush-fence operations. It uses a consistency checking routine
+provided in the command line options to check whether files are in a consistent state.
+
+%files -n pmreorder
+%{_bindir}/pmreorder
+%{_datadir}/pmreorder/*.py
+%{_mandir}/man1/pmreorder.1.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
 
 %if %{with ndctl}
 
 %package -n daxio
 Summary: Perform I/O on Device DAX devices or zero a Device DAX device
+Group: System Environment/Base
 Requires: libpmem%{?libmajor} >= %{version}-%{release}
 %description -n daxio
 The daxio utility performs I/O on Device DAX devices or zero
@@ -631,41 +638,18 @@ a device.
 
 %endif # _with_ndctl
 
-%if %{with pmemcheck}
-%package -n pmreorder
-Summary: Consistency Checker for Persistent Memory
-Requires: python3
-%description -n pmreorder
-The pmreorder tool is a collection of python scripts designed to parse
-and replay operations logged by pmemcheck - a persistent memory checking tool.
-Pmreorder performs the store reordering between persistent memory barriers -
-a sequence of flush-fence operations. It uses a consistency checking routine
-provided in the command line options to check whether files are in a consistent state.
-
-%files -n pmreorder
-%{_bindir}/pmreorder
-%{_datadir}/pmreorder/*.py
-%{_mandir}/man1/pmreorder.1.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-%endif # _with_pmemcheck
-
 %prep
-%setup -q -n pmdk-%{upstreamversion}
+%setup -q -n %{name}-%{version}-rc1
 
 
 %build
-# For debug build default flags may be overriden to disable compiler
+# For debug build default flags may be overridden to disable compiler
 # optimizations.
 CFLAGS="%{optflags}" \
 LDFLAGS="%{?__global_ldflags}" \
 make %{?_smp_mflags} \
 %if %{without ndctl}
 	NDCTL_ENABLE=n \
-%endif
-%if %{without rpmem}
-	BUILD_RPMEM=n \
 %endif
 	NORPATH=1
 
@@ -675,9 +659,6 @@ make %{?_smp_mflags} \
 make install DESTDIR=%{buildroot} \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
-%endif
-%if %{without rpmem}
-	BUILD_RPMEM=n \
 %endif
 	LIB_AR= \
 	prefix=%{_prefix} \
@@ -689,11 +670,6 @@ make install DESTDIR=%{buildroot} \
 	docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
-%if %{without pmemcheck}
-	rm -rf %{buildroot}%{_bindir}/pmreorder \
-	       %{buildroot}%{_datadir}/pmreorder/ \
-	       %{buildroot}%{_mandir}/man1/pmreorder.1.gz
-%endif
 
 
 
@@ -707,13 +683,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 		echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
 		echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
 		echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
+		echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
 	%endif
 	make \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
-%endif
-%if %{without rpmem}
-	BUILD_RPMEM=n \
 %endif
 	check
 %endif
@@ -727,12 +701,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %postun -n libpmemlog%{?libmajor} -p /sbin/ldconfig
 %post   -n libpmemobj%{?libmajor} -p /sbin/ldconfig
 %postun -n libpmemobj%{?libmajor} -p /sbin/ldconfig
-%post   -n libvmem%{?libmajor} -p /sbin/ldconfig
-%postun -n libvmem%{?libmajor} -p /sbin/ldconfig
-%post   -n libvmmalloc%{?libmajor} -p /sbin/ldconfig
-%postun -n libvmmalloc%{?libmajor} -p /sbin/ldconfig
 %post   -n libpmempool%{?libmajor} -p /sbin/ldconfig
 %postun -n libpmempool%{?libmajor} -p /sbin/ldconfig
+
 %if %{with fabric} && %{with rpmem}
 %post   -n librpmem%{?libmajor} -p /sbin/ldconfig
 %postun -n librpmem%{?libmajor} -p /sbin/ldconfig
@@ -744,8 +715,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %ldconfig_scriptlets   -n libpmemblk
 %ldconfig_scriptlets   -n libpmemlog
 %ldconfig_scriptlets   -n libpmemobj
-%ldconfig_scriptlets   -n libvmem
-%ldconfig_scriptlets   -n libvmmalloc
 %ldconfig_scriptlets   -n libpmempool
 %if %{with fabric} && %{with rpmem}
 %ldconfig_scriptlets   -n librpmem
@@ -759,6 +728,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Jan 23 2020 Brian J. Murrell <brian.murrell@intel.com> - 1.8-0.1
+- Update to PMDK version 1.8-rc1
+
 * Mon Oct 21 2019 Brian J. Murrell <brian.murrell@intel.com> - 1.6-1
 - Update to PMDK version 1.6
 
