@@ -32,7 +32,7 @@
 
 Name:		pmdk
 Version:	1.8
-Release:	0.1%{?dist}
+Release:	0.2%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
@@ -161,8 +161,8 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %{_libdir}/pmdk_debug/libpmem2.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
-%endif #_pmem2_install
-
+#_pmem2_install
+%endif
 
 %package -n libpmem%{?libmajor}
 Summary: Low-level persistent memory support library
@@ -572,7 +572,8 @@ and facilitates access to persistent memory over RDMA.
 %{_bindir}/rpmemd
 %{_mandir}/man1/rpmemd.1.gz
 
-%endif # _with_fabric
+# _with_fabric
+%endif
 
 %package -n pmempool
 Summary: Utilities for Persistent Memory
@@ -636,7 +637,8 @@ a device.
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-%endif # _with_ndctl
+# _with_ndctl
+%endif
 
 %prep
 %setup -q -n %{name}-%{version}-rc1
@@ -728,6 +730,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Wed Jan 29 2020 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.8-0.2
+- Fix some errors in rpmlint
+
 * Thu Jan 23 2020 Brian J. Murrell <brian.murrell@intel.com> - 1.8-0.1
 - Update to PMDK version 1.8-rc1
 
