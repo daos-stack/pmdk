@@ -32,14 +32,14 @@
 
 Name:		pmdk
 Version:	1.8
-Release:	0.2%{?dist}
+Release:	0.3%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
 License:	BSD
 URL:		http://pmem.io/pmdk
 
-Source0:	https://github.com/pmem/%{name}/releases/download/%{version}-rc1/%{name}-%{version}-rc1.tar.gz
+Source0:	https://github.com/pmem/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -641,7 +641,7 @@ a device.
 %endif
 
 %prep
-%setup -q -n %{name}-%{version}-rc1
+%setup -q -n %{name}-%{version}
 
 
 %build
@@ -730,6 +730,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Mon Feb 03 2020 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.8-0.3
+- Update to 1.8 stable release
+
 * Wed Jan 29 2020 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.8-0.2
 - Fix some errors in rpmlint
 
