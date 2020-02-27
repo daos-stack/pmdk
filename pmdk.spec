@@ -32,7 +32,7 @@
 
 Name:		pmdk
 Version:	1.8
-Release:	0.3%{?dist}
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
@@ -730,6 +730,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Feb 18 2020 Brian J. Murrell <brian.murrell@intel.com> - 1.8-1
+- Build --without=ndctl
+
 * Mon Feb 03 2020 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.8-0.3
 - Update to 1.8 stable release
 
