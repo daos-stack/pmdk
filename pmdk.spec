@@ -32,11 +32,15 @@
 
 Name:		pmdk
 Version:	1.8
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
+%if (0%{?suse_version} > 0)
+License:	BSD-3-Clause
+%else
 License:	BSD
+%endif
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
@@ -730,6 +734,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jun 16 2020 Brian J. Murrell <brian.murrell@intel.com> - 1.8-2
+- Update License: for SUSE builds
+
 * Tue Feb 18 2020 Brian J. Murrell <brian.murrell@intel.com> - 1.8-1
 - Build --without=ndctl
 
