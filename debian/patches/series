@@ -1,4 +1,2 @@
 manpage-debug-packages.patch
-spelling-fixes.patch
-do-not-build-examples.patch
-manpages-bad-whatis.patch
+glibc-2.35

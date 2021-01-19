@@ -8,6 +8,7 @@
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
 # directory are not found in the %files (without rpmem case)
+#define _unpackaged_files_terminate_build 0
 
 # disable 'make check' on suse
 %if %{defined suse_version}
@@ -31,8 +32,8 @@
 %define min_ndctl_ver 60.1
 
 Name:		pmdk
-Version:	1.8
-Release:	2%{?dist}
+Version:	1.9.2
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
@@ -41,7 +42,7 @@ License:	BSD-3-Clause
 %else
 License:	BSD
 %endif
-URL:		http://pmem.io/pmdk
+URL:		https://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 
@@ -53,6 +54,7 @@ BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
 BuildRequires:	gdb
+BuildRequires:	pandoc
 
 # fdupes package is available only on 'openSUSE Tumbleweed' and 'openSUSE Leap 15.1'
 %if (0%{?suse_version} > 1500) || (0%{?sles_version} >= 150100 && 0%{?is_opensuse})
@@ -89,7 +91,7 @@ BuildRequires:	libfabric-devel >= %{min_libfabric_ver}
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340636
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340637
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 ppc64le
 
 %description
 The Persistent Memory Development Kit is a collection of libraries for
@@ -645,7 +647,7 @@ a device.
 %endif
 
 %prep
-%setup -q -n %{name}-%{version}
+%autosetup
 
 
 %build
@@ -734,6 +736,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jan 19 2021 Brian J. Murrell <brian.murrell@intel.com> - 1.9.2-1
+- Update to 1.9.2
+- use autosetup
+
 * Tue Jun 16 2020 Brian J. Murrell <brian.murrell@intel.com> - 1.8-2
 - Update License: for SUSE builds
 

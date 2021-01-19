@@ -1,16 +1,207 @@
+pmdk (1.9.2-1) unstable; urgency=medium
+
+  * Upstream release.
+
+ -- Brian J. Murrell <brian.murrell@intel.com>  Tue, 19 Jan 2021 17:17:42 -0400
+
+pmdk (1.9-1) unstable; urgency=medium
+
+  * Upstream release.
+  * Work around __pycache__ droppings.
+  * Disable scope tests until binutils #964457 is fixed; closes #964623.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Tue, 21 Jul 2020 09:52:05 +0200
+
+pmdk (1.9~rc2-1) experimental; urgency=medium
+
+  * New upstream RC.
+  * Replace upstream gpg key.
+  * Don't try to install rpmemd manpages on !amd64.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Thu, 02 Jul 2020 16:15:52 +0200
+
+pmdk (1.9~rc1-1) experimental; urgency=medium
+
+  * New upstream RC.
+  * Temporarily delete upstream key checking.
+  * Update symbols.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 29 Jun 2020 13:11:33 +0200
+
+pmdk (1.8-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Fri, 31 Jan 2020 18:49:43 +0100
+
+pmdk (1.8~rc1-2) experimental; urgency=medium
+
+  * Pick pre-release fixes.
+  * Re-enable out_err_mt tests.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Tue, 21 Jan 2020 17:17:23 +0100
+
+pmdk (1.8~rc1-1) experimental; urgency=medium
+
+  * New upstream pre-release.
+  * Drop vmem and vmmalloc.
+  * Enable ppc64el.
+  * Enable KEEP_GOING to list all test failures.
+  * Temporarily disable out_err_mt tests.
+  * Patch away differences between 1.8-rc1 tarball and tag.
+  * Update symbols.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 20 Jan 2020 12:41:24 +0100
+
+pmdk (1.7-1) unstable; urgency=medium
+
+  * Upstream release.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 30 Sep 2019 19:20:09 +0200
+
+pmdk (1.7~rc2-1) experimental; urgency=medium
+
+  * New upstream pre-release.
+  * Enable python-based tests.
+  * Update symbols.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Thu, 26 Sep 2019 23:25:26 +0200
+
+pmdk (1.7~rc1-1) experimental; urgency=medium
+
+  * New upstream pre-release.
+  * Drop redundant dirs from example paths.
+  * Use upstream method to avoid building examples.
+  * Multi-Arch settings.
+  * Update symbols.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Tue, 24 Sep 2019 02:05:38 +0200
+
+pmdk (1.6.1-2) unstable; urgency=medium
+
+  * Verify upstream GPG signatures.
+  * Drop unused install files for libpmemobj-doc.
+  * Add autopkgtests to compile examples against installed libraries.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 02 Sep 2019 20:41:03 +0200
+
+pmdk (1.6.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Make -dev packages of libraries with RAS features depend on relevant
+    ndctl/daxctl-dev.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Wed, 28 Aug 2019 02:41:52 +0200
+
+pmdk (1.6.1~rc1-1) experimental; urgency=medium
+
+  * New upstream pre-release.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 19 Aug 2019 17:15:43 +0200
+
+pmdk (1.6-5) unstable; urgency=medium
+
+  * B-Depend on ndctl with fixed fd leaks, don't ignore fails.
+  * Drop a redundant failing autopkgtest.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 29 Jul 2019 03:14:34 +0200
+
+pmdk (1.6-4) unstable; urgency=medium
+
+  * Fix FTBFS with valgrind 3.15.
+  * Fix a strict aliasing violation (caused crashes with some
+    compiler:platform combinations).
+  * Depend on valgrind that doesn't SIGILL on DC CVAC on arm64.
+  * Unversion B-Dep on dh-exec.
+  * Increase test timeout by 10×.
+  * dh 12.
+  * R³.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 22 Jul 2019 23:31:11 +0200
+
+pmdk (1.6-3) unstable; urgency=medium
+
+  * Disable obj_pool/TEST34 again -- times out on crap hardware.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 08 Jul 2019 15:28:07 +0200
+
+pmdk (1.6-2) unstable; urgency=medium
+
+  * Upload to unstable.
+  * Merge in Ubuntu changes (dh_missing, Build-Depends-Package, docs).
+  * Other minor docs improvements.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 08 Jul 2019 11:55:38 +0200
+
+pmdk (1.6-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Tue, 26 Mar 2019 22:58:25 +0100
+
+pmdk (1.6~rc2-1) experimental; urgency=medium
+
+  * New upstream pre-release.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 18 Mar 2019 02:04:47 +0100
+
 pmdk (1.5.1-1) unstable; urgency=medium
 
-  [ John Malmberg]
-  * Patched pmdk fork of upstream release.
-  * Experimental build for daos-stack project.
+  * New upstream release.
 
- -- John Malmberg <john.e.malmberg@intel.com>  Thu, 11 Jul 2019 19:53:00 +0000
+ -- Adam Borowski <kilobyte@angband.pl>  Tue, 19 Feb 2019 14:50:48 +0100
 
-pmdk (1.4.1-0ubuntu1~18.04.1) bionic; urgency=medium
+pmdk (1.5.1~rc3-2) experimental; urgency=medium
 
-  * Backport to bionic (LP: #1781269)
+  * Disable a failing test (real bug; tmpfs only).
 
- -- Andreas Hasenack <andreas@canonical.com>  Fri, 03 Aug 2018 11:02:48 -0300
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 18 Feb 2019 01:18:14 +0100
+
+pmdk (1.5.1~rc3-1) experimental; urgency=medium
+
+  * New upstream pre-release.
+  * Drop upstreamed patch.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Fri, 15 Feb 2019 16:11:49 +0100
+
+pmdk (1.5.1~rc2-1) experimental; urgency=medium
+
+  * New upstream pre-release.
+  * Drop upstreamed patches.
+  * Re-enable valgrind tests.
+  * Fix broken .pc for librpmem.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 11 Feb 2019 16:14:47 +0100
+
+pmdk (1.5-5) unstable; urgency=medium
+
+  * Fix one, and paper over another, tests failing with bash 5.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 04 Feb 2019 20:06:36 +0100
+
+pmdk (1.5-4) unstable; urgency=medium
+
+  * Use UTC for SOURCE_DATE_EPOCH.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Tue, 08 Jan 2019 13:42:12 +0100
+
+pmdk (1.5-3) unstable; urgency=medium
+
+  * Make the build reproducible.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 07 Jan 2019 15:26:53 +0100
+
+pmdk (1.5-2) unstable; urgency=medium
+
+  * Don't B-Depend on valgrind, it can't handle glibc 2.28 yet.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Fri, 04 Jan 2019 14:05:10 +0100
+
+pmdk (1.5-1) unstable; urgency=medium
+
+  * Initial release.  Closes: #913889
+
+ -- Adam Borowski <kilobyte@angband.pl>  Thu, 06 Dec 2018 16:19:04 +0100
 
 pmdk (1.4.1-0ubuntu1) cosmic; urgency=medium
 
@@ -40,3 +231,4 @@ pmdk (1.4-0ubuntu1) cosmic; urgency=medium
   * Initial release. Closes: LP: #1752378.
 
  -- Andreas Hasenack <andreas@canonical.com>  Thu, 24 May 2018 12:40:11 -0300
+

@@ -1,4 +1,5 @@
 libpmemobj.so.1 libpmemobj1 #MINVER#
+* Build-Depends-Package: libpmemobj-dev
  LIBPMEMOBJ_1.0@LIBPMEMOBJ_1.0 1.4
  _pobj_cache_invalidate@LIBPMEMOBJ_1.0 1.4
  _pobj_cached_pool@LIBPMEMOBJ_1.0 1.4
@@ -18,18 +19,24 @@ libpmemobj.so.1 libpmemobj1 #MINVER#
  pmemobj_ctl_exec@LIBPMEMOBJ_1.0 1.4
  pmemobj_ctl_get@LIBPMEMOBJ_1.0 1.4
  pmemobj_ctl_set@LIBPMEMOBJ_1.0 1.4
+ pmemobj_defer_free@LIBPMEMOBJ_1.0 1.5
+ pmemobj_defrag@LIBPMEMOBJ_1.0 1.8
  pmemobj_direct@LIBPMEMOBJ_1.0 1.4
  pmemobj_drain@LIBPMEMOBJ_1.0 1.4
  pmemobj_errormsg@LIBPMEMOBJ_1.0 1.4
  pmemobj_first@LIBPMEMOBJ_1.0 1.4
  pmemobj_flush@LIBPMEMOBJ_1.0 1.4
  pmemobj_free@LIBPMEMOBJ_1.0 1.4
+ pmemobj_get_user_data@LIBPMEMOBJ_1.0 1.8
  pmemobj_list_insert@LIBPMEMOBJ_1.0 1.4
  pmemobj_list_insert_new@LIBPMEMOBJ_1.0 1.4
  pmemobj_list_move@LIBPMEMOBJ_1.0 1.4
  pmemobj_list_remove@LIBPMEMOBJ_1.0 1.4
+ pmemobj_memcpy@LIBPMEMOBJ_1.0 1.5
  pmemobj_memcpy_persist@LIBPMEMOBJ_1.0 1.4
  pmemobj_memset_persist@LIBPMEMOBJ_1.0 1.4
+ pmemobj_memmove@LIBPMEMOBJ_1.0 1.5
+ pmemobj_memset@LIBPMEMOBJ_1.0 1.5
  pmemobj_mutex_lock@LIBPMEMOBJ_1.0 1.4
  pmemobj_mutex_timedlock@LIBPMEMOBJ_1.0 1.4
  pmemobj_mutex_trylock@LIBPMEMOBJ_1.0 1.4
@@ -56,6 +63,7 @@ libpmemobj.so.1 libpmemobj1 #MINVER#
  pmemobj_rwlock_wrlock@LIBPMEMOBJ_1.0 1.4
  pmemobj_rwlock_zero@LIBPMEMOBJ_1.0 1.4
  pmemobj_set_funcs@LIBPMEMOBJ_1.0 1.4
+ pmemobj_set_user_data@LIBPMEMOBJ_1.0 1.8
  pmemobj_set_value@LIBPMEMOBJ_1.0 1.4
  pmemobj_strdup@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_abort@LIBPMEMOBJ_1.0 1.4
@@ -67,21 +75,38 @@ libpmemobj.so.1 libpmemobj1 #MINVER#
  pmemobj_tx_end@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_errno@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_free@LIBPMEMOBJ_1.0 1.4
+ pmemobj_tx_get_failure_behavior@LIBPMEMOBJ_1.0 1.9~
+ pmemobj_tx_get_user_data@LIBPMEMOBJ_1.0 1.8
  pmemobj_tx_lock@LIBPMEMOBJ_1.0 1.4
+ pmemobj_tx_log_append_buffer@LIBPMEMOBJ_1.0 1.7
+ pmemobj_tx_log_auto_alloc@LIBPMEMOBJ_1.0 1.7
+ pmemobj_tx_log_intents_max_size@LIBPMEMOBJ_1.0 1.7
+ pmemobj_tx_log_snapshots_max_size@LIBPMEMOBJ_1.0 1.7
  pmemobj_tx_process@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_publish@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_realloc@LIBPMEMOBJ_1.0 1.4
+ pmemobj_tx_set_failure_behavior@LIBPMEMOBJ_1.0 1.9~
+ pmemobj_tx_set_user_data@LIBPMEMOBJ_1.0 1.8
  pmemobj_tx_stage@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_strdup@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_wcsdup@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_xadd_range@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_xadd_range_direct@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_xalloc@LIBPMEMOBJ_1.0 1.4
+ pmemobj_tx_xfree@LIBPMEMOBJ_1.0 1.8
+ pmemobj_tx_xlock@LIBPMEMOBJ_1.0 1.8
+ pmemobj_tx_xlog_append_buffer@LIBPMEMOBJ_1.0 1.8
+ pmemobj_tx_xpublish@LIBPMEMOBJ_1.0 1.8
+ pmemobj_tx_xstrdup@LIBPMEMOBJ_1.0 1.8
+ pmemobj_tx_xwcsdup@LIBPMEMOBJ_1.0 1.8
  pmemobj_tx_zalloc@LIBPMEMOBJ_1.0 1.4
  pmemobj_tx_zrealloc@LIBPMEMOBJ_1.0 1.4
  pmemobj_type_num@LIBPMEMOBJ_1.0 1.4
+ pmemobj_volatile@LIBPMEMOBJ_1.0 1.5
  pmemobj_wcsdup@LIBPMEMOBJ_1.0 1.4
  pmemobj_xalloc@LIBPMEMOBJ_1.0 1.4
+ pmemobj_xflush@LIBPMEMOBJ_1.0 1.5
+ pmemobj_xpersist@LIBPMEMOBJ_1.0 1.5
  pmemobj_xreserve@LIBPMEMOBJ_1.0 1.4
  pmemobj_zalloc@LIBPMEMOBJ_1.0 1.4
  pmemobj_zrealloc@LIBPMEMOBJ_1.0 1.4

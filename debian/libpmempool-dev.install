@@ -2,5 +2,3 @@ usr/include/libpmempool.h
 usr/lib/*/libpmempool.a
 usr/lib/*/libpmempool.so
 usr/lib/*/pkgconfig/libpmempool.pc
-usr/share/man/man3/pmempool_*.3
-usr/share/man/man7/libpmempool.7
