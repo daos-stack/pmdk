@@ -2,5 +2,3 @@ usr/include/librpmem.h
 usr/lib/*/librpmem.a
 usr/lib/*/librpmem.so
 usr/lib/*/pkgconfig/librpmem.pc
-usr/share/man/man3/rpmem_*.3
-usr/share/man/man7/librpmem.7

@@ -1,0 +1,3 @@
+doc/libpmem/*.3
+doc/libpmem/*.7
+doc/pmem_ctl/*.5

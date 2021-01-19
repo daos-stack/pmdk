@@ -1,10 +1,14 @@
 libpmemblk.so.1 libpmemblk1 #MINVER#
+* Build-Depends-Package: libpmemblk-dev
  LIBPMEMBLK_1.0@LIBPMEMBLK_1.0 1.4
  pmemblk_bsize@LIBPMEMBLK_1.0 1.4
  pmemblk_check@LIBPMEMBLK_1.0 1.4
  pmemblk_check_version@LIBPMEMBLK_1.0 1.4
  pmemblk_close@LIBPMEMBLK_1.0 1.4
  pmemblk_create@LIBPMEMBLK_1.0 1.4
+ pmemblk_ctl_exec@LIBPMEMBLK_1.0 1.5
+ pmemblk_ctl_get@LIBPMEMBLK_1.0 1.5
+ pmemblk_ctl_set@LIBPMEMBLK_1.0 1.5
  pmemblk_errormsg@LIBPMEMBLK_1.0 1.4
  pmemblk_nblock@LIBPMEMBLK_1.0 1.4
  pmemblk_open@LIBPMEMBLK_1.0 1.4

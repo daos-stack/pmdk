@@ -1,10 +1,14 @@
 libpmempool.so.1 libpmempool1 #MINVER#
+* Build-Depends-Package: libpmempool-dev
  LIBPMEMPOOL_1.0@LIBPMEMPOOL_1.0 1.4
  pmempool_check@LIBPMEMPOOL_1.0 1.4
  pmempool_check_end@LIBPMEMPOOL_1.0 1.4
  pmempool_check_init@LIBPMEMPOOL_1.0 1.4
  pmempool_check_version@LIBPMEMPOOL_1.0 1.4
  pmempool_errormsg@LIBPMEMPOOL_1.0 1.4
+ pmempool_feature_disable@LIBPMEMPOOL_1.0 1.5
+ pmempool_feature_enable@LIBPMEMPOOL_1.0 1.5
+ pmempool_feature_query@LIBPMEMPOOL_1.0 1.5
  pmempool_rm@LIBPMEMPOOL_1.0 1.4
  pmempool_sync@LIBPMEMPOOL_1.0 1.4
  pmempool_transform@LIBPMEMPOOL_1.0 1.4

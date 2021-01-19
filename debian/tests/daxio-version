@@ -2,7 +2,8 @@
 
 set -ex
 
-pkg_version=$(dpkg-query -f '${Version}\n' -W pmdk-tools | cut -d - -f 1)
+pkg_version=$(dpkg-query -f '${Version}\n' -W pmdk-tools | sed 's/~rc/-rc/')
+pkg_version=${pkg_version%-*}
 echo "pmdk-tools package version: ${pkg_version}"
 daxio_version=$(daxio -V)
 echo "daxio version: ${daxio_version}"

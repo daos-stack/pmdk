@@ -1,17 +1,5 @@
-#usr/include/libpmemobj++/*.hpp
-#usr/include/libpmemobj++/detail/*
 usr/include/libpmemobj.h
 usr/include/libpmemobj/*.h
 usr/lib/*/libpmemobj.a
 usr/lib/*/libpmemobj.so
 usr/lib/*/pkgconfig/libpmemobj.pc
-usr/share/man/man3/d_ro.3
-usr/share/man/man3/d_rw.3
-usr/share/man/man3/direct_*.3
-usr/share/man/man3/oid_*.3
-usr/share/man/man3/pmemobj*.3
-usr/share/man/man3/pobj_*.3
-usr/share/man/man3/toid.3
-usr/share/man/man3/toid_*.3
-usr/share/man/man3/tx_*.3
-usr/share/man/man7/libpmemobj.7

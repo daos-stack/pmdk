@@ -15,53 +15,9 @@ Copyright: 1991, 1993, The Regents of the University of California.
   2016, Hewlett Packard Enterprise Development LP
 License: BSD-3-clause
 
-Files: ./src/jemalloc/*
-Copyright: 2002-2016, Jason Evans <jasone@canonware.com>.
-  2007-2012, Mozilla Foundation.
-  2009-2016, Facebook, Inc.
-License: BSD-2-clause
-
-Files: src/jemalloc/include/msvc_compat/inttypes.h
-       src/jemalloc/include/msvc_compat/stdint.h
-Copyright: 2006-2008 Alexander Chemeris
-License: BSD-3-clause
-
-Files: src/jemalloc/config.guess
-       src/jemalloc/config.sub
-Copyright: 1992-2013, Free Software Foundation, Inc.
-License: GPL-3.0+ with autoconf exception
-
-Files: src/jemalloc/test/unit/hash.c
-Copyright: 2010-2012, Austin Appleby
-License: Expat
-
-Files: src/jemalloc/install-sh
-Copyright: 1991, the Massachusetts Institute of Technology
-License: MIT
-
 Files: utils/cstyle
 Copyright: 2008, Sun Microsystems, Inc.
 License: CDDL
-
-License: BSD-2-clause
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are met:
- 1. Redistributions of source code must retain the above copyright notice(s),
-    this list of conditions and the following disclaimer.
- 2. Redistributions in binary form must reproduce the above copyright notice(s),
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
- .
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER(S) ``AS IS'' AND ANY EXPRESS
- OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
- EVENT SHALL THE COPYRIGHT HOLDER(S) BE LIABLE FOR ANY DIRECT, INDIRECT,
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 License: BSD-3-clause
  Redistribution and use in source and binary forms, with or without
@@ -103,37 +59,3 @@ License: CDDL
  If applicable, add the following below this CDDL HEADER, with the
  fields enclosed by brackets "[]" replaced with your own identifying
  information: Portions Copyright [yyyy] [name of copyright owner]
-
-License: GPL-3.0+ with autoconf exception
- On Debian systems, the complete text of the GPL version 3 license can be
- found in `/usr/share/common-licenses/GPL-3'.
-
-License: Expat
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- .
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- .
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
-
-License: MIT
- Permission to use, copy, modify, distribute, and sell this software and its
- documentation for any purpose is hereby granted without fee, provided that
- the above copyright notice appear in all copies and that both that
- copyright notice and this permission notice appear in supporting
- documentation, and that the name of M.I.T. not be used in advertising or
- publicity pertaining to distribution of the software without specific,
- written prior permission.  M.I.T. makes no representations about the
- suitability of this software for any purpose.  It is provided "as is"
- without express or implied warranty.

@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+cd src/examples/libpmem
+for prog in manpage simple_copy full_copy
+  do
+    gcc -Wall -o "$AUTOPKGTEST_TMP"/$prog $prog.c -lpmem -pthread
+  done
+
+cd "$AUTOPKGTEST_TMP"
+dd if=/dev/zero bs=4096 count=16 of=input status=none
+rm -f output
+./simple_copy input output
+rm -f output
+./full_copy input output
