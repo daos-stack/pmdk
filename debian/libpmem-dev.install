@@ -2,5 +2,3 @@ usr/include/libpmem.h
 usr/lib/*/libpmem.a
 usr/lib/*/libpmem.so
 usr/lib/*/pkgconfig/libpmem.pc
-usr/share/man/man3/pmem_*3
-usr/share/man/man7/libpmem.7
