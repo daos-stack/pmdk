@@ -1,10 +1,13 @@
 librpmem.so.1 librpmem1 #MINVER#
+* Build-Depends-Package: librpmem-dev
  LIBRPMEM_1.0@LIBRPMEM_1.0 1.4
  rpmem_check_version@LIBRPMEM_1.0 1.4
  rpmem_close@LIBRPMEM_1.0 1.4
  rpmem_create@LIBRPMEM_1.0 1.4
  rpmem_deep_persist@LIBRPMEM_1.0 1.4
+ rpmem_drain@LIBRPMEM_1.0 1.7
  rpmem_errormsg@LIBRPMEM_1.0 1.4
+ rpmem_flush@LIBRPMEM_1.0 1.7
  rpmem_open@LIBRPMEM_1.0 1.4
  rpmem_persist@LIBRPMEM_1.0 1.4
  rpmem_read@LIBRPMEM_1.0 1.4

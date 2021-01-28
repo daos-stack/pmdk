@@ -40,6 +40,4 @@
 // I.e. for testing library changes
 //@Library(value="pipeline-lib@your_branch") _
 
-// skip ubuntu building due to:
-//  dh: unable to load addon bash-completion: Can't locate Debian/Debhelper/Sequence/bash_completion.pm in @INC (you may need to install the Debian::Debhelper::Sequence::bash_completion module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.28.1 /usr/local/share/perl/5.28.1 /usr/lib/x86_64-linux-gnu/perl5/5.28 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl/5.28 /usr/share/perl/5.28 /usr/local/lib/site_perl /usr/lib/x86_64-linux-gnu/perl-base) at (eval 12) line 1.
-packageBuildingPipeline(['distros': ['centos7', 'leap15']])
+packageBuildingPipeline(['distros': ['centos7', 'leap15', 'ubuntu20.04']])

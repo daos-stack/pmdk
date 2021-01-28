@@ -1,4 +1,5 @@
 libpmemlog.so.1 libpmemlog1 #MINVER#
+* Build-Depends-Package: libpmemlog-dev
  LIBPMEMLOG_1.0@LIBPMEMLOG_1.0 1.4
  pmemlog_append@LIBPMEMLOG_1.0 1.4
  pmemlog_appendv@LIBPMEMLOG_1.0 1.4
@@ -6,6 +7,9 @@ libpmemlog.so.1 libpmemlog1 #MINVER#
  pmemlog_check_version@LIBPMEMLOG_1.0 1.4
  pmemlog_close@LIBPMEMLOG_1.0 1.4
  pmemlog_create@LIBPMEMLOG_1.0 1.4
+ pmemlog_ctl_exec@LIBPMEMLOG_1.0 1.5
+ pmemlog_ctl_get@LIBPMEMLOG_1.0 1.5
+ pmemlog_ctl_set@LIBPMEMLOG_1.0 1.5
  pmemlog_errormsg@LIBPMEMLOG_1.0 1.4
  pmemlog_nbyte@LIBPMEMLOG_1.0 1.4
  pmemlog_open@LIBPMEMLOG_1.0 1.4

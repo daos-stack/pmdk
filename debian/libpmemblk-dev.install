@@ -2,5 +2,3 @@ usr/include/libpmemblk.h
 usr/lib/*/libpmemblk.a
 usr/lib/*/libpmemblk.so
 usr/lib/*/pkgconfig/libpmemblk.pc
-usr/share/man/man3/pmemblk_*.3
-usr/share/man/man7/libpmemblk.7

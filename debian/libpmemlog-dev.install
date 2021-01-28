@@ -2,5 +2,3 @@ usr/include/libpmemlog.h
 usr/lib/*/libpmemlog.a
 usr/lib/*/libpmemlog.so
 usr/lib/*/pkgconfig/libpmemlog.pc
-usr/share/man/man3/pmemlog_*.3
-usr/share/man/man7/libpmemlog.7

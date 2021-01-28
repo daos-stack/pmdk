@@ -1,4 +1,5 @@
 libpmem.so.1 libpmem1 #MINVER#
+* Build-Depends-Package: libpmem-dev
  LIBPMEM_1.0@LIBPMEM_1.0 1.4
  pmem_check_version@LIBPMEM_1.0 1.4
  pmem_deep_drain@LIBPMEM_1.0 1.4
@@ -11,10 +12,13 @@ libpmem.so.1 libpmem1 #MINVER#
  pmem_has_hw_drain@LIBPMEM_1.0 1.4
  pmem_is_pmem@LIBPMEM_1.0 1.4
  pmem_map_file@LIBPMEM_1.0 1.4
+ pmem_memcpy@LIBPMEM_1.0 1.5
  pmem_memcpy_nodrain@LIBPMEM_1.0 1.4
  pmem_memcpy_persist@LIBPMEM_1.0 1.4
+ pmem_memmove@LIBPMEM_1.0 1.5
  pmem_memmove_nodrain@LIBPMEM_1.0 1.4
  pmem_memmove_persist@LIBPMEM_1.0 1.4
+ pmem_memset@LIBPMEM_1.0 1.5
  pmem_memset_nodrain@LIBPMEM_1.0 1.4
  pmem_memset_persist@LIBPMEM_1.0 1.4
  pmem_msync@LIBPMEM_1.0 1.4

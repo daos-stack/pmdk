@@ -1,0 +1,14 @@
+usr/share/pmreorder/utils.py
+usr/share/pmreorder/memoryoperations.py
+usr/share/pmreorder/pmreorder.py
+usr/share/pmreorder/opscontext.py
+usr/share/pmreorder/statemachine.py
+usr/share/pmreorder/consistencycheckwrap.py
+usr/share/pmreorder/loggingfacility.py
+usr/share/pmreorder/operationfactory.py
+usr/share/pmreorder/reorderengines.py
+usr/share/pmreorder/reorderexceptions.py
+usr/share/pmreorder/binaryoutputhandler.py
+usr/share/pmreorder/markerparser.py
+usr/share/bash-completion/completions/pmempool
+usr/bin/pmreorder
