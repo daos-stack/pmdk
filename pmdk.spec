@@ -32,7 +32,7 @@
 %define min_ndctl_ver 60.1
 
 Name:		pmdk
-Version:	1.9.2
+Version:	1.11.0~rc1
 Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
@@ -44,7 +44,12 @@ License:	BSD
 %endif
 URL:		https://pmem.io/pmdk
 
-Source0:	https://github.com/pmem/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+# upstream version with ~ removed
+%{lua:
+    rpm.define("upstream_version " .. string.gsub(rpm.expand("%{version}"), "~", "-"))
+}
+
+Source0:	https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -102,8 +107,6 @@ using memory-mapped persistence, optimized specifically for persistent memory.
 %define libmajor 1
 %endif
 
-%if 0%{?_pmem2_install} == 1
-
 %package -n libpmem2
 Summary: Low-level persistent memory support library (EXPERIMENTAL)
 Group: System Environment/Libraries
@@ -140,7 +143,7 @@ convenient.
 %{_libdir}/libpmem2.so
 %{_libdir}/pkgconfig/libpmem2.pc
 %{_includedir}/libpmem2.h
-%{_mandir}/man7/libpmem2.7.gz
+%{_mandir}/man7/libpmem2*.7.gz
 %{_mandir}/man3/pmem2_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -168,7 +171,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 #_pmem2_install
-%endif
 
 %package -n libpmem%{?libmajor}
 Summary: Low-level persistent memory support library
@@ -647,7 +649,7 @@ a device.
 %endif
 
 %prep
-%autosetup
+%autosetup -n %{name}-%{upstream_version}
 
 
 %build
@@ -736,6 +738,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Jun 11 2021 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.11.0-1
+- Update to 1.11.0-rc1
+- Single threaded PMDK allocator mode
+
 * Tue Jan 19 2021 Brian J. Murrell <brian.murrell@intel.com> - 1.9.2-1
 - Update to 1.9.2
 - use autosetup
