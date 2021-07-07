@@ -32,8 +32,8 @@
 %define min_ndctl_ver 60.1
 
 Name:		pmdk
-Version:	1.11.0~rc1
-Release:	1%{?dist}
+Version:	1.11.0
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
@@ -738,6 +738,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jul 06 2021 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.11.0-2
+- Update to official release 1.11.0
+
 * Fri Jun 11 2021 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.11.0-1
 - Update to 1.11.0-rc1
 - Single threaded PMDK allocator mode
