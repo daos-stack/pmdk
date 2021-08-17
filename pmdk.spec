@@ -33,7 +33,7 @@
 
 Name:		pmdk
 Version:	1.6
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -583,7 +583,9 @@ and facilitates access to persistent memory over RDMA.
 %{_bindir}/rpmemd
 %{_mandir}/man1/rpmemd.1.gz
 
-%endif # _with_fabric
+#endif _with_fabric
+%endif
+
 
 
 %package -n pmempool
@@ -629,7 +631,8 @@ a device.
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-%endif # _with_ndctl
+#endif # _with_ndctl
+%endif
 
 %if %{with pmemcheck}
 %package -n pmreorder
@@ -649,7 +652,8 @@ provided in the command line options to check whether files are in a consistent 
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-%endif # _with_pmemcheck
+#endif _with_pmemcheck
+%endif
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
@@ -674,7 +678,7 @@ make %{?_smp_mflags} \
 %install
 make install DESTDIR=%{buildroot} \
 %if %{without ndctl}
-        NDCTL_ENABLE=n \
+	NDCTL_ENABLE=n \
 %endif
 %if %{without rpmem}
 	BUILD_RPMEM=n \
@@ -759,6 +763,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Aug 17 2021 John E. Malmberg <john.e.malmberg@intel.com> - 1.6-2
+- fix rpmlint issues
+
 * Mon Oct 21 2019 Brian J. Murrell <brian.murrell@intel.com> - 1.6-1
 - Update to PMDK version 1.6
 
@@ -777,7 +784,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 - Add a --without rpmem switch
 - Remove the unpackaged files check skip and remove files
   that shouldn't be packaged
-  - put %{_mandir}/man5/pmem_ctl.5.gz into libpmem-devel
+  - put #{_mandir}/man5/pmem_ctl.5.gz into libpmem-devel
 
 * Fri Mar 08 2019 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.5.1-1
 - Update to PMDK version 1.5.1
