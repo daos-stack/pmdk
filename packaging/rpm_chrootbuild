@@ -7,11 +7,22 @@ IFS=\| read -r -a distro_base_local_repos <<< "$DISTRO_BASE_LOCAL_REPOS"
 repo_adds=()
 repo_dels=()
 
+
+
+
+: "${DISTRO_NAME:=$DISTRO}"
+if [[ "${CHROOT_NAME}" = epel-8-* ]]; then
+    : "${DAOS_STACK_CENTOS_8_VERSION:=8}"
+    DISTRO_NAME="centos-${DAOS_STACK_CENTOS_8_VERSION}"
+elif [[ "${CHROOT_NAME}" = opensuse-leap-15* ]]; then
+    : "${DAOS_STACK_LEAP_15_VERSION:=15.3}"
+    DISTRO_NAME="opensuse-${DAOS_STACK_LEAP_15_VERSION}"
+fi
 : "${REPOSITORY_URL:=}"
 if [ -n "$REPOSITORY_URL" ] && [ -n "$DISTRO_REPOS" ]; then
     repo_dels+=("--disablerepo=\*")
 elif [ "${CHROOT_NAME}" == "epel-8-x86_64" ]; then
-    # Special code to force buiding on CentOS 8.3
+    # Special code to force building on CentOS 8.3
     if [ "${DOT_VER}" -eq 3 ]; then
         repo_dels+=("--disablerepo=\*")
         repo_base='http://mirror.centos.org/centos/8.3.2011/'
@@ -56,7 +67,7 @@ for repo in $DISTRO_BASE_PR_REPOS $PR_REPOS; do
     repo_adds+=("--enablerepo $repo:$branch:$build_number")
     echo -e "[$repo:$branch:$build_number]\n\
 name=$repo:$branch:$build_number\n\
-baseurl=${JENKINS_URL:-https://build.hpdd.intel.com/}job/daos-stack/job/$repo/job/$branch/$build_number/artifact/artifacts/$DISTRO/\n\
+baseurl=${JENKINS_URL:-https://build.hpdd.intel.com/}job/daos-stack/job/$repo/job/$branch/$build_number/artifact/artifacts/$DISTRO_NAME/\n\
 enabled=1\n\
 gpgcheck=False\n" >> "$cfg_file"
 done
