@@ -33,7 +33,7 @@
 
 Name:		pmdk
 Version:	1.11.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
@@ -50,6 +50,8 @@ URL:		https://pmem.io/pmdk
 }
 
 Source0:	https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
+
+Patch0:		DAOS-8273.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -738,6 +740,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Oct 08 2021 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.11.0-3
+- Add a patch to address DAOS-8273
+
 * Tue Jul 06 2021 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.11.0-2
 - Update to official release 1.11.0
 
