@@ -50,9 +50,8 @@ URL:		https://pmem.io/pmdk
 }
 
 Source0:	https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
-Source1:    https://raw.githubusercontent.com/daos-stack/pmdk/master/DAOS_8273.patch
 
-Patch0:		DAOS-8273.patch
+Patch0:		DAOS_8273.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
