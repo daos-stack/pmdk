@@ -50,6 +50,7 @@ URL:		https://pmem.io/pmdk
 }
 
 Source0:	https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
+Patch0:		DAOS_8273.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -649,7 +650,7 @@ a device.
 %endif
 
 %prep
-%autosetup -n %{name}-%{upstream_version}
+%autosetup -n -p1 %{name}-%{upstream_version}
 
 
 %build
