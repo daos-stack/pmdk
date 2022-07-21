@@ -658,8 +658,8 @@ a device.
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
 mkdir -p %{_specdir}/cmake_hack
-ln -s /usr/bin/cmake3 %{_buildroot}/cmake_hack/cmake
-export PATH=$PATH:%{_buildroot}/cmake_path
+ln -s /usr/bin/cmake3 %{_specdir}/cmake_hack/cmake
+export PATH=$PATH:%{_specdir}/cmake_path
 
 
 %build
