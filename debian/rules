@@ -12,8 +12,10 @@ BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc b
 	dh $@
 
 override_dh_auto_clean:
-	cmake_avail=$(shell command -v cmake 2> /dev/null)
-	ifneq (,$(cmake_avail))
+	cmake_avail:=$(shell command -v cmake 2> /dev/null)
+	ifeq (,$(cmake_avail))
+		echo "No cmake found"
+	else
 		# Only run this if cmake is available
 		dh_auto_clean -- $(BUILD_ARGS)
 	endif
