@@ -657,7 +657,7 @@ a device.
 
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
-%if 0%{?rhel} < 8
+%if 0%{?rhel} == 7
 sed -i 's/cmake/cmake3/' src/deps/miniasync/Makefile
 %endif
 
