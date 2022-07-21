@@ -657,17 +657,15 @@ a device.
 
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
-mkdir -p %{_specdir}/cmake_hack
-ln -s /usr/bin/cmake3 %{_specdir}/cmake_hack/cmake
-export PATH=$PATH:%{_specdir}/cmake_path
-
+%if 0%{?rhel} < 8
+sed -i 's/cmake/cmake3/' src/deps/miniasync/Makefile
+%endif
 
 %build
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
 CFLAGS="%{optflags}" \
 LDFLAGS="%{?__global_ldflags}" \
-PATH=$PATH:%{_specdir}/cmake_path \
 make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
 	NDCTL_ENABLE=n \
@@ -677,7 +675,6 @@ make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
-PATH=$PATH:%{_specdir}/cmake_path \
 make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
@@ -707,7 +704,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 		echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
 		echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
 	%endif
-    PATH=$PATH:%{_specdir}/cmake_path \
 	make EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
