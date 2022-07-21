@@ -667,6 +667,7 @@ export PATH=$PATH:%{_specdir}/cmake_path
 # optimizations.
 CFLAGS="%{optflags}" \
 LDFLAGS="%{?__global_ldflags}" \
+PATH=$PATH:%{_specdir}/cmake_path \
 make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
 	NDCTL_ENABLE=n \
@@ -676,6 +677,7 @@ make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
+PATH=$PATH:%{_specdir}/cmake_path \
 make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
@@ -705,6 +707,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 		echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
 		echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
 	%endif
+    PATH=$PATH:%{_specdir}/cmake_path \
 	make EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
