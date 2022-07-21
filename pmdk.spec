@@ -12,8 +12,8 @@
 
 # disable 'make check' on suse
 %if %{defined suse_version}
-	%define _skip_check 1
-	%define dist .suse%{suse_version}
+    %define _skip_check 1
+    %define dist .suse%{suse_version}
 %endif
 
 # libfabric v1.4.2 is available on:
