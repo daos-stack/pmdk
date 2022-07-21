@@ -5,7 +5,7 @@ Maintainer: Adam Borowski <kilobyte@angband.pl>
 Build-Depends: bash-completion,
                bc,
                cmake,
-               debhelper-compat (= 12),
+               debhelper (>= 10),
                dh-exec,
                libdaxctl-dev (>= 64),
                libfabric-dev [amd64],
