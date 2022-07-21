@@ -669,9 +669,9 @@ CFLAGS="%{optflags}" \
 LDFLAGS="%{?__global_ldflags}" \
 make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
-	NDCTL_ENABLE=n \
+    NDCTL_ENABLE=n \
 %endif
-	NORPATH=1
+    NORPATH=1
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
@@ -680,14 +680,14 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
-	LIB_AR= \
-	prefix=%{_prefix} \
-	libdir=%{_libdir} \
-	includedir=%{_includedir} \
-	mandir=%{_mandir} \
-	bindir=%{_bindir} \
-	sysconfdir=%{_sysconfdir} \
-	docdir=%{_docdir}
+    LIB_AR= \
+    prefix=%{_prefix} \
+    libdir=%{_libdir} \
+    includedir=%{_includedir} \
+    mandir=%{_mandir} \
+    bindir=%{_bindir} \
+    sysconfdir=%{_sysconfdir} \
+    docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
@@ -695,21 +695,21 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 %check
 %if 0%{?_skip_check} == 1
-	echo "Check skipped"
+    echo "Check skipped"
 %else
-	%if %{defined _testconfig}
-		cp %{_testconfig} src/test/testconfig.sh
-	%else
-		echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
-		echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
-		echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
-		echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
-	%endif
-	make EXTRA_CFLAGS="-Wno-error" \
+    %if %{defined _testconfig}
+        cp %{_testconfig} src/test/testconfig.sh
+    %else
+        echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
+        echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
+        echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
+        echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
+    %endif
+    make EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
-	check
+    check
 %endif
 
 %if 0%{?suse_version} >= 01315
