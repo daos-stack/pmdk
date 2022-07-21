@@ -32,8 +32,8 @@
 %define min_ndctl_ver 60.1
 
 Name:		pmdk
-Version:	1.11.0
-Release:	3%{?dist}
+Version:	1.12.0
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit
 Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
@@ -49,8 +49,7 @@ URL:		https://pmem.io/pmdk
     rpm.define("upstream_version " .. string.gsub(rpm.expand("%{version}"), "~", "-"))
 }
 
-Source0:	https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
-Patch0:		DAOS_8273.patch
+Source:     https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -65,6 +64,12 @@ BuildRequires:	pandoc
 # fdupes package is available only on 'openSUSE Tumbleweed' and 'openSUSE Leap 15.1'
 %if (0%{?suse_version} > 1500) || (0%{?sles_version} >= 150100 && 0%{?is_opensuse})
 BuildRequires: fdupes
+%endif
+
+%if %{defined suse_version}
+BuildRequires:	cmake
+%else
+BuildRequires:	cmake3
 %endif
 
 %if %{with ndctl}
@@ -144,6 +149,7 @@ convenient.
 %{_libdir}/libpmem2.so
 %{_libdir}/pkgconfig/libpmem2.pc
 %{_includedir}/libpmem2.h
+%{_includedir}/libpmem2/*.h
 %{_mandir}/man7/libpmem2*.7.gz
 %{_mandir}/man3/pmem2_*.3.gz
 %license LICENSE
@@ -651,6 +657,9 @@ a device.
 
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
+mkdir -p %{_specdir}/cmake_hack
+ln -s /usr/bin/cmake3 %{_buildroot}/cmake_hack/cmake
+export PATH=$PATH:%{_buildroot}/cmake_path
 
 
 %build
@@ -658,7 +667,7 @@ a device.
 # optimizations.
 CFLAGS="%{optflags}" \
 LDFLAGS="%{?__global_ldflags}" \
-make %{?_smp_mflags} \
+make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
 	NDCTL_ENABLE=n \
 %endif
@@ -667,7 +676,7 @@ make %{?_smp_mflags} \
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
-make install DESTDIR=%{buildroot} \
+make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
@@ -696,7 +705,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 		echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
 		echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
 	%endif
-	make \
+	make EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
@@ -739,6 +748,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Jul 21 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.0-1
+- Update to release 1.12.0
+
 * Fri Oct 08 2021 Alexander Oganezov <alexander.a.oganezov@intel.com> - 1.11.0-3
 - Update to DAOS_8273 patch
 
