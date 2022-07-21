@@ -12,13 +12,7 @@ BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc b
 	dh $@
 
 override_dh_auto_clean:
-	CMAKE_AVAIL=$(shell command -v cmake 2> /dev/null)
-	ifeq (,"$(CMAKE_AVAIL)")
-		echo "No cmake found"
-	else
-		# Only run this if cmake is available
-		dh_auto_clean -- $(BUILD_ARGS)
-	endif
+	dh_auto_clean -- $(BUILD_ARGS)
 	rm -rf src/test/unittest/__pycache__/
 
 override_dh_auto_build:
