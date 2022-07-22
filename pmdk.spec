@@ -35,7 +35,6 @@ Name:		pmdk
 Version:	1.12.0
 Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit
-Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
 Group:		System Environment/Libraries
 %if (0%{?suse_version} > 0)
 License:	BSD-3-Clause
