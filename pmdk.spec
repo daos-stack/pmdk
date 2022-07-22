@@ -36,11 +36,7 @@ Version:	1.12.0
 Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit
 Group:		System Environment/Libraries
-%if (0%{?suse_version} > 0)
-License:	BSD-3-Clause
-%else
 License:	BSD
-%endif
 URL:		https://pmem.io/pmdk
 
 # upstream version with ~ removed
