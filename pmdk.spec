@@ -60,11 +60,7 @@ BuildRequires:	man
 BuildRequires:	pkgconfig
 BuildRequires:	gdb
 BuildRequires:	pandoc
-
-# fdupes package is available only on 'openSUSE Tumbleweed' and 'openSUSE Leap 15.1'
-%if (0%{?suse_version} > 1500) || (0%{?sles_version} >= 150100 && 0%{?is_opensuse})
-BuildRequires: fdupes
-%endif
+BuildRequires:	fdupes
 
 %if %{defined suse_version}
 BuildRequires:	cmake
