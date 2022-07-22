@@ -675,6 +675,7 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
+    NORPATH=1 \
     LIB_AR= \
     prefix=%{_prefix} \
     libdir=%{_libdir} \
@@ -701,6 +702,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     %endif
     make EXTRA_CFLAGS="-Wno-error" \
+    NORPATH=1 \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
