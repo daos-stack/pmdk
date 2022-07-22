@@ -42,4 +42,4 @@
 @Library(value=['trusted-pipeline-lib@bmurrell/automate',
                 'pipeline-lib@bmurrell/test-images']) _
 
-packageBuildingPipeline(['distros': ['centos7', 'el8', 'leap15', 'ubuntu20.04']])
+packageBuildingPipelineDAOSTest(['distros': ['centos7', 'el8', 'leap15', 'ubuntu20.04']])
