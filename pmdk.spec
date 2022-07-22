@@ -686,9 +686,9 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
     docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
-fdupes -q -n -r -p
+fdupes -q -n -r -p %{buildroot}/%{_prefix}
 %fdupes %{buildroot}/%{_prefix}
-fdupes -q -n -r -p
+fdupes -q -n -r -p %{buildroot}/%{_prefix}
 
 
 %check
