@@ -39,5 +39,7 @@
 // To use a test branch (i.e. PR) until it lands to master
 // I.e. for testing library changes
 //@Library(value="pipeline-lib@your_branch") _
+@Library(value=['trusted-pipeline-lib@bmurrell/automate',
+                'pipeline-lib@bmurrell/test-images']) _
 
 packageBuildingPipeline(['distros': ['centos7', 'el8', 'leap15', 'ubuntu20.04']])
