@@ -13,6 +13,10 @@ BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc b
 
 override_dh_auto_clean:
 	make pkg-clean $(BUILD_ARGS)
+	echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
+	echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
+	echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
+	echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
 	rm -rf src/test/unittest/__pycache__/
 
 override_dh_auto_build:
