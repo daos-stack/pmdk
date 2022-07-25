@@ -1,6 +1,5 @@
 
 # rpmbuild options:
-#   --with | --without fabric
 #   --with | --without ndctl
 #   --define _testconfig <path to custom testconfig.sh>
 #   --define _skip_check 1
@@ -16,19 +15,9 @@
     %define dist .suse%{suse_version}
 %endif
 
-# libfabric v1.4.2 is available on:
-#   openSUSE Tumbleweed, Leap 15.0, Leap 42.3; SLE 12 SP3, 15
-#   Fedora >=27; RHEL >=7.5
-%if (0%{?suse_version} > 1315) || (0%{?fedora} >= 27) || (0%{?rhel} >= 7)
-%bcond_without fabric
-%else
-%bcond_with fabric
-%endif
-
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
-%define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
 
 Name:		pmdk
@@ -71,11 +60,6 @@ BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
 BuildRequires:	daxctl-devel >= %{min_ndctl_ver}
 %endif
 %endif
-
-%if %{with fabric}
-BuildRequires:	libfabric-devel >= %{min_libfabric_ver}
-%endif
-
 
 # Debug variants of the libraries should be filtered out of the provides.
 %global __provides_exclude_from ^%{_libdir}/pmdk_debug/.*\\.so.*$
@@ -496,91 +480,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-
-%if %{with fabric}
-
-%package -n librpmem%{?libmajor}
-Summary: Remote Access to Persistent Memory library
-Group: System Environment/Libraries
-Requires: libfabric >= %{min_libfabric_ver}
-%if %{defined suse_version}
-Requires: openssh
-%else
-Requires: openssh-clients
-%endif
-%description -n librpmem%{?libmajor}
-The librpmem library provides low-level support for remote access
-to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate persistent memory regions over RDMA protocol.
-
-%files -n librpmem%{?libmajor}
-%defattr(-,root,root,-)
-%{_libdir}/librpmem.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n librpmem-devel
-Summary: Development files for the Remote Access to Persistent Memory library
-Group: Development/Libraries
-Requires: librpmem%{?libmajor} = %{version}-%{release}
-%description -n librpmem-devel
-The librpmem library provides low-level support for remote access
-to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate persistent memory regions over RDMA protocol.
-
-This sub-package contains libraries and header files for developing
-applications that want to specifically make use of librpmem.
-
-%files -n librpmem-devel
-%defattr(-,root,root,-)
-%{_libdir}/librpmem.so
-%{_libdir}/pkgconfig/librpmem.pc
-%{_includedir}/librpmem.h
-%{_mandir}/man7/librpmem.7.gz
-%{_mandir}/man3/rpmem_*.3.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n librpmem-debug
-Summary: Debug variant of the Remote Access to Persistent Memory library
-Group: Development/Libraries
-Requires: librpmem%{?libmajor} = %{version}-%{release}
-%description -n librpmem-debug
-The librpmem library provides low-level support for remote access
-to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate persistent memory regions over RDMA protocol.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n librpmem-debug
-%defattr(-,root,root,-)
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/librpmem.so
-%{_libdir}/pmdk_debug/librpmem.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n rpmemd
-Group: System Environment/Base
-Summary: Target node process executed by librpmem
-Requires: libfabric >= %{min_libfabric_ver}
-%description -n rpmemd
-The rpmemd process is executed on a target node by librpmem library
-and facilitates access to persistent memory over RDMA.
-
-%files -n rpmemd
-%{_bindir}/rpmemd
-%{_mandir}/man1/rpmemd.1.gz
-
-# _with_fabric
-%endif
-
 %package -n pmempool
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
@@ -650,7 +549,7 @@ a device.
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
 %if 0%{?rhel} == 7
-sed -i 's/cmake/cmake3/' src/deps/miniasync/Makefile
+sed -i 's/cmake\([^3]\)/cmake3\1/' src/deps/miniasync/Makefile
 %endif
 
 %build
@@ -662,7 +561,8 @@ make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
     NDCTL_ENABLE=n \
 %endif
-    NORPATH=1
+    NORPATH=1 \
+    BUILD_RPMEM=n
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
@@ -672,6 +572,7 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
         NDCTL_ENABLE=n \
 %endif
     NORPATH=1 \
+    BUILD_RPMEM=n \
     LIB_AR= \
     prefix=%{_prefix} \
     libdir=%{_libdir} \
@@ -701,6 +602,7 @@ fdupes -q -n -r -p %{buildroot}/%{_prefix}
     %endif
     make EXTRA_CFLAGS="-Wno-error" \
     NORPATH=1 \
+    BUILD_RPMEM=n \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
@@ -719,10 +621,6 @@ fdupes -q -n -r -p %{buildroot}/%{_prefix}
 %post   -n libpmempool%{?libmajor} -p /sbin/ldconfig
 %postun -n libpmempool%{?libmajor} -p /sbin/ldconfig
 
-%if %{with fabric} && %{with rpmem}
-%post   -n librpmem%{?libmajor} -p /sbin/ldconfig
-%postun -n librpmem%{?libmajor} -p /sbin/ldconfig
-%endif
 %else
 %if (0%{?rhel} < 8)
 # EL8 triggers ldconfig from glibc
@@ -731,9 +629,6 @@ fdupes -q -n -r -p %{buildroot}/%{_prefix}
 %ldconfig_scriptlets   -n libpmemlog
 %ldconfig_scriptlets   -n libpmemobj
 %ldconfig_scriptlets   -n libpmempool
-%if %{with fabric} && %{with rpmem}
-%ldconfig_scriptlets   -n librpmem
-%endif
 %endif
 %endif
 
@@ -743,8 +638,9 @@ fdupes -q -n -r -p %{buildroot}/%{_prefix}
 
 
 %changelog
-* Thu Jul 21 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.0-1
+* Mon Jul 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.0-1
 - Update to release 1.12.0
+- Remove rpmem packages
 
 * Fri Oct 08 2021 Alexander Oganezov <alexander.a.oganezov@intel.com> - 1.11.0-3
 - Update to DAOS_8273 patch

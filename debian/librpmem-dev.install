@@ -1,4 +1,0 @@
-usr/include/librpmem.h
-usr/lib/*/librpmem.a
-usr/lib/*/librpmem.so
-usr/lib/*/pkgconfig/librpmem.pc
