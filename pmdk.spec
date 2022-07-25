@@ -15,6 +15,8 @@
     %define dist .suse%{suse_version}
 %endif
 
+%global _hardened_build 1
+
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
@@ -553,9 +555,16 @@ sed -i 's/cmake\([^3]\)/cmake3\1/' src/deps/miniasync/Makefile
 %endif
 
 %build
+
+%if 0%{?suse_version} > 0
+export CFLAGS="%{optflags} -fPIC -pie"
+export CXXFLAGS="%{optflags} -fPIC -pie"
+%else
+export CFLAGS="%{optflags}"
+export CXXFLAGS="%{optflags}"
+%endif
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
-CFLAGS="%{optflags}" \
 LDFLAGS="%{?__global_ldflags}" \
 make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
