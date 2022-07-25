@@ -44,15 +44,4 @@ override_dh_missing:
 	dh_missing --list-missing --exclude=usr/share/man --exclude=usr/lib/$(DEB_HOST_MULTIARCH)/pmdk_debug/ --exclude=usr/share/bash-completion/completions/pmempool
 
 override_dh_auto_test:
-ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	cp debian/testconfig.* src/test/
-	# Still fails/times out on weird setups (a 33GB fallocate).
-	rm -f src/test/obj_pool/TEST34
-	# binutils regression #964457
-	rm -rf src/test/scope/TESTS.py
-	# these tests fail for various reasons
-	rm -rf src/test/obj_basic_integration/TESTS.py
-	rm -rf src/test/obj_defrag_advanced/TESTS.py
-	rm -rf src/test/obj_defrag/TESTS.py
-	+$(MAKE) check pycheck $(BUILD_ARGS)
-endif
+	echo "Check skipped"
