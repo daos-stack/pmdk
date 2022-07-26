@@ -557,12 +557,13 @@ sed -i 's/cmake\([^3]\)/cmake3\1/' src/deps/miniasync/Makefile
 %build
 %if 0%{?suse_version} > 0
 export CFLAGS="%{optflags} -fPIC -pie"
+export LDFLAGS="%{?__global_ldflags} -pie"
 %else
 export CFLAGS="%{optflags}"
+export LDFLAGS="%{?__global_ldflags}"
 %endif
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
-LDFLAGS="%{?__global_ldflags}" \
 make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
     NDCTL_ENABLE=n \
