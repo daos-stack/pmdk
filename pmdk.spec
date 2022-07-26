@@ -6,7 +6,7 @@
 #   --define _pmem2_install 1
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
-# directory are not found in the %files (without rpmem case)
+# directory are not found in the files (without rpmem case)
 #define _unpackaged_files_terminate_build 0
 
 # disable 'make check' on suse
@@ -22,13 +22,13 @@
 
 %define min_ndctl_ver 60.1
 
-Name:		pmdk
-Version:	1.12.0
-Release:	1%{?dist}
-Summary:	Persistent Memory Development Kit
-Group:		System Environment/Libraries
-License:	BSD
-URL:		https://pmem.io/pmdk
+Name:       pmdk
+Version:    1.12.0
+Release:    1%{?dist}
+Summary:    Persistent Memory Development Kit
+Group:      System Environment/Libraries
+License:    BSD
+URL:        https://pmem.io/pmdk
 
 # upstream version with ~ removed
 %{lua:
@@ -37,29 +37,29 @@ URL:		https://pmem.io/pmdk
 
 Source:     https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
 
-BuildRequires:	gcc
-BuildRequires:	make
-BuildRequires:	glibc-devel
-BuildRequires:	autoconf
-BuildRequires:	automake
-BuildRequires:	man
-BuildRequires:	pkgconfig
-BuildRequires:	gdb
-BuildRequires:	pandoc
-BuildRequires:	fdupes
+BuildRequires:  gcc
+BuildRequires:  make
+BuildRequires:  glibc-devel
+BuildRequires:  autoconf
+BuildRequires:  automake
+BuildRequires:  man
+BuildRequires:  pkgconfig
+BuildRequires:  gdb
+BuildRequires:  pandoc
+BuildRequires:  fdupes
 
 %if %{defined suse_version}
-BuildRequires:	cmake
+BuildRequires:  cmake
 %else
-BuildRequires:	cmake3
+BuildRequires:  cmake3
 %endif
 
 %if %{with ndctl}
 %if %{defined suse_version}
-BuildRequires:	libndctl-devel >= %{min_ndctl_ver}
+BuildRequires:  libndctl-devel >= %{min_ndctl_ver}
 %else
-BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
-BuildRequires:	daxctl-devel >= %{min_ndctl_ver}
+BuildRequires:  ndctl-devel >= %{min_ndctl_ver}
+BuildRequires:  daxctl-devel >= %{min_ndctl_ver}
 %endif
 %endif
 
@@ -696,7 +696,7 @@ fdupes -q -n -r -p %{buildroot}/%{_prefix}
 - Add a --without rpmem switch
 - Remove the unpackaged files check skip and remove files
   that shouldn't be packaged
-  - put %{_mandir}/man5/pmem_ctl.5.gz into libpmem-devel
+- put _mandir/man5/pmem_ctl.5.gz into libpmem-devel
 
 * Fri Mar 08 2019 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.5.1-1
 - Update to PMDK version 1.5.1
