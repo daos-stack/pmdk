@@ -557,15 +557,13 @@ sed -i 's/cmake\([^3]\)/cmake3\1/' src/deps/miniasync/Makefile
 %build
 
 %if 0%{?suse_version} > 0
-%define extra_cflags "-fPIC -pie -Wno-error"
-%else
-%define extra_cflags "-Wno-error"
+%define extra_cflags " -fPIC -pie"
 %endif
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
-CFLAGS="%{optflags}" \
+CFLAGS="%{optflags} %{?extra_cflags}" \
 LDFLAGS="%{?__global_ldflags}" \
-make %{?_smp_mflags} EXTRA_CFLAGS="\"%{extra_cflags}\"" \
+make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
     NDCTL_ENABLE=n \
 %endif
@@ -575,7 +573,7 @@ make %{?_smp_mflags} EXTRA_CFLAGS="\"%{extra_cflags}\"" \
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
-make install DESTDIR=%{buildroot} EXTRA_CFLAGS="\"%{extra_cflags}\"" \
+make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
@@ -608,7 +606,7 @@ fdupes -q -n -r -p %{buildroot}/%{_prefix}
         echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     %endif
-    make EXTRA_CFLAGS="\"%{extra_cflags}\"" \
+    make EXTRA_CFLAGS="-Wno-error" \
     NORPATH=1 \
     BUILD_RPMEM=n \
 %if %{without ndctl}
