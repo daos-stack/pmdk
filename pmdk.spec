@@ -6,7 +6,7 @@
 #   --define _pmem2_install 1
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
-# directory are not found in the files (without rpmem case)
+# directory are not found in the %%files (without rpmem case)
 #define _unpackaged_files_terminate_build 0
 
 # disable 'make check' on suse
@@ -645,7 +645,7 @@ fdupes -q -n -r -p %{buildroot}/%{_prefix}
 
 
 %changelog
-* Mon Jul 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.0-1
+* Tue Jul 26 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.0-1
 - Update to release 1.12.0
 - Remove rpmem packages
 
@@ -696,7 +696,7 @@ fdupes -q -n -r -p %{buildroot}/%{_prefix}
 - Add a --without rpmem switch
 - Remove the unpackaged files check skip and remove files
   that shouldn't be packaged
-- put _mandir/man5/pmem_ctl.5.gz into libpmem-devel
+- put %%{_mandir}/man5/pmem_ctl.5.gz into libpmem-devel
 
 * Fri Mar 08 2019 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.5.1-1
 - Update to PMDK version 1.5.1
