@@ -4,10 +4,10 @@ Priority: optional
 Maintainer: Adam Borowski <kilobyte@angband.pl>
 Build-Depends: bash-completion,
                bc,
+               cmake,
                debhelper-compat (= 12),
                dh-exec,
                libdaxctl-dev (>= 64),
-               libfabric-dev [amd64],
                libndctl-dev (>= 64),
                pandoc,
                pkg-config,
@@ -247,61 +247,6 @@ Description: development files for libpmempool1
  .
  This package contains libraries and header files used for linking programs
  against libpmempool.
-
-Package: librpmem1
-Architecture: amd64
-Multi-Arch: same
-Depends: libpmem1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-Description: Persistent Memory remote access support library
- librpmem provides low-level support for remote access to persistent memory
- (pmem) utilizing RDMA-capable RNICs.  The library can be used to replicate
- remotely a memory region over RDMA protocol.  It utilizes appropriate
- persistency mechanism based on remote node’s platform capabilities.  The
- librpmem utilizes the ssh client to authenticate a user on remote node and for
- encryption of connection’s out-of-band configuration data.
- .
- This library is for applications that use remote persistent memory directly,
- without the help of any library-supplied transactions or memory allocation.
- Higher-level libraries that build on libpmem are available and are recommended
- for most applications.
-
-Package: librpmem1-debug
-Architecture: amd64
-Multi-Arch: same
-Depends: libpmem1-debug (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: Persistent Memory remote access support library — debug build
- librpmem provides low-level support for remote access to persistent memory
- (pmem) utilizing RDMA-capable RNICs.  The library can be used to replicate
- remotely a memory region over RDMA protocol.  It utilizes appropriate
- persistency mechanism based on remote node’s platform capabilities.  The
- librpmem utilizes the ssh client to authenticate a user on remote node and for
- encryption of connection’s out-of-band configuration data.
- .
- This library is for applications that use remote persistent memory directly,
- without the help of any library-supplied transactions or memory allocation.
- Higher-level libraries that build on libpmem are available and are recommended
- for most applications.
- .
- This package contains a special build of this library meant for debugging
- purposes.  It contains extra logging, assertions and expensive checks that
- should not be used otherwise.
-
-Package: librpmem-dev
-Section: libdevel
-Architecture: amd64
-Multi-Arch: same
-Depends: libpmem-dev (= ${binary:Version}),
-         librpmem1 (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: development files for librpmem1
- librpmem provides low-level support for remote access to persistent memory
- (pmem) utilizing RDMA-capable RNICs.
- .
- This package contains libraries and header files used for linking programs
- against librpmem.
 
 Package: pmdk-tools
 Section: misc

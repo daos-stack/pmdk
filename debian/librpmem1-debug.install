@@ -1,2 +1,0 @@
-#!/usr/bin/dh-exec
-usr/lib/*/pmdk_debug/librpmem.so.1* usr/lib/${DEB_HOST_MULTIARCH}/pmdk_dbg/

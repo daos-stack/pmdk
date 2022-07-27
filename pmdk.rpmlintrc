@@ -1,0 +1,5 @@
+# This line is mandatory to access the configuration functions
+from Config import *
+
+# NMVL was renamed to PMDK and tools were put in individual packages
+addFilter('W: obsolete-not-provided nvml-tools')

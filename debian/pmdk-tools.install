@@ -1,3 +1,2 @@
 #!/usr/bin/dh-exec
 usr/bin/pmempool
-[amd64] usr/bin/rpmemd

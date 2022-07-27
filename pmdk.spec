@@ -1,85 +1,67 @@
 
 # rpmbuild options:
-#   --with | --without fabric
 #   --with | --without ndctl
 #   --define _testconfig <path to custom testconfig.sh>
 #   --define _skip_check 1
 #   --define _pmem2_install 1
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
-# directory are not found in the %files (without rpmem case)
+# directory are not found in the %%files (without rpmem case)
 #define _unpackaged_files_terminate_build 0
 
 # disable 'make check' on suse
 %if %{defined suse_version}
-	%define _skip_check 1
-	%define dist .suse%{suse_version}
+    %define _skip_check 1
+    %define dist .suse%{suse_version}
 %endif
 
-# libfabric v1.4.2 is available on:
-#   openSUSE Tumbleweed, Leap 15.0, Leap 42.3; SLE 12 SP3, 15
-#   Fedora >=27; RHEL >=7.5
-%if (0%{?suse_version} > 1315) || (0%{?fedora} >= 27) || (0%{?rhel} >= 7)
-%bcond_without fabric
-%else
-%bcond_with fabric
-%endif
+%global _hardened_build 1
 
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
-%define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
 
-Name:		pmdk
-Version:	1.11.0
-Release:	3%{?dist}
-Summary:	Persistent Memory Development Kit
-Packager:	Marcin Slusarz <marcin.slusarz@intel.com>
-Group:		System Environment/Libraries
-%if (0%{?suse_version} > 0)
-License:	BSD-3-Clause
-%else
-License:	BSD
-%endif
-URL:		https://pmem.io/pmdk
+Name:       pmdk
+Version:    1.12.0
+Release:    1%{?dist}
+Summary:    Persistent Memory Development Kit
+Group:      System Environment/Libraries
+License:    BSD
+URL:        https://pmem.io/pmdk
 
 # upstream version with ~ removed
 %{lua:
     rpm.define("upstream_version " .. string.gsub(rpm.expand("%{version}"), "~", "-"))
 }
 
-Source0:	https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
-Patch0:		DAOS_8273.patch
+Source:     https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
 
-BuildRequires:	gcc
-BuildRequires:	make
-BuildRequires:	glibc-devel
-BuildRequires:	autoconf
-BuildRequires:	automake
-BuildRequires:	man
-BuildRequires:	pkgconfig
-BuildRequires:	gdb
-BuildRequires:	pandoc
+BuildRequires:  gcc
+BuildRequires:  make
+BuildRequires:  glibc-devel
+BuildRequires:  autoconf
+BuildRequires:  automake
+BuildRequires:  man
+BuildRequires:  pkgconfig
+BuildRequires:  gdb
+BuildRequires:  pandoc
+BuildRequires:  fdupes
 
-# fdupes package is available only on 'openSUSE Tumbleweed' and 'openSUSE Leap 15.1'
-%if (0%{?suse_version} > 1500) || (0%{?sles_version} >= 150100 && 0%{?is_opensuse})
-BuildRequires: fdupes
+%if %{defined suse_version}
+BuildRequires:  cmake
+%else
+BuildRequires:  cmake3
 %endif
 
 %if %{with ndctl}
 %if %{defined suse_version}
-BuildRequires:	libndctl-devel >= %{min_ndctl_ver}
+BuildRequires:  libndctl-devel >= %{min_ndctl_ver}
 %else
-BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
-BuildRequires:	daxctl-devel >= %{min_ndctl_ver}
+BuildRequires:  ndctl-devel >= %{min_ndctl_ver}
+BuildRequires:  daxctl-devel >= %{min_ndctl_ver}
 %endif
 %endif
-
-%if %{with fabric}
-BuildRequires:	libfabric-devel >= %{min_libfabric_ver}
-%endif
-
 
 # Debug variants of the libraries should be filtered out of the provides.
 %global __provides_exclude_from ^%{_libdir}/pmdk_debug/.*\\.so.*$
@@ -144,6 +126,7 @@ convenient.
 %{_libdir}/libpmem2.so
 %{_libdir}/pkgconfig/libpmem2.pc
 %{_includedir}/libpmem2.h
+%{_includedir}/libpmem2/*.h
 %{_mandir}/man7/libpmem2*.7.gz
 %{_mandir}/man3/pmem2_*.3.gz
 %license LICENSE
@@ -499,91 +482,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-
-%if %{with fabric}
-
-%package -n librpmem%{?libmajor}
-Summary: Remote Access to Persistent Memory library
-Group: System Environment/Libraries
-Requires: libfabric >= %{min_libfabric_ver}
-%if %{defined suse_version}
-Requires: openssh
-%else
-Requires: openssh-clients
-%endif
-%description -n librpmem%{?libmajor}
-The librpmem library provides low-level support for remote access
-to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate persistent memory regions over RDMA protocol.
-
-%files -n librpmem%{?libmajor}
-%defattr(-,root,root,-)
-%{_libdir}/librpmem.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n librpmem-devel
-Summary: Development files for the Remote Access to Persistent Memory library
-Group: Development/Libraries
-Requires: librpmem%{?libmajor} = %{version}-%{release}
-%description -n librpmem-devel
-The librpmem library provides low-level support for remote access
-to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate persistent memory regions over RDMA protocol.
-
-This sub-package contains libraries and header files for developing
-applications that want to specifically make use of librpmem.
-
-%files -n librpmem-devel
-%defattr(-,root,root,-)
-%{_libdir}/librpmem.so
-%{_libdir}/pkgconfig/librpmem.pc
-%{_includedir}/librpmem.h
-%{_mandir}/man7/librpmem.7.gz
-%{_mandir}/man3/rpmem_*.3.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n librpmem-debug
-Summary: Debug variant of the Remote Access to Persistent Memory library
-Group: Development/Libraries
-Requires: librpmem%{?libmajor} = %{version}-%{release}
-%description -n librpmem-debug
-The librpmem library provides low-level support for remote access
-to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate persistent memory regions over RDMA protocol.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n librpmem-debug
-%defattr(-,root,root,-)
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/librpmem.so
-%{_libdir}/pmdk_debug/librpmem.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n rpmemd
-Group: System Environment/Base
-Summary: Target node process executed by librpmem
-Requires: libfabric >= %{min_libfabric_ver}
-%description -n rpmemd
-The rpmemd process is executed on a target node by librpmem library
-and facilitates access to persistent memory over RDMA.
-
-%files -n rpmemd
-%{_bindir}/rpmemd
-%{_mandir}/man1/rpmemd.1.gz
-
-# _with_fabric
-%endif
-
 %package -n pmempool
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
@@ -616,7 +514,8 @@ The pmreorder tool is a collection of python scripts designed to parse
 and replay operations logged by pmemcheck - a persistent memory checking tool.
 Pmreorder performs the store reordering between persistent memory barriers -
 a sequence of flush-fence operations. It uses a consistency checking routine
-provided in the command line options to check whether files are in a consistent state.
+provided in the command line options to check whether files are in a consistent
+state.
 
 %files -n pmreorder
 %{_bindir}/pmreorder
@@ -651,56 +550,68 @@ a device.
 
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
-
+%if 0%{?rhel} == 7
+sed -i 's/cmake\([^3]\)/cmake3\1/' src/deps/miniasync/Makefile
+%endif
 
 %build
+%if 0%{?suse_version} > 0
+export CFLAGS="%{optflags} -fPIC -pie"
+export LDFLAGS="%{?__global_ldflags} -pie"
+%else
+export CFLAGS="%{optflags}"
+export LDFLAGS="%{?__global_ldflags}"
+%endif
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
-CFLAGS="%{optflags}" \
-LDFLAGS="%{?__global_ldflags}" \
-make %{?_smp_mflags} \
+make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
-	NDCTL_ENABLE=n \
+    NDCTL_ENABLE=n \
 %endif
-	NORPATH=1
+    NORPATH=1 \
+    BUILD_RPMEM=n
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
-make install DESTDIR=%{buildroot} \
+make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
-	LIB_AR= \
-	prefix=%{_prefix} \
-	libdir=%{_libdir} \
-	includedir=%{_includedir} \
-	mandir=%{_mandir} \
-	bindir=%{_bindir} \
-	sysconfdir=%{_sysconfdir} \
-	docdir=%{_docdir}
+    NORPATH=1 \
+    BUILD_RPMEM=n \
+    LIB_AR= \
+    prefix=%{_prefix} \
+    libdir=%{_libdir} \
+    includedir=%{_includedir} \
+    mandir=%{_mandir} \
+    bindir=%{_bindir} \
+    sysconfdir=%{_sysconfdir} \
+    docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
-
+%fdupes %{buildroot}/%{_prefix}
 
 
 %check
 %if 0%{?_skip_check} == 1
-	echo "Check skipped"
+    echo "Check skipped"
 %else
-	%if %{defined _testconfig}
-		cp %{_testconfig} src/test/testconfig.sh
-	%else
-		echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
-		echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
-		echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
-		echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
-	%endif
-	make \
+    %if %{defined _testconfig}
+        cp %{_testconfig} src/test/testconfig.sh
+    %else
+        echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
+        echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
+        echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
+        echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
+    %endif
+    make EXTRA_CFLAGS="-Wno-error" \
+    NORPATH=1 \
+    BUILD_RPMEM=n \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
-	check
+    check
 %endif
 
 %if 0%{?suse_version} >= 01315
@@ -715,10 +626,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %post   -n libpmempool%{?libmajor} -p /sbin/ldconfig
 %postun -n libpmempool%{?libmajor} -p /sbin/ldconfig
 
-%if %{with fabric} && %{with rpmem}
-%post   -n librpmem%{?libmajor} -p /sbin/ldconfig
-%postun -n librpmem%{?libmajor} -p /sbin/ldconfig
-%endif
 %else
 %if (0%{?rhel} < 8)
 # EL8 triggers ldconfig from glibc
@@ -727,9 +634,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %ldconfig_scriptlets   -n libpmemlog
 %ldconfig_scriptlets   -n libpmemobj
 %ldconfig_scriptlets   -n libpmempool
-%if %{with fabric} && %{with rpmem}
-%ldconfig_scriptlets   -n librpmem
-%endif
 %endif
 %endif
 
@@ -739,6 +643,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jul 26 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.0-1
+- Update to release 1.12.0
+- Remove rpmem packages
+
 * Fri Oct 08 2021 Alexander Oganezov <alexander.a.oganezov@intel.com> - 1.11.0-3
 - Update to DAOS_8273 patch
 
@@ -786,7 +694,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 - Add a --without rpmem switch
 - Remove the unpackaged files check skip and remove files
   that shouldn't be packaged
-  - put %{_mandir}/man5/pmem_ctl.5.gz into libpmem-devel
+- put %%{_mandir}/man5/pmem_ctl.5.gz into libpmem-devel
 
 * Fri Mar 08 2019 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.5.1-1
 - Update to PMDK version 1.5.1
