@@ -12,6 +12,7 @@ BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc b
 	dh $@
 
 override_dh_auto_clean:
+	+$(MAKE) pkg-clean $(BUILD_ARGS)
 	dh_auto_clean -- $(BUILD_ARGS)
 
 override_dh_auto_build:
