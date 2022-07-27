@@ -1,6 +1,8 @@
 NAME          := pmdk
 SRC_EXT       := gz
-DL_VERSION    := 1.12.0
+ifeq ($(DL_VERSION),)
+DL_VERSION    := $(subst ~,,$(VERSION))
+endif
 TEST_PACKAGES := libpmem libpmem-devel libpmemblk libpmemblk-devel libpmemlog \
 		 libpmemlog-devel libpmemobj libpmemobj-devel libpmempool     \
 		 libpmempool-devel pmempool pmreorder
