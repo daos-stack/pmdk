@@ -15,6 +15,10 @@
     %define dist .suse%{suse_version}
 %endif
 
+%global major 1
+%global minor 12
+%global bugrelease 1
+%global prerelease rc1
 %global _hardened_build 1
 
 # by default build with ndctl, unless explicitly disabled
@@ -23,7 +27,7 @@
 %define min_ndctl_ver 60.1
 
 Name:       pmdk
-Version:    1.12.0
+Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
 Release:    1%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
@@ -643,6 +647,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Aug 16 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-1
+- Update to release 1.12.1~rc1
+- Fixes DAOS-11151
+
 * Tue Jul 26 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.0-1
 - Update to release 1.12.0
 - Remove rpmem packages
