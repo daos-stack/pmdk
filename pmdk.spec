@@ -18,7 +18,7 @@
 %global major 1
 %global minor 12
 %global bugrelease 1
-%global prerelease rc1
+#%%global prerelease rc1
 %global _hardened_build 1
 
 # by default build with ndctl, unless explicitly disabled
@@ -28,7 +28,7 @@
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
 License:    BSD
@@ -647,6 +647,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Aug 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-2
+- Update to release 1.12.1
+
 * Tue Aug 16 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-1
 - Update to release 1.12.1~rc1
 - Fixes DAOS-11151
