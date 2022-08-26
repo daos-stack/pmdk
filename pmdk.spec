@@ -28,7 +28,7 @@
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
-Release:    2%{?dist}
+Release:    1%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
 License:    BSD
@@ -647,10 +647,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Thu Aug 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-2
+* Thu Aug 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-1
 - Update to release 1.12.1
 
-* Tue Aug 16 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-1
+* Tue Aug 16 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1~rc1-1
 - Update to release 1.12.1~rc1
 - Fixes DAOS-11151
 
