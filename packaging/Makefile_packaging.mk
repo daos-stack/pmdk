@@ -6,7 +6,7 @@
 # force bash (looking at you Ubuntu)
 SHELL=/bin/bash
 
-# Put site overrides (i.e. REPOSITORY_URL, DAOS_STACK_*_LOCAL_REPO) in here
+# Put site overrides (i.e. DAOS_STACK_*_LOCAL_REPO) in here
 -include Makefile.local
 
 # default to Leap 15 distro for chrootbuild
@@ -154,33 +154,8 @@ ifeq ($(DL_NAME),)
 DL_NAME = $(NAME)
 endif
 
-# this actually should replace all of the downloaders below
 $(notdir $(SOURCE)): $(SPEC) $(CALLING_MAKEFILE)
 	# TODO: need to clean up old ones
-	$(SPECTOOL) -g $(SPEC)
-
-$(DL_NAME)$(DL_VERSION).linux-amd64.tar.$(SRC_EXT): $(SPEC) $(CALLING_MAKEFILE)
-	rm -f ./$(DL_NAME)*.tar{gz,bz*,xz}
-	$(SPECTOOL) -g $(SPEC)
-
-$(DL_NAME)-$(DL_VERSION).tar.$(SRC_EXT).asc: $(SPEC) $(CALLING_MAKEFILE)
-	rm -f ./$(DL_NAME)-*.tar.{gz,bz*,xz}.asc
-	$(SPECTOOL) -g $(SPEC)
-
-$(DL_NAME)-$(DL_VERSION).tar.$(SRC_EXT).sig: $(SPEC) $(CALLING_MAKEFILE)
-	rm -f ./$(DL_NAME)-*.tar.{gz,bz*,xz}.sig
-	$(SPECTOOL) -g $(SPEC)
-
-$(DL_NAME)-$(DL_VERSION).tar.$(SRC_EXT): $(SPEC) $(CALLING_MAKEFILE)
-	rm -f ./$(DL_NAME)-*.tar.{gz,bz*,xz}
-	$(SPECTOOL) -g $(SPEC)
-
-v$(DL_VERSION).tar.$(SRC_EXT): $(SPEC) $(CALLING_MAKEFILE)
-	rm -f ./v*.tar.{gz,bz*,xz}
-	$(SPECTOOL) -g $(SPEC)
-
-$(DL_VERSION).tar.$(SRC_EXT): $(SPEC) $(CALLING_MAKEFILE)
-	rm -f ./*.tar.{gz,bz*,xz}
 	$(SPECTOOL) -g $(SPEC)
 
 $(DEB_TOP)/%: % | $(DEB_TOP)/
@@ -304,6 +279,10 @@ $(RPMS): $(SRPM) $(CALLING_MAKEFILE)
 
 rpms: $(RPMS)
 
+repo: rpms
+	rm -rf _topdir/RPMS/repodata/
+	createrepo _topdir/RPMS/
+
 $(DEBS): $(CALLING_MAKEFILE)
 
 debs: $(DEBS)
@@ -338,20 +317,6 @@ patch:
 	echo "PKG_GIT_COMMIT is not defined"
 endif
 
-# *_LOCAL_* repos are locally built packages.
-ifeq ($(LOCAL_REPOS),true)
-  ifneq ($(ARTIFACTORY_URL),)
-    ifneq ($(DAOS_STACK_$(DISTRO_BASE)_LOCAL_REPO),)
-      DISTRO_REPOS = disabled # any non-empty value here works and is not used beyond testing if the value is empty or not
-	  # convert to artifactory url
-      DAOS_STACK_$(DISTRO_BASE)_LOCAL_REPO := $(subst reposi,artifac,$(DAOS_STACK_$(DISTRO_BASE)_LOCAL_REPO))
-      # $(DISTRO_BASE)_LOCAL_REPOS is a list separated by | because you cannot pass lists
-      # of values with spaces as environment variables
-      $(DISTRO_BASE)_LOCAL_REPOS := [trusted=yes] $(ARTIFACTORY_URL)$(subst stack,stack-daos,$(DAOS_STACK_$(DISTRO_BASE)_LOCAL_REPO))
-      $(DISTRO_BASE)_LOCAL_REPOS += |[trusted=yes] $(ARTIFACTORY_URL)$(subst stack,stack-deps,$(DAOS_STACK_$(DISTRO_BASE)_LOCAL_REPO))
-    endif #ifneq ($(DAOS_STACK_$(DISTRO_BASE)_LOCAL_REPO),)
-  endif # ifneq ($(ARTIFACTORY_URL),)
-endif # ifeq ($(LOCAL_REPOS),true)
 ifeq ($(ID_LIKE),debian)
 chrootbuild: $(DEB_TOP)/$(DEB_DSC)
 	$(call distro_map)                                      \
@@ -367,6 +332,8 @@ chrootbuild: $(DEB_TOP)/$(DEB_DSC)
 	DEB_TOP="$(DEB_TOP)"                                    \
 	DEB_DSC="$(DEB_DSC)"                                    \
 	DISTRO_ID_OPT="$(DISTRO_ID_OPT)"                        \
+	LOCAL_REPOS='$(LOCAL_REPOS)'                            \
+	ARTIFACTORY_URL="$(ARTIFACTORY_URL)"                    \
 	packaging/debian_chrootbuild
 else
 chrootbuild: $(SRPM) $(CALLING_MAKEFILE)
@@ -381,9 +348,8 @@ chrootbuild: $(SRPM) $(CALLING_MAKEFILE)
 	REPO_FILE_URL="$(REPO_FILE_URL)"                        \
 	MOCK_OPTIONS="$(MOCK_OPTIONS)"                          \
 	RPM_BUILD_OPTIONS='$(RPM_BUILD_OPTIONS)'                \
-	DISTRO_REPOS='$(DISTRO_REPOS)'                          \
+	LOCAL_REPOS='$(LOCAL_REPOS)'                            \
 	ARTIFACTORY_URL="$(ARTIFACTORY_URL)"                    \
-	REPOSITORY_URL="$(REPOSITORY_URL)"                      \
 	DISTRO_VERSION="$(DISTRO_VERSION)"                      \
 	TARGET="$<"                                             \
 	packaging/rpm_chrootbuild
@@ -397,19 +363,18 @@ podman_chrootbuild:
 	    exit 1;                                                  \
 	fi
 	rm -f /var/lib/mock/$(CHROOT_NAME)/result/{root,build}.log
-	podman run --rm --privileged -w $(TOPDIR) -v=$(TOPDIR)/..:$(TOPDIR)/..                                                     \
-	           -it $(subst +,-,$(CHROOT_NAME))-chrootbuild                                                                     \
-	           bash -c 'if ! DISTRO_REPOS=false                                                                                \
-	                         REPO_FILE_URL=$(REPO_FILE_URL)                                                                    \
-	                         REPOSITORY_URL=$(REPOSITORY_URL)                                                                  \
-	                         make REPO_FILES_PR=$(REPO_FILES_PR)                                                               \
-	                              MOCK_OPTIONS=$(MOCK_OPTIONS)                                                                 \
-	                              CHROOT_NAME=$(CHROOT_NAME) -C $(CURDIR) chrootbuild; then                                    \
-	                            cat /var/lib/mock/$(CHROOT_NAME)/{result/{root,build},root/builddir/build/BUILD/*/config}.log; \
-	                            exit 1;                                                                                        \
-	                        fi;                                                                                                \
-	                        rpmlint $$(ls /var/lib/mock/$(CHROOT_NAME)/result/*.rpm |                                          \
-	                            grep -v -e debuginfo -e debugsource -e src.rpm)'
+	if ! podman run --rm --privileged -w $(TOPDIR) -v=$(TOPDIR)/..:$(TOPDIR)/..                                                     \
+	                -it $(subst +,-,$(CHROOT_NAME))-chrootbuild                                                                     \
+	                bash -c 'if ! DISTRO_REPOS=false                                                                                \
+	                              REPO_FILE_URL=$(REPO_FILE_URL)                                                                    \
+	                              make REPO_FILES_PR=$(REPO_FILES_PR)                                                               \
+	                                   MOCK_OPTIONS=$(MOCK_OPTIONS)                                                                 \
+	                                   CHROOT_NAME=$(CHROOT_NAME) -C $(CURDIR) chrootbuild; then                                    \
+	                                 cat /var/lib/mock/$(CHROOT_NAME)/{result/{root,build},root/builddir/build/BUILD/*/config}.log; \
+	                                 exit 1;                                                                                        \
+	                             fi;                                                                                                \
+	                             rpmlint $$(ls /var/lib/mock/$(CHROOT_NAME)/result/*.rpm |                                          \
+	                                 grep -v -e debuginfo -e debugsource -e src.rpm)'
 
 docker_chrootbuild:
 	if ! $(DOCKER) build --build-arg UID=$$(id -u) -t chrootbuild   \
