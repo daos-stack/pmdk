@@ -16,7 +16,7 @@
 %endif
 
 %global major 1
-%global minor 12
+%global minor 13
 %global bugrelease 1
 #%%global prerelease rc1
 %global _hardened_build 1
@@ -647,6 +647,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jun 06 2023 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.13.1-1
+- Update to release 1.13.1
+
 * Thu Aug 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-1
 - Update to release 1.12.1
 
