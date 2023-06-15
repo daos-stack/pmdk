@@ -16,7 +16,7 @@
 %endif
 
 %global major 1
-%global minor 12
+%global minor 13
 %global bugrelease 1
 #%%global prerelease rc1
 %global _hardened_build 1
