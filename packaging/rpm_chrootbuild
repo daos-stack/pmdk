@@ -9,6 +9,10 @@ mkdir -p "$mock_config_dir"
 ln -sf /etc/mock/templates "$mock_config_dir/"
 ln -sf /etc/mock/logging.ini "$mock_config_dir/"
 
+echo "=== $original_cfg_file ==="
+cat $original_cfg_file
+echo "==="
+
 cp "$original_cfg_file" "$cfg_file"
 
 if [[ $CHROOT_NAME == *epel-8-x86_64 ]]; then
