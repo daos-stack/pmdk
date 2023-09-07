@@ -3,3 +3,7 @@ from Config import *
 
 # NMVL was renamed to PMDK and tools were put in individual packages
 addFilter('W: obsolete-not-provided nvml-tools')
+
+# PMDK tends to document multiple functions in a single groff file which
+# translates into multiple copies of one file.
+addFilter('W: files-duplicate /usr/share/man/man3/.*')
