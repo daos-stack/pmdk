@@ -16,10 +16,10 @@
 %endif
 
 %global major 1
-%global minor 13
+%global minor 12
 %global bugrelease 1
 #%%global prerelease rc1
-%global _hardened_build 1
+%global _hardened_build 2
 
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
@@ -513,6 +513,7 @@ and users of the applications based on PMDK libraries.
 %package -n pmreorder
 Summary: Consistency Checker for Persistent Memory
 Group: System Environment/Base
+BuildArch: noarch
 %description -n pmreorder
 The pmreorder tool is a collection of python scripts designed to parse
 and replay operations logged by pmemcheck - a persistent memory checking tool.
@@ -647,8 +648,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Tue Jul 04 2023 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.13.1
-- Update to release 1.13.1
+* Thu Sep 07 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
+- Make pmreorder a noarch - fixing a rpmlint issue
+- Use /dev/shm instead of /tmp for testing - workaround docker flock(2) issue
 
 * Thu Aug 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-1
 - Update to release 1.12.1
