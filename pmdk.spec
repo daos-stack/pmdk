@@ -28,7 +28,7 @@
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
-Release:    1%{?dist}
+Release:    %{_hardened_build}%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
 License:    BSD
