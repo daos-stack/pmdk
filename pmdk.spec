@@ -19,14 +19,12 @@
 %global minor 12
 %global bugrelease 1
 #%%global prerelease rc1
-%global buildrelease 2
-
-%global _hardened_build 1
+%global buildrelease 3
 
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
-%define min_ndctl_ver 60.1
+%define min_ndctl_ver 63.1
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
@@ -652,7 +650,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Tue Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
+* Mon Sep 18 2023 Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 1.12.1-3
+- Build with NDCTL
+- Update ndctl to version 63.1 as expected by PMDK 1.12.1
+
+* Thu Sep 07 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
 - Make pmreorder a noarch - fixing a rpmlint issue
 - Use /dev/shm instead of /tmp for testing - workaround docker flock(2) issue
 - Deduplicate manpages
