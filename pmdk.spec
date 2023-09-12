@@ -603,7 +603,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %check
-%if 0%{?_skip_check} == 0
+%if 0%{?_skip_check} == 1
     echo "Check skipped"
 %else
     %if %{defined _testconfig}
@@ -652,7 +652,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Thu Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
+* Tue Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
 - Make pmreorder a noarch - fixing a rpmlint issue
 - Use /dev/shm instead of /tmp for testing - workaround docker flock(2) issue
 - Deduplicate manpages
