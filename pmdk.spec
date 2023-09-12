@@ -597,12 +597,12 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
     docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
-%fdupes -s %{buildroot}/%{_mandir}
+%fdupes -s %{buildroot}%{_mandir}
 %fdupes %{buildroot}/%{_prefix}
 
 
 %check
-%if 0%{?_skip_check} == 1
+%if 0%{?_skip_check} == 0
     echo "Check skipped"
 %else
     %if %{defined _testconfig}
