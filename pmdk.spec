@@ -597,8 +597,9 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
     docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
+# PMDK tends to document multiple functions in a single groff file which
+# translates into multiple copies of one file.
 %fdupes -s %{buildroot}%{_mandir}
-%fdupes %{buildroot}/%{_prefix}
 
 
 %check
@@ -651,9 +652,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Thu Sep 07 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
+* Thu Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
 - Make pmreorder a noarch - fixing a rpmlint issue
 - Use /dev/shm instead of /tmp for testing - workaround docker flock(2) issue
+- Deduplicate manpages
 
 * Thu Aug 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-1
 - Update to release 1.12.1
