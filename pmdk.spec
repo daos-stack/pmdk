@@ -19,7 +19,9 @@
 %global minor 12
 %global bugrelease 1
 #%%global prerelease rc1
-%global _hardened_build 2
+%global buildrelease 2
+
+%global _hardened_build 1
 
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
@@ -28,7 +30,7 @@
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
-Release:    %{_hardened_build}%{?dist}
+Release:    %{buildrelease}%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
 License:    BSD
@@ -595,6 +597,7 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
     docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
+%fdupes -s %{buildroot}/%{_mandir}
 %fdupes %{buildroot}/%{_prefix}
 
 
