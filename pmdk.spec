@@ -19,6 +19,8 @@
 %global minor 12
 %global bugrelease 1
 #%%global prerelease rc1
+%global buildrelease 2
+
 %global _hardened_build 1
 
 # by default build with ndctl, unless explicitly disabled
@@ -28,7 +30,7 @@
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
-Release:    1%{?dist}
+Release:    %{buildrelease}%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
 License:    BSD
@@ -513,6 +515,7 @@ and users of the applications based on PMDK libraries.
 %package -n pmreorder
 Summary: Consistency Checker for Persistent Memory
 Group: System Environment/Base
+BuildArch: noarch
 %description -n pmreorder
 The pmreorder tool is a collection of python scripts designed to parse
 and replay operations logged by pmemcheck - a persistent memory checking tool.
@@ -594,7 +597,9 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
     docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
-%fdupes %{buildroot}/%{_prefix}
+# PMDK tends to document multiple functions in a single groff file which
+# translates into multiple copies of one file.
+%fdupes -s %{buildroot}%{_mandir}
 
 
 %check
@@ -604,7 +609,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
     %if %{defined _testconfig}
         cp %{_testconfig} src/test/testconfig.sh
     %else
-        echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
+        echo "PMEM_FS_DIR=/dev/shm" > src/test/testconfig.sh
         echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
         echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
@@ -647,6 +652,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
+- Make pmreorder a noarch - fixing a rpmlint issue
+- Use /dev/shm instead of /tmp for testing - workaround docker flock(2) issue
+- Deduplicate manpages
+
 * Thu Aug 25 2022 Jeff Olivier <jeffrey.v.olivier@intel.com> - 1.12.1-1
 - Update to release 1.12.1
 

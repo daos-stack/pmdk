@@ -1,3 +1,11 @@
+pmdk (1.12.1-2) stable; urgency=medium
+
+  * Make pmreorder a noarch - fixing a rpmlint issue
+  * Use /dev/shm instead of /tmp for testing - workaround docker flock(2) issue
+  * Deduplicate manpages
+
+ -- Jan Michalski <jan.michalski@intel.com>  Tue, 12 Sep 2023 13:00:00 +0000
+
 pmdk (1.12.1-1) unstable; urgency=medium
 
   * Upgrade to 1.12.1
