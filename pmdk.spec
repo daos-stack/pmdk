@@ -21,6 +21,8 @@
 #%%global prerelease rc1
 %global buildrelease 3
 
+%global _hardened_build 1
+
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
