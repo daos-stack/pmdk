@@ -26,7 +26,7 @@
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
-%define min_ndctl_ver 63.1
+%define min_ndctl_ver 63
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
