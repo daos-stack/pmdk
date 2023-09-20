@@ -510,8 +510,12 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Tue Sep 19 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
-- Update to release 2.0.0
+* Wed Sep 20 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
+- Update to release 2.0.0 which
+    - removes libpmemlog and libpmemblk,
+    - removes all pmem2_async operations (and the miniasync dependency).
+- Remove BUILD_RPMEM which was removed in release 1.13 (no change to
+  the resulting packaging).
 
 * Tue Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
 - Make pmreorder a noarch - fixing a rpmlint issue
