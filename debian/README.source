@@ -16,20 +16,3 @@ Therefore, this lintian warning is not being addressed for the libraries in the
 Also note that just installing the -debug packages is not enough to have
 applications use them, since they are installed in a path outside of the linker
 search path. The devel manpages for each library explain how to use them.
-
-
-Bundled jemalloc
-================
-The upstream source includes jemalloc version 3.6.0, released 2014-03-31, with
-local modifications, as declared in src/jemalloc/README.libvmem.
-
-Questioned if this was still necessary, and why the changes couldn't be sent
-back to jemalloc, upstream had this to say
-(https://bugs.launchpad.net/ubuntu/+bug/1752378/comments/72):
-
-"""
-We can't upstream those changes, because jemalloc changed too much since we
-forked it. pmemcto makes this even harder problem, because any changes to
-jemalloc on-media layout would have to invalidate pmemcto pools and we don't
-have any mechanism to automatically do that.
-"""

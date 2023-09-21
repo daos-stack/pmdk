@@ -45,12 +45,8 @@ Source:     https://github.com/pmem/%{name}/releases/download/%{upstream_version
 
 BuildRequires:  gcc
 BuildRequires:  make
-BuildRequires:  glibc-devel
-BuildRequires:  autoconf
-BuildRequires:  automake
 BuildRequires:  man
 BuildRequires:  pkgconfig
-BuildRequires:  gdb
 BuildRequires:  pandoc
 BuildRequires:  fdupes
 
@@ -305,7 +301,7 @@ Requires: libpmem%{?libmajor} >= %{version}-%{release}
 %description -n libpmempool%{?libmajor}
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemobj library.
 
 %files -n libpmempool%{?libmajor}
 %defattr(-,root,root,-)
@@ -322,7 +318,7 @@ Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmempool-devel
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemobj library.
 
 %files -n libpmempool-devel
 %defattr(-,root,root,-)
@@ -343,7 +339,7 @@ Requires: libpmempool%{?libmajor} = %{version}-%{release}
 %description -n libpmempool-debug
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemobj library.
 
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
@@ -362,8 +358,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
 Requires: libpmem%{?libmajor} >= %{version}-%{release}
-Requires: libpmemlog%{?libmajor} >= %{version}-%{release}
-Requires: libpmemblk%{?libmajor} >= %{version}-%{release}
 Requires: libpmemobj%{?libmajor} >= %{version}-%{release}
 Requires: libpmempool%{?libmajor} >= %{version}-%{release}
 Obsoletes: nvml-tools < %{version}-%{release}
@@ -442,7 +436,9 @@ make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
 %if %{without ndctl}
     NDCTL_ENABLE=n \
 %endif
-    NORPATH=1
+    NORPATH=1 \
+    BUILD_EXAMPLES=n \
+    BUILD_BENCHMARKS=n
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
@@ -452,6 +448,8 @@ make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
         NDCTL_ENABLE=n \
 %endif
     NORPATH=1 \
+    BUILD_EXAMPLES=n \
+    BUILD_BENCHMARKS=n \
     LIB_AR= \
     prefix=%{_prefix} \
     libdir=%{_libdir} \
@@ -481,6 +479,8 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
     %endif
     make EXTRA_CFLAGS="-Wno-error" \
     NORPATH=1 \
+    BUILD_EXAMPLES=n \
+    BUILD_BENCHMARKS=n \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
@@ -516,6 +516,8 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
     - removes all pmem2_async operations (and the miniasync dependency).
 - Remove BUILD_RPMEM which was removed in release 1.13 (no change to
   the resulting packaging).
+- Remove deprecated build requirements.
+- Stop building and testing examples and benchmarks.
 
 * Tue Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
 - Make pmreorder a noarch - fixing a rpmlint issue

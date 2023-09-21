@@ -64,25 +64,3 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  reallocation and de-allocation on persistent array. User can choose
  size of new or reallocated array. There are also 3 types of elements which
  are supported: int, PMEMoid and TOID with structure containing int variable.
---- a/doc/generated/rpmem_persist.3
-+++ b/doc/generated/rpmem_persist.3
-@@ -77,7 +77,7 @@
- can take a value from 0 to \f[I]nlanes\f[] \- 1).
- .PP
- The \f[B]rpmem_deep_persist\f[]() function works in the same way as
--\f[B]rpmem_persist\f[](3) function, but additionaly it flushes the data
-+\f[B]rpmem_persist\f[](3) function, but additionally it flushes the data
- to the lowest possible persistency domain available from software.
- Please see \f[B]pmem_deep_persist\f[](3) for details.
- .PP
---- a/doc/librpmem/rpmem_persist.3.md
-+++ b/doc/librpmem/rpmem_persist.3.md
-@@ -85,7 +85,7 @@
- from 0 to *nlanes* - 1).
- 
- The **rpmem_deep_persist**() function works in the same way as
--**rpmem_persist**(3) function, but additionaly it flushes the data to the
-+**rpmem_persist**(3) function, but additionally it flushes the data to the
- lowest possible persistency domain available from software.
- Please see **pmem_deep_persist**(3) for details.
- 

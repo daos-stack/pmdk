@@ -6,6 +6,9 @@ pmdk (2.0.0-1) stable; urgency=medium
     the resulting packaging)
   * Remove libvmem and libvmmalloc which were removed in release 1.8 (no change
     to the resulting packaging)
+  * Start using BUILD_EXAMPLES=n and BUILD_BENCHMARKS=n instead of patches.
+  * Remove no longer needed patch fixing documentation.
+  * Remove references to jemalloc from the README.
 
  -- Jan Michalski <jan.michalski@intel.com>  Wed, 20 Sep 2023 13:00:00 +0000
 
