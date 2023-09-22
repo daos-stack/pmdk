@@ -48,6 +48,7 @@ BuildRequires:  make
 BuildRequires:  man
 BuildRequires:  pkgconfig
 BuildRequires:  pandoc
+BuildRequires:  perl
 BuildRequires:  fdupes
 
 %if %{defined suse_version}
@@ -510,13 +511,14 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Wed Sep 20 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
+* Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
 - Update to release 2.0.0 which
     - removes libpmemlog and libpmemblk,
     - removes all pmem2_async operations (and the miniasync dependency).
 - Remove BUILD_RPMEM which was removed in release 1.13 (no change to
   the resulting packaging).
 - Remove deprecated build requirements.
+- Add perl to requirements (previously provided by autoconf).
 - Stop building and testing examples and benchmarks.
 
 * Tue Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
