@@ -27,7 +27,12 @@
 %bcond_without ndctl
 
 %define min_ndctl_ver 60.1
-%define make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
+%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
+%if %{without ndctl}
+    %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
+%else
+    %define make_common_args %{_make_common_args}
+%endif
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
@@ -435,18 +440,12 @@ export LDFLAGS="%{?__global_ldflags}"
 %endif
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
-make %{?_smp_mflags} %{make_common_args} \
-%if %{without ndctl}
-    NDCTL_ENABLE=n
-%endif
+make %{?_smp_mflags} %{make_common_args}
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
 make install DESTDIR=%{buildroot} %{make_common_args} \
-%if %{without ndctl}
-    NDCTL_ENABLE=n \
-%endif
     LIB_AR= \
     prefix=%{_prefix} \
     libdir=%{_libdir} \
@@ -474,11 +473,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
         echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     %endif
-    make %{make_common_args} \
-    %if %{without ndctl}
-        NDCTL_ENABLE=n \
-    %endif
-        check
+    make %{make_common_args} check
 %endif
 
 %if 0%{?suse_version} >= 01315
