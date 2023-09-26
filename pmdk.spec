@@ -27,6 +27,7 @@
 %bcond_without ndctl
 
 %define min_ndctl_ver 60.1
+%define make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
@@ -45,6 +46,7 @@ Source:     https://github.com/pmem/%{name}/releases/download/%{upstream_version
 
 BuildRequires:  gcc
 BuildRequires:  make
+BuildRequires:  glibc-devel
 BuildRequires:  man
 BuildRequires:  pkgconfig
 BuildRequires:  pandoc
@@ -433,24 +435,18 @@ export LDFLAGS="%{?__global_ldflags}"
 %endif
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
-make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
+make %{?_smp_mflags} %{make_common_args} \
 %if %{without ndctl}
-    NDCTL_ENABLE=n \
+    NDCTL_ENABLE=n
 %endif
-    NORPATH=1 \
-    BUILD_EXAMPLES=n \
-    BUILD_BENCHMARKS=n
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
-make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
+make install DESTDIR=%{buildroot} %{make_common_args} \
 %if %{without ndctl}
-        NDCTL_ENABLE=n \
+    NDCTL_ENABLE=n \
 %endif
-    NORPATH=1 \
-    BUILD_EXAMPLES=n \
-    BUILD_BENCHMARKS=n \
     LIB_AR= \
     prefix=%{_prefix} \
     libdir=%{_libdir} \
@@ -478,14 +474,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
         echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     %endif
-    make EXTRA_CFLAGS="-Wno-error" \
-    NORPATH=1 \
-    BUILD_EXAMPLES=n \
-    BUILD_BENCHMARKS=n \
-%if %{without ndctl}
+    make %{make_common_args} \
+    %if %{without ndctl}
         NDCTL_ENABLE=n \
-%endif
-    check
+    %endif
+        check
 %endif
 
 %if 0%{?suse_version} >= 01315
@@ -517,7 +510,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
     - removes all pmem2_async operations (and the miniasync dependency).
 - Remove BUILD_RPMEM which was removed in release 1.13 (no change to
   the resulting packaging).
-- Remove deprecated build requirements.
+- Remove deprecated build requirements (autoconf, automake and gdb).
 - Add perl to requirements (previously provided by autoconf).
 - Stop building and testing examples and benchmarks.
 
