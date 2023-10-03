@@ -15,11 +15,11 @@
     %define dist .suse%{suse_version}
 %endif
 
-%global major 1
-%global minor 12
-%global bugrelease 1
+%global major 2
+%global minor 0
+%global bugrelease 0
 #%%global prerelease rc1
-%global buildrelease 2
+%global buildrelease 1
 
 %global _hardened_build 1
 
@@ -27,6 +27,12 @@
 %bcond_without ndctl
 
 %define min_ndctl_ver 60.1
+%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
+%if %{without ndctl}
+    %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
+%else
+    %define make_common_args %{_make_common_args}
+%endif
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
@@ -46,12 +52,10 @@ Source:     https://github.com/pmem/%{name}/releases/download/%{upstream_version
 BuildRequires:  gcc
 BuildRequires:  make
 BuildRequires:  glibc-devel
-BuildRequires:  autoconf
-BuildRequires:  automake
 BuildRequires:  man
 BuildRequires:  pkgconfig
-BuildRequires:  gdb
 BuildRequires:  pandoc
+BuildRequires:  perl
 BuildRequires:  fdupes
 
 %if %{defined suse_version}
@@ -228,136 +232,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
-%package -n libpmemblk%{?libmajor}
-Summary: Persistent Memory Resident Array of Blocks library
-Group: System Environment/Libraries
-Requires: libpmem%{?libmajor} >= %{version}-%{release}
-%description -n libpmemblk%{?libmajor}
-The libpmemblk implements a pmem-resident array of blocks, all the same
-size, where a block is updated atomically with respect to power
-failure or program interruption (no torn blocks).
-
-%files -n libpmemblk%{?libmajor}
-%defattr(-,root,root,-)
-%{_libdir}/libpmemblk.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmemblk-devel
-Summary: Development files for the Persistent Memory Resident Array of Blocks library
-Group: Development/Libraries
-Requires: libpmemblk%{?libmajor} = %{version}-%{release}
-Requires: libpmem-devel = %{version}-%{release}
-%description -n libpmemblk-devel
-The libpmemblk implements a pmem-resident array of blocks, all the same
-size, where a block is updated atomically with respect to power
-failure or program interruption (no torn blocks).
-
-For example, a program keeping a cache of fixed-size objects in pmem
-might find this library useful. This library is provided for cases
-requiring large arrays of objects at least 512 bytes each. Most
-developers will find higher level libraries like libpmemobj to be
-more generally useful.
-
-%files -n libpmemblk-devel
-%defattr(-,root,root,-)
-%{_libdir}/libpmemblk.so
-%{_libdir}/pkgconfig/libpmemblk.pc
-%{_includedir}/libpmemblk.h
-%{_mandir}/man7/libpmemblk.7.gz
-%{_mandir}/man5/poolset.5.gz
-%{_mandir}/man3/pmemblk_*.3.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmemblk-debug
-Summary: Debug variant of the Persistent Memory Resident Array of Blocks library
-Group: Development/Libraries
-Requires: libpmemblk%{?libmajor} = %{version}-%{release}
-%description -n libpmemblk-debug
-The libpmemblk implements a pmem-resident array of blocks, all the same
-size, where a block is updated atomically with respect to power
-failure or program interruption (no torn blocks).
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n libpmemblk-debug
-%defattr(-,root,root,-)
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/libpmemblk.so
-%{_libdir}/pmdk_debug/libpmemblk.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmemlog%{?libmajor}
-Summary: Persistent Memory Resident Log File library
-Group: System Environment/Libraries
-Requires: libpmem%{?libmajor} >= %{version}-%{release}
-%description -n libpmemlog%{?libmajor}
-The libpmemlog library provides a pmem-resident log file. This is
-useful for programs like databases that append frequently to a log
-file.
-
-%files -n libpmemlog%{?libmajor}
-%defattr(-,root,root,-)
-%{_libdir}/libpmemlog.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmemlog-devel
-Summary: Development files for the Persistent Memory Resident Log File library
-Group: Development/Libraries
-Requires: libpmemlog%{?libmajor} = %{version}-%{release}
-Requires: libpmem-devel = %{version}-%{release}
-%description -n libpmemlog-devel
-The libpmemlog library provides a pmem-resident log file. This
-library is provided for cases requiring an append-mostly file to
-record variable length entries. Most developers will find higher
-level libraries like libpmemobj to be more generally useful.
-
-%files -n libpmemlog-devel
-%defattr(-,root,root,-)
-%{_libdir}/libpmemlog.so
-%{_libdir}/pkgconfig/libpmemlog.pc
-%{_includedir}/libpmemlog.h
-%{_mandir}/man7/libpmemlog.7.gz
-%{_mandir}/man5/poolset.5.gz
-%{_mandir}/man3/pmemlog_*.3.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmemlog-debug
-Summary: Debug variant of the Persistent Memory Resident Log File library
-Group: Development/Libraries
-Requires: libpmemlog%{?libmajor} = %{version}-%{release}
-%description -n libpmemlog-debug
-The libpmemlog library provides a pmem-resident log file. This
-library is provided for cases requiring an append-mostly file to
-record variable length entries. Most developers will find higher
-level libraries like libpmemobj to be more generally useful.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n libpmemlog-debug
-%defattr(-,root,root,-)
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/libpmemlog.so
-%{_libdir}/pmdk_debug/libpmemlog.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
 %package -n libpmemobj%{?libmajor}
 Summary: Persistent Memory Transactional Object Store library
 Group: System Environment/Libraries
@@ -435,7 +309,7 @@ Requires: libpmem%{?libmajor} >= %{version}-%{release}
 %description -n libpmempool%{?libmajor}
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemobj library.
 
 %files -n libpmempool%{?libmajor}
 %defattr(-,root,root,-)
@@ -452,7 +326,7 @@ Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmempool-devel
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemobj library.
 
 %files -n libpmempool-devel
 %defattr(-,root,root,-)
@@ -473,7 +347,7 @@ Requires: libpmempool%{?libmajor} = %{version}-%{release}
 %description -n libpmempool-debug
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemobj library.
 
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
@@ -492,8 +366,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
 Requires: libpmem%{?libmajor} >= %{version}-%{release}
-Requires: libpmemlog%{?libmajor} >= %{version}-%{release}
-Requires: libpmemblk%{?libmajor} >= %{version}-%{release}
 Requires: libpmemobj%{?libmajor} >= %{version}-%{release}
 Requires: libpmempool%{?libmajor} >= %{version}-%{release}
 Obsoletes: nvml-tools < %{version}-%{release}
@@ -557,9 +429,6 @@ a device.
 
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
-%if 0%{?rhel} == 7
-sed -i 's/cmake\([^3]\)/cmake3\1/' src/deps/miniasync/Makefile
-%endif
 
 %build
 %if 0%{?suse_version} > 0
@@ -571,22 +440,12 @@ export LDFLAGS="%{?__global_ldflags}"
 %endif
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
-make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
-%if %{without ndctl}
-    NDCTL_ENABLE=n \
-%endif
-    NORPATH=1 \
-    BUILD_RPMEM=n
+make %{?_smp_mflags} %{make_common_args}
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
-make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
-%if %{without ndctl}
-        NDCTL_ENABLE=n \
-%endif
-    NORPATH=1 \
-    BUILD_RPMEM=n \
+make install DESTDIR=%{buildroot} %{make_common_args} \
     LIB_AR= \
     prefix=%{_prefix} \
     libdir=%{_libdir} \
@@ -614,22 +473,12 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
         echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     %endif
-    make EXTRA_CFLAGS="-Wno-error" \
-    NORPATH=1 \
-    BUILD_RPMEM=n \
-%if %{without ndctl}
-        NDCTL_ENABLE=n \
-%endif
-    check
+    make %{make_common_args} check
 %endif
 
 %if 0%{?suse_version} >= 01315
 %post   -n libpmem%{?libmajor} -p /sbin/ldconfig
 %postun -n libpmem%{?libmajor} -p /sbin/ldconfig
-%post   -n libpmemblk%{?libmajor} -p /sbin/ldconfig
-%postun -n libpmemblk%{?libmajor} -p /sbin/ldconfig
-%post   -n libpmemlog%{?libmajor} -p /sbin/ldconfig
-%postun -n libpmemlog%{?libmajor} -p /sbin/ldconfig
 %post   -n libpmemobj%{?libmajor} -p /sbin/ldconfig
 %postun -n libpmemobj%{?libmajor} -p /sbin/ldconfig
 %post   -n libpmempool%{?libmajor} -p /sbin/ldconfig
@@ -639,8 +488,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %if (0%{?rhel} < 8)
 # EL8 triggers ldconfig from glibc
 %ldconfig_scriptlets   -n libpmem
-%ldconfig_scriptlets   -n libpmemblk
-%ldconfig_scriptlets   -n libpmemlog
 %ldconfig_scriptlets   -n libpmemobj
 %ldconfig_scriptlets   -n libpmempool
 %endif
@@ -652,6 +499,16 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
+- Update to release 2.0.0 which
+    - removes libpmemlog and libpmemblk,
+    - removes all pmem2_async operations (and the miniasync dependency).
+- Remove BUILD_RPMEM which was removed in release 1.13 (no change to
+  the resulting packaging).
+- Remove deprecated build requirements (autoconf, automake and gdb).
+- Add perl to requirements (previously provided by autoconf).
+- Stop building and testing examples and benchmarks.
+
 * Tue Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
 - Make pmreorder a noarch - fixing a rpmlint issue
 - Use /dev/shm instead of /tmp for testing - workaround docker flock(2) issue

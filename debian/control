@@ -65,100 +65,6 @@ Description: development files for libpmem1
  This package contains libraries and header files used for linking programs
  against libpmem.
 
-Package: libpmemblk1
-Architecture: amd64 arm64 ppc64el
-Multi-Arch: same
-Depends: libpmem1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-Description: Persistent Memory block array support library
- libpmemblk implements a pmem-resident array of blocks, all the same size, where
- a block is updated atomically with respect to power failure or program
- interruption (no torn blocks).
- .
- This library is provided for cases requiring large arrays of objects at least
- 512 bytes each.  Most developers will find higher level libraries like
- libpmemobj to be more generally useful.
-
-Package: libpmemblk1-debug
-Architecture: amd64 arm64 ppc64el
-Multi-Arch: same
-Depends: libpmem1-debug (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: Persistent Memory block array support library — debug build
- libpmemblk implements a pmem-resident array of blocks, all the same size, where
- a block is updated atomically with respect to power failure or program
- interruption (no torn blocks).
- .
- This library is provided for cases requiring large arrays of objects at least
- 512 bytes each.  Most developers will find higher level libraries like
- libpmemobj to be more generally useful.
- .
- This package contains a special build of this library meant for debugging
- purposes.  It contains extra logging, assertions and expensive checks that
- should not be used otherwise.
-
-Package: libpmemblk-dev
-Section: libdevel
-Architecture: amd64 arm64 ppc64el
-Multi-Arch: same
-Depends: libpmem-dev (= ${binary:Version}),
-         libpmemblk1 (= ${binary:Version}),
-         libndctl-dev (>= 63),
-         libdaxctl-dev (>= 63),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: development files for libpmemblk1
- libpmemblk implements a pmem-resident array of blocks, all the same size, where
- a block is updated atomically with respect to power failure or program
- interruption (no torn blocks).
- .
- This package contains libraries and header files used for linking programs
- against libpmemblk.
-
-Package: libpmemlog1
-Architecture: amd64 arm64 ppc64el
-Multi-Arch: same
-Depends: libpmem1 (=${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-Description: Persistent Memory log file support library
- libpmemlog implements a pmem-resident log file.
- .
- This library is provided for cases requiring an append-mostly file to record
- variable length entries.  Most developers will find higher level libraries like
- libpmemobj to be more generally useful.
-
-Package: libpmemlog1-debug
-Architecture: amd64 arm64 ppc64el
-Multi-Arch: same
-Depends: libpmem1-debug (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: Persistent Memory log file support library — debug build
- libpmemlog implements a pmem-resident log file.
- .
- This library is provided for cases requiring an append-mostly file to record
- variable length entries.  Most developers will find higher level libraries like
- libpmemobj to be more generally useful.
- .
- This package contains a special build of this library meant for debugging
- purposes.  It contains extra logging, assertions and expensive checks that
- should not be used otherwise.
-
-Package: libpmemlog-dev
-Section: libdevel
-Architecture: amd64 arm64 ppc64el
-Multi-Arch: same
-Depends: libpmem-dev (= ${binary:Version}),
-         libpmemlog1 (= ${binary:Version}),
-         libndctl-dev (>= 63),
-         libdaxctl-dev (>= 63),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: development files for libpmemlog1
- libpmemlog implements a pmem-resident log file.
- .
- This package contains libraries and header files used for linking programs
- against libpmemlog.
-
 Package: libpmemobj1
 Architecture: amd64 arm64 ppc64el
 Multi-Arch: same
@@ -207,11 +113,9 @@ Multi-Arch: same
 Depends: libpmem1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: Persistent Memory pool management support library
  libpmempool provides a set of utilities for management, diagnostics and repair
- of persistent memory pools.  A pool in this context means a pmemobj pool,
- pmemblk pool, pmemlog pool or BTT layout, independent of the underlying
- storage.  The libpmempool is for applications that need high reliability or
- built-in troubleshooting.  It may be useful for testing and debugging purposes
- also.
+ of pmemobj persistent memory pools.  The libpmempool is for applications that
+ need high reliability or built-in troubleshooting.  It may be useful for
+ testing and debugging purposes also.
 
 Package: libpmempool1-debug
 Architecture: amd64 arm64 ppc64el
@@ -221,11 +125,9 @@ Depends: libpmem1-debug (= ${binary:Version}),
          ${shlibs:Depends}
 Description: Persistent Memory pool management support library — debug build
  libpmempool provides a set of utilities for management, diagnostics and repair
- of persistent memory pools.  A pool in this context means a pmemobj pool,
- pmemblk pool, pmemlog pool or BTT layout, independent of the underlying
- storage.  The libpmempool is for applications that need high reliability or
- built-in troubleshooting.  It may be useful for testing and debugging purposes
- also.
+ of pmemobj persistent memory pools.  The libpmempool is for applications that
+ need high reliability or built-in troubleshooting.  It may be useful for
+ testing and debugging purposes also.
  .
  This package contains a special build of this library meant for debugging
  purposes.  It contains extra logging, assertions and expensive checks that

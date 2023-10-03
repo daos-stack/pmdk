@@ -1,8 +1,0 @@
-# upstream ships a second set of libraries with extra logging, checks
-# and assertions to be used during debugging. These are in a subdirectory
-# of /usr/lib/$arch, but still trigger ldconfig.
-# There is this bug upstream about it, and once solved, this override should be
-# removed: https://github.com/pmem/issues/issues/841
-# See also https://bugs.launchpad.net/ubuntu/+bug/1752378/comments/15 and
-# later.
-libpmemcto1-debug binary: package-has-unnecessary-activation-of-ldconfig-trigger

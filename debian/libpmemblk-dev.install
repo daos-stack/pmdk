@@ -1,4 +1,0 @@
-usr/include/libpmemblk.h
-usr/lib/*/libpmemblk.a
-usr/lib/*/libpmemblk.so
-usr/lib/*/pkgconfig/libpmemblk.pc

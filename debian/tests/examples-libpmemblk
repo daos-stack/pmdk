@@ -1,8 +1,0 @@
-#!/bin/sh
-set -e
-
-cd src/examples/libpmemblk
-for prog in manpage
-  do
-    gcc -Wall -o "$AUTOPKGTEST_TMP"/$prog $prog.c -lpmemblk -pthread
-  done
