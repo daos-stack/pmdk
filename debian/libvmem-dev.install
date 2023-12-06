@@ -1,6 +1,0 @@
-usr/include/libvmem.h
-usr/lib/*/libvmem.a
-usr/lib/*/libvmem.so
-usr/lib/*/pkgconfig/libvmem.pc
-usr/share/man/man3/vmem*.3
-usr/share/man/man7/libvmem.7

@@ -8,25 +8,10 @@ allocation, transactions, and general facilities for persistent memory
 programming. Developers new to persistent memory probably want to start with
 this library.
 
-The libpmemblk library supports arrays of pmem-resident blocks, all the same
-size, that are atomically updated. For example, a program keeping a cache of
-fixed-size objects in pmem might find this library useful.
-
-The libpmemlog library provides a pmem-resident log file. This is useful for
-programs like databases that append frequently to a log file.
-
 The libpmem library provides low level persistent memory support. The libraries
 above are implemented using libpmem. Developers wishing to roll their own
 persistent memory algorithms will find this library useful, but most developers
 will likely use libpmemobj above and let that library call libpmem for them.
-
-The libvmem library turns a pool of persistent memory into a volatile memory
-pool, similar to the system heap but kept separate and with its own
-malloc-style API.
-
-The libvmmalloc library transparently converts all the dynamic memory
-allocations into persistent memory allocations. This allows the use of
-persistent memory as volatile memory without modifying the target application.
 
 pmempool is a management tool for persistent memory pool files created by the
 NVM libraries. It may be useful for system administrators as well as for

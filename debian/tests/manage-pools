@@ -2,18 +2,13 @@
 
 set -e
 
-POOL_TYPES="blk log obj"
-BLK_POOL_SIZE=512
+POOL_TYPES="obj"
 
 create_pool() {
     local pool_type="$1"
     local pool_file="$2"
 
-    if [ "$pool_type" = "blk" ]; then
-        pmempool create "$pool_type" "$BLK_POOL_SIZE" "$pool_file"
-    else
-        pmempool create "$pool_type" "$pool_file"
-    fi
+    pmempool create "$pool_type" "$pool_file"
 }
 
 check_pool_info() {
@@ -31,15 +26,6 @@ check_pool_info() {
     echo "$info_data" | grep -qE "^path.*${pool_file}$"
     echo "$info_data" | grep -qE "^type.*regular file$"
     case "$pool_type" in
-        blk)
-            echo "$info_data" | grep -qE "^Block size.*$BLK_POOL_SIZE$"
-            echo "$info_data" | grep -qE "^Signature.*PMEMBLK$"
-            echo "$info_data" | grep -qE "^PMEM BLK Header"
-            ;;
-        log)
-            echo "$info_data" | grep -qE "^Signature.*PMEMLOG$"
-            echo "$info_data" | grep -qE "^PMEM LOG Header"
-            ;;
         obj)
             echo "$info_data" | grep -qE "^Signature.*PMEMOBJ$"
             echo "$info_data" | grep -qE "^PMEM OBJ Header"

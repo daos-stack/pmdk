@@ -1,8 +1,0 @@
-#!/bin/sh
-set -e
-
-cd src/examples/libpmemlog
-for prog in manpage
-  do
-    gcc -Wall -o "$AUTOPKGTEST_TMP"/$prog $prog.c -lpmemlog -pthread
-  done
