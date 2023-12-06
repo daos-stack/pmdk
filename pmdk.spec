@@ -433,23 +433,11 @@ export LDFLAGS="%{?__global_ldflags}"
 %endif
 # For debug build default flags may be overridden to disable compiler
 # optimizations.
-make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
-%if %{without ndctl}
-    NDCTL_ENABLE=n \
-%endif
-    NORPATH=1 \
-    BUILD_EXAMPLES=n \
-    BUILD_BENCHMARKS=n
+make %{?_smp_mflags} %{make_common_args}
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
-make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
-%if %{without ndctl}
-        NDCTL_ENABLE=n \
-%endif
-    NORPATH=1 \
-    BUILD_EXAMPLES=n \
-    BUILD_BENCHMARKS=n \
+make install DESTDIR=%{buildroot} %{make_common_args} \
     LIB_AR= \
     prefix=%{_prefix} \
     libdir=%{_libdir} \
