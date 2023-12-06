@@ -17,7 +17,7 @@
 
 %global major 2
 %global minor 0
-%global bugrelease 0
+%global bugrelease 1
 #%%global prerelease rc1
 %global buildrelease 1
 
@@ -40,7 +40,7 @@ Release:    %{buildrelease}%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
 License:    BSD
-URL:        https://pmem.io/pmdk
+URL:        https://github.com/pmem/pmdk
 
 # upstream version with ~ removed
 %{lua:
@@ -57,12 +57,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  pandoc
 BuildRequires:  perl
 BuildRequires:  fdupes
-
-%if %{defined suse_version}
-BuildRequires:  cmake
-%else
-BuildRequires:  cmake3
-%endif
 
 %if %{with ndctl}
 %if %{defined suse_version}
@@ -499,6 +493,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Wed Dec 06 2023 Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
+- Update to release 2.0.1 which
+    - Reduces libpmemobj's stack usage below the 11kB threshold.
+
 * Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
 - Update to release 2.0.0 which
     - removes libpmemlog and libpmemblk,

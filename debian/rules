@@ -14,7 +14,6 @@ BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc b
 override_dh_auto_clean:
 	dh_auto_clean -- $(BUILD_ARGS)
 	rm -rf src/test/unittest/__pycache__
-	rm -rf src/deps/miniasync/build
 
 override_dh_auto_build:
 	+$(MAKE) doc
@@ -29,7 +28,7 @@ override_dh_install:
 	dh_install
 
 override_dh_installexamples:
-	dh_installexamples --exclude=.gitignore --exclude=.vcxproj
+	dh_installexamples --exclude=.gitignore
 
 override_dh_installman:
 	dh_installman

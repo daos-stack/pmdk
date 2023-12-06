@@ -4,7 +4,6 @@ Priority: optional
 Maintainer: Adam Borowski <kilobyte@angband.pl>
 Build-Depends: bash-completion,
                bc,
-               cmake,
                debhelper-compat (= 12),
                dh-exec,
                libdaxctl-dev (>= 64),
@@ -18,7 +17,7 @@ Build-Depends: bash-completion,
                ed
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
-Homepage: https://pmem.io/pmdk/
+Homepage: https://github.com/pmem/pmdk/
 Vcs-Git: https://github.com/kilobyte/pmdk -b debian
 Vcs-Browser: https://github.com/kilobyte/pmdk/tree/debian
 
