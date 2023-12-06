@@ -465,14 +465,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
         echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     %endif
-    make EXTRA_CFLAGS="-Wno-error" \
-    NORPATH=1 \
-    BUILD_EXAMPLES=n \
-    BUILD_BENCHMARKS=n \
-%if %{without ndctl}
-        NDCTL_ENABLE=n \
-%endif
-    check
+    make %{make_common_args} check
 %endif
 
 %if 0%{?suse_version} >= 01315
