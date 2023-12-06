@@ -23,34 +23,6 @@ Last-Update: 2020-01-19
  + **PMEM_LOG_LEVEL**
  
  The value of **PMEM_LOG_LEVEL** enables trace points in the debug version
---- pmdk-1.8~rc1.orig/doc/libpmemblk/libpmemblk.7.md
-+++ pmdk-1.8~rc1/doc/libpmemblk/libpmemblk.7.md
-@@ -217,6 +217,11 @@ environment variable to _LDLIBPATH(). De
- controlled using the following environment variables. These variables have
- no effect on the non-debug version of the library.
- 
-+>NOTE:
-+On Debian/Ubuntu systems, this extra debug version of the library is
-+shipped in the respective **-debug** Debian package and placed in
-+the **/usr/lib/$ARCH/pmdk_dbg/** directory.
-+
- + **PMEMBLK_LOG_LEVEL**
- 
- The value of **PMEMBLK_LOG_LEVEL** enables trace points in the debug version
---- pmdk-1.8~rc1.orig/doc/libpmemlog/libpmemlog.7.md
-+++ pmdk-1.8~rc1/doc/libpmemlog/libpmemlog.7.md
-@@ -218,6 +218,11 @@ typical way to access the debug version
- controlled using the following environment variables. These variables have
- no effect on the non-debug version of the library.
- 
-+>NOTE:
-+On Debian/Ubuntu systems, this extra debug version of the library is
-+shipped in the respective **-debug** Debian package and placed in
-+the **/usr/lib/$ARCH/pmdk_dbg/** directory.
-+
- + **PMEMLOG_LOG_LEVEL**
- 
- The value of **PMEMLOG_LOG_LEVEL** enables trace points in the debug version
 --- pmdk-1.8~rc1.orig/doc/libpmemobj/libpmemobj.7.md
 +++ pmdk-1.8~rc1/doc/libpmemobj/libpmemobj.7.md
 @@ -222,6 +222,11 @@ typical way to access the debug version
@@ -79,17 +51,3 @@ Last-Update: 2020-01-19
  + **PMEMPOOL_LOG_LEVEL**
  
  The value of **PMEMPOOL_LOG_LEVEL** enables trace points in the debug version
---- pmdk-1.8~rc1.orig/doc/librpmem/librpmem.7.md
-+++ pmdk-1.8~rc1/doc/librpmem/librpmem.7.md
-@@ -325,6 +325,11 @@ typical way to access the debug version
- controlled using the following environment variables. These variables have
- no effect on the non-debug version of the library.
- 
-+>NOTE:
-+On Debian/Ubuntu systems, this extra debug version of the library is
-+shipped in the respective **-debug** Debian package and placed in
-+the **/usr/lib/$ARCH/pmdk_dbg/** directory.
-+
- + **RPMEM_LOG_LEVEL**
- 
- The value of **RPMEM_LOG_LEVEL** enables trace points in the debug version

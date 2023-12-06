@@ -112,11 +112,9 @@ Multi-Arch: same
 Depends: libpmem1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: Persistent Memory pool management support library
  libpmempool provides a set of utilities for management, diagnostics and repair
- of persistent memory pools.  A pool in this context means a pmemobj pool,
- independent of the underlying storage.
- The libpmempool is for applications that need high reliability or
- built-in troubleshooting.  It may be useful for testing and debugging purposes
- also.
+ of pmemobj persistent memory pools.  The libpmempool is for applications that
+ need high reliability or built-in troubleshooting.  It may be useful for
+ testing and debugging purposes also.
 
 Package: libpmempool1-debug
 Architecture: amd64 arm64 ppc64el

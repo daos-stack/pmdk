@@ -27,6 +27,12 @@
 %bcond_without ndctl
 
 %define min_ndctl_ver 63
+%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
+%if %{without ndctl}
+    %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
+%else
+    %define make_common_args %{_make_common_args}
+%endif
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
@@ -46,12 +52,10 @@ Source:     https://github.com/pmem/%{name}/releases/download/%{upstream_version
 BuildRequires:  gcc
 BuildRequires:  make
 BuildRequires:  glibc-devel
-BuildRequires:  autoconf
-BuildRequires:  automake
 BuildRequires:  man
 BuildRequires:  pkgconfig
-BuildRequires:  gdb
 BuildRequires:  pandoc
+BuildRequires:  perl
 BuildRequires:  fdupes
 
 %if %{with ndctl}
@@ -437,8 +441,6 @@ make %{?_smp_mflags} EXTRA_CFLAGS="-Wno-error" \
     BUILD_EXAMPLES=n \
     BUILD_BENCHMARKS=n
 
-
-
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
 make install DESTDIR=%{buildroot} EXTRA_CFLAGS="-Wno-error" \
@@ -513,7 +515,17 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 - Build with NDCTL enabled
 - Update ndctl to version 63 as expected by PMDK 2.0.1
 
-* Thu Sep 07 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
+* Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
+- Update to release 2.0.0 which
+    - removes libpmemlog and libpmemblk,
+    - removes all pmem2_async operations (and the miniasync dependency).
+- Remove BUILD_RPMEM which was removed in release 1.13 (no change to
+  the resulting packaging).
+- Remove deprecated build requirements (autoconf, automake and gdb).
+- Add perl to requirements (previously provided by autoconf).
+- Stop building and testing examples and benchmarks.
+
+* Tue Sep 12 2023 Jan Michalski <jan.michalski@intel.com> - 1.12.1-2
 - Make pmreorder a noarch - fixing a rpmlint issue
 - Use /dev/shm instead of /tmp for testing - workaround docker flock(2) issue
 - Deduplicate manpages

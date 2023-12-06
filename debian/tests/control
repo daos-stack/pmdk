@@ -7,3 +7,6 @@ Restrictions: allow-stderr
 
 Tests: examples-libpmem
 Depends: gcc, libc6-dev, libpmem-dev
+
+Tests: examples-libpmempool
+Depends: gcc, libc6-dev, libpmempool-dev
