@@ -54,12 +54,6 @@ BuildRequires:  gdb
 BuildRequires:  pandoc
 BuildRequires:  fdupes
 
-%if %{defined suse_version}
-BuildRequires:  cmake
-%else
-BuildRequires:  cmake3
-%endif
-
 %if %{with ndctl}
 %if %{defined suse_version}
 BuildRequires:  libndctl-devel >= %{min_ndctl_ver}
