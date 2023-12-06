@@ -4,7 +4,6 @@ Priority: optional
 Maintainer: Adam Borowski <kilobyte@angband.pl>
 Build-Depends: bash-completion,
                bc,
-               cmake,
                debhelper-compat (= 12),
                dh-exec,
                libdaxctl-dev (>= 64),
