@@ -491,7 +491,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Tue Dec 06 2023 Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
+* Wed Dec 06 2023 Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
 - Update to release 2.0.1
 - Build with NDCTL enabled
 - Update ndctl to version 63 as expected by PMDK 2.0.1
