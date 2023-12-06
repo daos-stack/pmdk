@@ -19,7 +19,7 @@
 %global minor 0
 %global bugrelease 0
 #%%global prerelease rc1
-%global buildrelease 1
+%global buildrelease 2
 
 %global _hardened_build 1
 
@@ -499,6 +499,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Wed Dec 06 2023 Tomasz Gromadzki <tomasz.gromadzki@intel.com> - 2.0.0-2
+- Rebuild for EL 8.8 and Leap 15.5
+
 * Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
 - Update to release 2.0.0 which
     - removes libpmemlog and libpmemblk,
