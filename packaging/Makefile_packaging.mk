@@ -89,8 +89,6 @@ endif
 
 define distro_map
 	case $(DISTRO_ID) in               \
-	    el7) distro="centos7"          \
-	    ;;                             \
 	    el*) distro="$(DISTRO_ID)"     \
 	    ;;                             \
 	    sle12.3) distro="sles12.3"     \
