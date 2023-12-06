@@ -1,6 +1,6 @@
 
 # rpmbuild options:
-#   --with | --without ndctl
+#   --without ndctl
 #   --define _testconfig <path to custom testconfig.sh>
 #   --define _skip_check 1
 #   --define _pmem2_install 1
@@ -17,7 +17,7 @@
 
 %global major 2
 %global minor 0
-%global bugrelease 0
+%global bugrelease 1
 #%%global prerelease rc1
 %global buildrelease 1
 
@@ -26,7 +26,7 @@
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
-%define min_ndctl_ver 60.1
+%define min_ndctl_ver 63
 %define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
 %if %{without ndctl}
     %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
@@ -40,7 +40,7 @@ Release:    %{buildrelease}%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
 License:    BSD
-URL:        https://pmem.io/pmdk
+URL:        https://github.com/pmem/pmdk
 
 # upstream version with ~ removed
 %{lua:
@@ -57,12 +57,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  pandoc
 BuildRequires:  perl
 BuildRequires:  fdupes
-
-%if %{defined suse_version}
-BuildRequires:  cmake
-%else
-BuildRequires:  cmake3
-%endif
 
 %if %{with ndctl}
 %if %{defined suse_version}
@@ -499,6 +493,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
+- Update to release 2.0.1 which
+    - Reduces libpmemobj's stack usage below the 11kB threshold,
+
 * Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
 - Update to release 2.0.0 which
     - removes libpmemlog and libpmemblk,
