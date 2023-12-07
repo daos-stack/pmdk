@@ -17,7 +17,7 @@
 
 %global major 2
 %global minor 0
-%global bugrelease 0
+%global bugrelease 1
 #%%global prerelease rc1
 %global buildrelease 1
 
@@ -26,7 +26,7 @@
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
-%define min_ndctl_ver 60.1
+%define min_ndctl_ver 63
 %define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
 %if %{without ndctl}
     %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
@@ -40,7 +40,7 @@ Release:    %{buildrelease}%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
 License:    BSD
-URL:        https://pmem.io/pmdk
+URL:        https://github.com/pmem/pmdk
 
 # upstream version with ~ removed
 %{lua:
@@ -57,12 +57,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  pandoc
 BuildRequires:  perl
 BuildRequires:  fdupes
-
-%if %{defined suse_version}
-BuildRequires:  cmake
-%else
-BuildRequires:  cmake3
-%endif
 
 %if %{with ndctl}
 %if %{defined suse_version}
@@ -230,7 +224,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %{_libdir}/pmdk_debug/libpmem.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
-
 
 %package -n libpmemobj%{?libmajor}
 Summary: Persistent Memory Transactional Object Store library
@@ -442,7 +435,6 @@ export LDFLAGS="%{?__global_ldflags}"
 # optimizations.
 make %{?_smp_mflags} %{make_common_args}
 
-
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
 make install DESTDIR=%{buildroot} %{make_common_args} \
@@ -499,6 +491,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Wed Dec 06 2023 Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
+- Update to release 2.0.1
+- Build with NDCTL enabled
+- Update ndctl to version 63 as expected by PMDK 2.0.1
+
 * Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
 - Update to release 2.0.0 which
     - removes libpmemlog and libpmemblk,
