@@ -54,6 +54,7 @@ RPM_BUILD_OPTIONS := $(BUILD_DEFINES)
 GIT_DIFF_EXCLUDES := $(PATCH_EXCLUDE_FILES:%=':!%')
 endif
 
+FVERSION         ?= latest
 COMMON_RPM_ARGS  := --define "_topdir $$PWD/_topdir" $(BUILD_DEFINES)
 SPEC             := $(shell if [ -f $(NAME)-$(DISTRO_BASE).spec ]; then echo $(NAME)-$(DISTRO_BASE).spec; else echo $(NAME).spec; fi)
 VERSION           = $(eval VERSION := $(shell rpm $(COMMON_RPM_ARGS) --specfile --qf '%{version}\n' $(SPEC) | sed -n '1p'))$(VERSION)
@@ -163,7 +164,7 @@ endif
 
 $(notdir $(SOURCE) $(OTHER_SOURCES) $(REAL_SOURCE)): $(SPEC) $(CALLING_MAKEFILE)
 	# TODO: need to clean up old ones
-	$(SPECTOOL) -g $(SPEC)
+	$(SPECTOOL) $(COMMON_RPM_ARGS) -g $(SPEC)
 
 $(DEB_TOP)/%: % | $(DEB_TOP)/
 
@@ -369,6 +370,7 @@ endif
 
 podman_chrootbuild:
 	if ! podman build --build-arg REPO_FILE_URL=$(REPO_FILE_URL) \
+	                  --build-arg FVERSION=$(FVERSION)           \
 	                  -t $(subst +,-,$(CHROOT_NAME))-chrootbuild \
 	                  -f packaging/Dockerfile.mockbuild .; then  \
 		echo "Container build failed";                           \
@@ -386,7 +388,9 @@ podman_chrootbuild:
 	                                 exit 1;                                                                                        \
 	                             fi;                                                                                                \
 	                             rpmlint $$(ls /var/lib/mock/$(CHROOT_NAME)/result/*.rpm |                                          \
-	                                 grep -v -e debuginfo -e debugsource -e src.rpm)'
+	                                 grep -v -e debuginfo -e debugsource -e src.rpm)'; then                                         \
+		exit 1;                                                                                                                 \
+	fi
 
 docker_chrootbuild:
 	if ! $(DOCKER) build --build-arg UID=$$(id -u) -t chrootbuild   \
