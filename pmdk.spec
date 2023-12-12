@@ -24,7 +24,7 @@
 %global _hardened_build 1
 
 # by default build with ndctl, unless explicitly disabled
-%bcond_without ndctl
+%bcond_with ndctl
 
 %define min_ndctl_ver 60.1
 %define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
@@ -493,9 +493,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Wed Dec 06 2023 Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
+* Tue 12 Dec 2023  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
 - Update to release 2.0.1 which
-    - Reduces libpmemobj's stack usage below the 11kB threshold.
+    - Reduces libpmemobj's stack usage below the 11kB threshold,
+    - Enables NDCTL  (PMem RAS features) support.
 
 * Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
 - Update to release 2.0.0 which
