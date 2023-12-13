@@ -62,10 +62,10 @@ BuildRequires:  fdupes
 %if %{defined suse_version}
 BuildRequires:  libndctl-devel >= %{min_ndctl_ver}
 %else
-BuildRequires:  libndctl-devel >= %{min_ndctl_ver}
-BuildRequires:  libdaxctl-devel >= %{min_ndctl_ver}
-BuildRequires:  ndctl-devel >= %{min_ndctl_ver}
-BuildRequires:  daxctl-devel >= %{min_ndctl_ver}
+BuildRequires:  libndctl-devel
+BuildRequires:  libdaxctl-devel
+BuildRequires:  ndctl-devel
+BuildRequires:  daxctl-devel
 %endif
 %endif
 
