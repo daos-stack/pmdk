@@ -10,7 +10,16 @@ BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc b
 %:
 	#dh $@ --with bash-completion
 	dh $@
-
+	
+# !!!!! NOTICE !!!!!
+#
+# `dh_auto_clean` MUST BE CALLED WITH `NDCTL_ENABLE=n`
+#
+# It is crucial for build process to run `dh_auto_clean` with NDCTL disabled (NDCTL_ENABLE=n).
+#
+# `db_auto_clean` calls `make -j72 distclean` which requires NDCTL when NDCTL_ENABLE<>n.
+# This dependency (libndctl, libdaxctl) is resolved after `db_auto_clean` step.
+#
 override_dh_auto_clean:
 	dh_auto_clean -- $(BUILD_ARGS) NDCTL_ENABLE=n
 	rm -rf src/test/unittest/__pycache__
