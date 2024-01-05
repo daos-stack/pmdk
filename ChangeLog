@@ -3,6 +3,7 @@ XXX
 	* Version X.X.X
 
 	- Fix an issue in the PMEMOBJ allocator with a potential to corrupt the allocator's metadata (daos-stack/pmdk#24, DAOS-18195).
+	- Fix compilation error on LoongArch. Thank you @liuxiang88 and @bgermann for your persistence in making it happen! (daos-stack/pmdk#29, pmem/pmdk#5957).
 
 Tue Nov 4 2025 Oksana Sałyk <oksana.salyk@hpe.com>
 
