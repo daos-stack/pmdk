@@ -1,3 +1,11 @@
+pmdk (2.0.1-1) stable; urgency=medium
+
+  * Update to release 2.0.1 which:
+    * Reduces libpmemobj's stack usage below the 11kB threshold
+    * Enables NDCTL (PMem RAS features) support
+
+ -- Tomasz Gromadzki <tomasz.gromadzki@intel.com>  Thu, 18 Jan 2024 10:00:00 +0000
+
 pmdk (2.0.0-1) stable; urgency=medium
 
   * Upgrade to 2.0.0 which:
