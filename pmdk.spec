@@ -27,7 +27,7 @@
 %bcond_without ndctl
 
 %define min_ndctl_ver 63
-%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
+%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n NDCTL_ENABLE=n
 %if %{without ndctl}
     %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
 %else
