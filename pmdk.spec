@@ -1,6 +1,6 @@
 
 # rpmbuild options:
-#   --with | --without ndctl
+#   --without ndctl
 #   --define _testconfig <path to custom testconfig.sh>
 #   --define _skip_check 1
 #   --define _pmem2_install 1
@@ -27,7 +27,7 @@
 %bcond_without ndctl
 
 %define min_ndctl_ver 63
-%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n NDCTL_ENABLE=n
+%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
 %if %{without ndctl}
     %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
 %else
