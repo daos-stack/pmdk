@@ -16,9 +16,9 @@
 %endif
 
 %global major 2
-%global minor 0
-%global bugrelease 1
-#%%global prerelease rc1
+%global minor 1
+%global bugrelease 0
+%global prerelease rc1
 %global buildrelease 2
 
 %global _hardened_build 1
@@ -29,7 +29,7 @@
 %define min_ndctl_ver 63
 %define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
 %if %{without ndctl}
-    %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
+    %define make_common_args %{_make_common_args} NDCTL_ENABLE=n PMEMOBJ_IGNORE_DIRTY_SHUTDOWN=y PMEMOBJ_IGNORE_BAD_BLOCKS=y
 %else
     %define make_common_args %{_make_common_args}
 %endif
@@ -493,6 +493,25 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
+- Update to release 2.1.0 which
+    - Introduces the new logging subsystem in the release build for all libraries.
+	- Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
+	- Log level thresholds are controlled via new API, see pmem(obj)_log_set_treshold() for details.
+	- These new APIs are not available for LIBPMEM2 and LIBPMEMPOOL at the moment.
+	- The new logging subsystem is suppressed in the debug build when any of the legacy debug logging environment variables is set:
+	  - PMEM_LOG_LEVEL/_FILE
+	  - PMEM2_LOG_LEVEL/_FILE
+	  - PMEMOBJ_LOG_LEVEL/_FILE
+	  - PMEMPOOL_LOG_LEVEL/_FILE
+    - The debug logging subsystem becomes DEPRECATED.
+	- Introduces fuses against ill-considered use of NDCTL_ENABLE=n.
+	  - PMEMOBJ_IGNORE_DIRTY_SHUTDOWN and PMEMOBJ_IGNORE_BAD_BLOCKS are required to acknowledge the understanding of what production-critical functions are missing for the build without NDCTL.
+	- Does not allow opening PMEMOBJ pool without unsafe shutdown counter (USC) if not explicitly disabled. (#5968)
+	  - use PMEMOBJ_CONF="sds.at_create=0" to disable USC when working without PMem (emulated PMem, Docker, etc.).
+	- Drops support for building without libpthread (NO_LIBPTHREAD build-time define).- Reduces libpmemobj's stack usage below the 11kB threshold,
+- This version is build w/o NDCTL support
+
 * Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-2
 - Enable NDCTL on the top of release 2.0.1
 

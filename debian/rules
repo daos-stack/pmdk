@@ -21,7 +21,7 @@ BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc b
 # This dependency (libndctl, libdaxctl) is resolved after `db_auto_clean` step.
 #
 override_dh_auto_clean:
-	dh_auto_clean -- $(BUILD_ARGS) NDCTL_ENABLE=n
+	dh_auto_clean -- $(BUILD_ARGS) NDCTL_ENABLE=n PMEMOBJ_IGNORE_DIRTY_SHUTDOWN=y PMEMOBJ_IGNORE_BAD_BLOCKS=y
 	rm -rf src/test/unittest/__pycache__
 
 override_dh_auto_build:
