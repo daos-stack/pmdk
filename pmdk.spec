@@ -493,10 +493,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Thu Jan 18 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
+* Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
 - Update to release 2.0.1 which
     - Reduces libpmemobj's stack usage below the 11kB threshold,
-    - Enables NDCTL  (PMem RAS features) support.
 
 * Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
 - Update to release 2.0.0 which
