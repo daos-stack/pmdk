@@ -19,7 +19,7 @@
 %global minor 0
 %global bugrelease 1
 #%%global prerelease rc1
-%global buildrelease 1
+%global buildrelease 2
 
 %global _hardened_build 1
 
@@ -493,6 +493,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-2
+- Enable NDCTL on the top of release 2.0.1
+
 * Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
 - Update to release 2.0.1 which
     - Reduces libpmemobj's stack usage below the 11kB threshold,
