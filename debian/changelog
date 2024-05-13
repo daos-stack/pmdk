@@ -20,7 +20,7 @@ pmdk (2.1.0-1) stable; urgency=medium
     * Drops support for building without libpthread (NO_LIBPTHREAD build-time define).* Reduces libpmemobj's stack usage below the 11kB threshold,
   * This version is build w/o NDCTL support
 
-pmdk (2.0.1-1) stable; urgency=medium
+pmdk (2.0.1-2) stable; urgency=medium
 
   * Enable NDCTL on the top of release 2.0.1
 
