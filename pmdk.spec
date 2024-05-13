@@ -19,7 +19,7 @@
 %global minor 1
 %global bugrelease 0
 %global prerelease rc1
-%global buildrelease 2
+%global buildrelease 1
 
 %global _hardened_build 1
 
