@@ -11,6 +11,9 @@ libpmem.so.1 libpmem1 #MINVER#
  pmem_has_auto_flush@LIBPMEM_1.0 1.4
  pmem_has_hw_drain@LIBPMEM_1.0 1.4
  pmem_is_pmem@LIBPMEM_1.0 1.4
+ pmem_log_get_threshold@LIBPMEM_1.0 1.4
+ pmem_log_set_function@LIBPMEM_1.0 1.4
+ pmem_log_set_threshold@LIBPMEM_1.0 1.4
  pmem_map_file@LIBPMEM_1.0 1.4
  pmem_memcpy@LIBPMEM_1.0 1.5
  pmem_memcpy_nodrain@LIBPMEM_1.0 1.4
@@ -24,3 +27,4 @@ libpmem.so.1 libpmem1 #MINVER#
  pmem_msync@LIBPMEM_1.0 1.4
  pmem_persist@LIBPMEM_1.0 1.4
  pmem_unmap@LIBPMEM_1.0 1.4
+ 
