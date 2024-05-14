@@ -493,7 +493,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
+* Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0~rc1-1
   Update to release 2.1.0 which
   - Introduces the new logging subsystem in the release build for all libraries.
   - Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
