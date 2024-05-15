@@ -29,7 +29,7 @@
 %bcond_with ndctl
 
 %define min_ndctl_ver 63
-%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n VALGRIND=1
+%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n VALGRIND=0
 
 %if %{with ndctl}
     %define make_common_args %{_make_common_args}
@@ -401,6 +401,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
     %else
         echo "PMEM_FS_DIR=/dev/shm" > src/test/testconfig.sh
         echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
+        echo 'PMEMOBJ_CONF="sds.at_create=0"' >> src/test/testconfig.sh
         echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     %endif
