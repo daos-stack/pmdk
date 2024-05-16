@@ -493,8 +493,8 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0~rc1-1
-  Update to release 2.1.0 which
+* Fri May 17 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0~rc1-1
+  Update to release 2.1.0~rc1 w/o NDCTL support enabling which:
   - Introduces the new logging subsystem in the release build for all libraries.
   - Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
   - Log level thresholds are controlled via new API, see pmem(obj)_log_set_treshold() for details.
@@ -505,16 +505,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
     - PMEMOBJ_LOG_LEVEL/_FILE
     - PMEMPOOL_LOG_LEVEL/_FILE
     - The debug logging subsystem becomes DEPRECATED.
+  - Drops support for building without libpthread (NO_LIBPTHREAD build-time define).
   - Introduces fuses against ill-considered use of NDCTL_ENABLE=n.
     - PMEMOBJ_IGNORE_DIRTY_SHUTDOWN and PMEMOBJ_IGNORE_BAD_BLOCKS are required to acknowledge the understanding of what production-critical functions are missing for the build without NDCTL.
-  - Does not allow opening PMEMOBJ pool without unsafe shutdown counter (USC) if not explicitly disabled. (#5968)
-    - use PMEMOBJ_CONF="sds.at_create=0" to disable USC when working without PMem (emulated PMem, Docker, etc.).
-  - Drops support for building without libpthread (NO_LIBPTHREAD build-time define).- Reduces libpmemobj's stack usage below the 11kB threshold,
-
-  - THIS VERSION IS BUILD w/o NDCTL SUPPORT
-
-* Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-2
-- Enable NDCTL on the top of release 2.0.1
+  - Does not allow opening PMEMOBJ pool without unsafe shutdown counter (USC) and badblock verification if not explicitly disabled when NDCTL is in use.
+    - use PMEMOBJ_CONF="sds.at_create=0" to disable USC and badblock veryfication when working without PMem (emulated PMem, Docker, etc.).
 
 * Fri May 10 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.0.1-1
 - Update to release 2.0.1 which
