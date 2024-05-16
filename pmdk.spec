@@ -16,9 +16,15 @@
 %endif
 
 %global major 2
+<<<<<<< HEAD
 %global minor 1
 %global bugrelease 0
 %global prerelease rc1
+=======
+%global minor 0
+%global bugrelease 1
+#%%global prerelease rc1
+>>>>>>> parent of d899795 (Enable NDCTL on the top of 2.0.1)
 %global buildrelease 1
 
 %global _hardened_build 1
@@ -493,7 +499,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Fri May 17 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0~rc1-1
+* Thu May 16 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0~rc1-1
   Update to release 2.1.0~rc1 w/o NDCTL support enabling which:
   - Introduces the new logging subsystem in the release build for all libraries.
   - Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
