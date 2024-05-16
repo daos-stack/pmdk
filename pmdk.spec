@@ -464,7 +464,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
     %else
         echo "PMEM_FS_DIR=/dev/shm" > src/test/testconfig.sh
         echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
-        echo 'PMEMOBJ_CONF="sds.at_create=0"' >> src/test/testconfig.sh
         echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
         echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     %endif
