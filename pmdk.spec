@@ -16,15 +16,9 @@
 %endif
 
 %global major 2
-<<<<<<< HEAD
 %global minor 1
 %global bugrelease 0
 %global prerelease rc1
-=======
-%global minor 0
-%global bugrelease 1
-#%%global prerelease rc1
->>>>>>> parent of d899795 (Enable NDCTL on the top of 2.0.1)
 %global buildrelease 1
 
 %global _hardened_build 1
