@@ -1,6 +1,6 @@
 
 # rpmbuild options:
-#   --without ndctl
+#   --with ndctl
 #   --define _testconfig <path to custom testconfig.sh>
 #   --define _skip_check 1
 #   --define _pmem2_install 1
@@ -32,7 +32,7 @@
 %if %{with ndctl}
     %define make_common_args %{_make_common_args}
 %else
-    %define make_common_args %{_make_common_args} NDCTL_ENABLE=n
+    %define make_common_args %{_make_common_args} NDCTL_ENABLE=n PMEMOBJ_IGNORE_DIRTY_SHUTDOWN=y PMEMOBJ_IGNORE_BAD_BLOCKS=y
 %endif
 
 Name:       pmdk
