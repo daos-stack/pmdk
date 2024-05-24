@@ -3,7 +3,6 @@
 #   --with ndctl
 #   --define _testconfig <path to custom testconfig.sh>
 #   --define _skip_check 1
-#   --define _pmem2_install 1
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
 # directory are not found in the %%files (without rpmem case)
@@ -94,72 +93,6 @@ using memory-mapped persistence, optimized specifically for persistent memory.
 %if 0%{?suse_version} >= 01315
 %define libmajor 1
 %endif
-
-%package -n libpmem2
-Summary: Low-level persistent memory support library (EXPERIMENTAL)
-Group: System Environment/Libraries
-%description -n libpmem2
-The libpmem2 provides low level persistent memory support. In particular,
-support for the persistent memory instructions for flushing changes
-to pmem is provided.
-
-%files -n libpmem2
-%defattr(-,root,root,-)
-%dir %{_datadir}/pmdk
-%{_libdir}/libpmem2.so.*
-%{_datadir}/pmdk/pmdk.magic
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmem2-devel
-Summary: Development files for the low-level persistent memory library (EXPERIMENTAL)
-Group: Development/Libraries
-Requires: libpmem2 = %{version}-%{release}
-%description -n libpmem2-devel
-The libpmem2 provides low level persistent memory support. In particular,
-support for the persistent memory instructions for flushing changes
-to pmem is provided.
-
-This library is provided for software which tracks every store to
-pmem and needs to flush those changes to durability. Most developers
-will find higher level libraries like libpmemobj to be much more
-convenient.
-
-%files -n libpmem2-devel
-%defattr(-,root,root,-)
-%{_libdir}/libpmem2.so
-%{_libdir}/pkgconfig/libpmem2.pc
-%{_includedir}/libpmem2.h
-%{_includedir}/libpmem2/*.h
-%{_mandir}/man7/libpmem2*.7.gz
-%{_mandir}/man3/pmem2_*.3.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmem2-debug
-Summary: Debug variant of the low-level persistent memory library (EXPERIMENTAL)
-Group: Development/Libraries
-Requires: libpmem2 = %{version}-%{release}
-%description -n libpmem2-debug
-The libpmem provides low level persistent memory support. In particular,
-support for the persistent memory instructions for flushing changes
-to pmem is provided.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n libpmem2-debug
-%defattr(-,root,root,-)
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/libpmem2.so
-%{_libdir}/pmdk_debug/libpmem2.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-#_pmem2_install
 
 %package -n libpmem%{?libmajor}
 Summary: Low-level persistent memory support library
@@ -495,11 +428,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 %changelog
 * Fri May 24 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
-  Update to release 2.1.0 w/o NDCTL support enabling which:
+  Update to release 2.1.0 w/o NDCTL support which:
   - Introduces the new logging subsystem in the release build for all libraries.
   - Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
   - Log level thresholds are controlled via new API, see pmem(obj)_log_set_treshold() for details.
-  - These new APIs are not available for LIBPMEM2 and LIBPMEMPOOL at the moment.
+  - These new APIs are not available for LIBPMEMPOOL at the moment.
   - The new logging subsystem is suppressed in the debug build when any of the legacy debug logging environment variables is set:
     - PMEM_LOG_LEVEL/_FILE
     - PMEM2_LOG_LEVEL/_FILE

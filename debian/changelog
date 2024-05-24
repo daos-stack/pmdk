@@ -1,13 +1,12 @@
 pmdk (2.1.0-1) stable; urgency=medium
 
-  * Update to release 2.1.0 w/o NDCTL support enabling which:
+  * Update to release 2.1.0 w/o NDCTL support which:
     * Introduces the new logging subsystem in the release build for all libraries.
     * Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
     * Log level thresholds are controlled via new API, see pmem(obj)_log_set_treshold() for details.
-    * These new APIs are not available for LIBPMEM2 and LIBPMEMPOOL at the moment.
+    * These new APIs are not available for LIBPMEMPOOL at the moment.
     * The new logging subsystem is suppressed in the debug build when any of the legacy debug logging environment variables is set:
       * PMEM_LOG_LEVEL/_FILE
-      * PMEM2_LOG_LEVEL/_FILE
       * PMEMOBJ_LOG_LEVEL/_FILE
       * PMEMPOOL_LOG_LEVEL/_FILE
       * The debug logging subsystem becomes DEPRECATED.
