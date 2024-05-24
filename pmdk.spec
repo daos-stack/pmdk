@@ -431,7 +431,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 %changelog
 * Fri May 24 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
-  Update to release 2.1.0 w/o NDCTL support which:
+- Update to release 2.1.0 w/o NDCTL support which:
   - Introduces the new logging subsystem in the release build for all libraries.
   - Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
   - Log level thresholds are controlled via new API, see pmem(obj)_log_set_treshold() for details.
@@ -447,7 +447,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
   - Does not allow create PMEMOBJ pool without unsafe shutdown counter (USC) if not explicitly disabled when NDCTL is in use.
     - use PMEMOBJ_CONF="sds.at_create=0" to disable USC when working without PMem (emulated PMem, Docker, etc.).
 
-  Includes also release 2.0.1 which
+- Includes also release 2.0.1 which:
     - Reduces libpmemobj's stack usage below the 11kB threshold.
 
 * Fri Sep 22 2023 Jan Michalski <jan.michalski@intel.com> - 2.0.0-1
