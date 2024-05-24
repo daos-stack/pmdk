@@ -8,6 +8,9 @@
 # directory are not found in the %%files (without rpmem case)
 #define _unpackaged_files_terminate_build 0
 
+# Ignore an issue with unpackaged libpmem2 files
+%define _unpackaged_files_terminate_build 0
+
 # disable 'make check' on suse
 %if %{defined suse_version}
     %define _skip_check 1
