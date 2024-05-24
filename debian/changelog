@@ -10,7 +10,8 @@ pmdk (2.1.0-1) stable; urgency=medium
       * PMEMOBJ_LOG_LEVEL/_FILE
       * PMEMPOOL_LOG_LEVEL/_FILE
       * The debug logging subsystem becomes DEPRECATED.
-    * Drops support for building without libpthread (NO_LIBPTHREAD build-time define).* Reduces libpmemobj's stack usage below the 11kB threshold,
+    * Drops support for building without libpthread (NO_LIBPTHREAD build-time define).
+    * Reduces libpmemobj's stack usage below the 11kB threshold,
     * Introduces fuses against ill-considered use of NDCTL_ENABLE=n.
       * PMEMOBJ_IGNORE_DIRTY_SHUTDOWN and PMEMOBJ_IGNORE_BAD_BLOCKS are required to acknowledge the understanding of what production-critical functions are missing for the build without NDCTL.
     * Does not allow create PMEMOBJ pool without unsafe shutdown counter (USC) if not explicitly disabled.
