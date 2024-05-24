@@ -17,7 +17,7 @@
 %global major 2
 %global minor 1
 %global bugrelease 0
-##%global prerelease rc1
+#%%global prerelease rc1
 %global buildrelease 1
 
 %global _hardened_build 1
@@ -435,7 +435,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
   - These new APIs are not available for LIBPMEMPOOL at the moment.
   - The new logging subsystem is suppressed in the debug build when any of the legacy debug logging environment variables is set:
     - PMEM_LOG_LEVEL/_FILE
-    - PMEM2_LOG_LEVEL/_FILE
     - PMEMOBJ_LOG_LEVEL/_FILE
     - PMEMPOOL_LOG_LEVEL/_FILE
     - The debug logging subsystem becomes DEPRECATED.
