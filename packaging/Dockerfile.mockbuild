@@ -35,10 +35,12 @@ ARG UID=1000
 # Add build user (to keep rpmbuild happy)
 ENV USER build
 ENV PASSWD build
-RUN useradd -u $UID -ms /bin/bash $USER
-RUN echo "$USER:$PASSWD" | chpasswd
 # add the user to the mock group so it can run mock
-RUN usermod -a -G mock $USER
+RUN if [ $UID != 0 ]; then                   \
+        useradd -u $UID -ms /bin/bash $USER; \
+        echo "$USER:$PASSWD" | chpasswd;     \
+        usermod -a -G mock $USER;            \
+    fi
 
 ARG CB0
 RUN dnf -y upgrade && \
