@@ -8,9 +8,6 @@
 # directory are not found in the %%files (without rpmem case)
 #define _unpackaged_files_terminate_build 0
 
-# Ignore an issue with unpackaged libpmem2 files
-%define _unpackaged_files_terminate_build 0
-
 # disable 'make check' on suse
 %if %{defined suse_version}
     %define _skip_check 1
@@ -390,6 +387,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 # PMDK tends to document multiple functions in a single groff file which
 # translates into multiple copies of one file.
 %fdupes -s %{buildroot}%{_mandir}
+# Remove all libpmem2 related files as they are excluded from installation
+find %{buildroot} -name "libpmem2*" -exec rm -rf {} \;
+
 
 
 %check
@@ -430,7 +430,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Fri May 24 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
+* Tue Aug 06 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
 - Update to release 2.1.0 w/o NDCTL support which:
   - Introduces the new logging subsystem in the release build for all libraries.
   - Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
