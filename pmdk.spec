@@ -388,7 +388,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 # translates into multiple copies of one file.
 %fdupes -s %{buildroot}%{_mandir}
 # Remove all libpmem2 related files as they are excluded from installation
-find %{buildroot} -name "libpmem2*" -type f -exec rm -f {} \;
+find %{buildroot} -name "libpmem2*" -exec rm -rf {} \;
 
 
 
