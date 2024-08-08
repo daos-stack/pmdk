@@ -21,7 +21,7 @@
 %global minor 1
 %global bugrelease 0
 #%%global prerelease rc1
-%global buildrelease 1
+%global buildrelease 2
 
 %global _hardened_build 1
 
@@ -29,7 +29,7 @@
 %bcond_with ndctl
 
 %define min_ndctl_ver 63
-%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
+%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n VALGRIND=1
 
 %if %{with ndctl}
     %define make_common_args %{_make_common_args}
@@ -430,6 +430,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Aug 08 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-2
+- Enable NDCTL on the top of PMDK 2.1.0
+
 * Tue Aug 06 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
 - Update to release 2.1.0 w/o NDCTL support which:
   - Introduces the new logging subsystem in the release build for all libraries.
