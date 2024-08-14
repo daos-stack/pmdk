@@ -32,6 +32,9 @@ libpmemobj.so.1 libpmemobj1 #MINVER#
  pmemobj_list_insert_new@LIBPMEMOBJ_1.0 1.4
  pmemobj_list_move@LIBPMEMOBJ_1.0 1.4
  pmemobj_list_remove@LIBPMEMOBJ_1.0 1.4
+ pmemobj_log_get_threshold@LIBPMEMOBJ_1.0 1.4
+ pmemobj_log_set_function@LIBPMEMOBJ_1.0 1.4
+ pmemobj_log_set_threshold@LIBPMEMOBJ_1.0 1.4
  pmemobj_memcpy@LIBPMEMOBJ_1.0 1.5
  pmemobj_memcpy_persist@LIBPMEMOBJ_1.0 1.4
  pmemobj_memset_persist@LIBPMEMOBJ_1.0 1.4

@@ -17,6 +17,6 @@ pmempool is a management tool for persistent memory pool files created by the
 NVM libraries. It may be useful for system administrators as well as for
 software developers for troubleshooting and debugging.
 
-Further details are at http://pmem.io/.
+Further details are at https://github.com/pmem/pmdk/.
 
  -- Nishanth Aravamudan <nish.aravamudan@canonical.com>  Thu, 08 Sep 2016 15:19:46 -0700

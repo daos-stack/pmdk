@@ -5,16 +5,24 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 DEB_UPSTREAM_VERSION = $(shell dpkg-parsechangelog -S version | cut -d - -f 1 | cut -d : -f 2)
 
-BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc bashcompdir=/usr/share/bash-completion/completions NORPATH=1 NDCTL_ENABLE=n BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
+BUILD_ARGS = prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) sysconfdir=/etc bashcompdir=/usr/share/bash-completion/completions NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n NDCTL_ENABLE=n PMEMOBJ_IGNORE_DIRTY_SHUTDOWN=y PMEMOBJ_IGNORE_BAD_BLOCKS=y
 
 %:
 	#dh $@ --with bash-completion
 	dh $@
-
+	
+# !!!!! NOTICE !!!!!
+#
+# `dh_auto_clean` MUST BE CALLED WITH `NDCTL_ENABLE=n`
+#
+# It is crucial for build process to run `dh_auto_clean` with NDCTL disabled (NDCTL_ENABLE=n).
+#
+# `db_auto_clean` calls `make -j72 distclean` which requires NDCTL when NDCTL_ENABLE<>n.
+# This dependency (libndctl, libdaxctl) is resolved after `db_auto_clean` step.
+#
 override_dh_auto_clean:
-	dh_auto_clean -- $(BUILD_ARGS)
+	dh_auto_clean -- $(BUILD_ARGS) NDCTL_ENABLE=n PMEMOBJ_IGNORE_DIRTY_SHUTDOWN=y PMEMOBJ_IGNORE_BAD_BLOCKS=y
 	rm -rf src/test/unittest/__pycache__
-	rm -rf src/deps/miniasync/build
 
 override_dh_auto_build:
 	+$(MAKE) doc
@@ -29,7 +37,7 @@ override_dh_install:
 	dh_install
 
 override_dh_installexamples:
-	dh_installexamples --exclude=.gitignore --exclude=.vcxproj
+	dh_installexamples --exclude=.gitignore
 
 override_dh_installman:
 	dh_installman

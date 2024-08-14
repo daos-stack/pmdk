@@ -35,7 +35,11 @@ TEST_PACKAGES ?= ${NAME}
 # unfortunately we cannot always name the repo the same as the project
 REPO_NAME ?= $(NAME)
 
+ifneq ($(CI_PR_REPOS),)
+PR_REPOS                 ?= $(CI_PR_REPOS)
+else
 PR_REPOS                 ?= $(shell git show -s --format=%B | sed -ne 's/^PR-repos: *\(.*\)/\1/p')
+endif
 LEAP_15_PR_REPOS         ?= $(shell git show -s --format=%B | sed -ne 's/^PR-repos-leap15: *\(.*\)/\1/p')
 EL_7_PR_REPOS            ?= $(shell git show -s --format=%B | sed -ne 's/^PR-repos-el7: *\(.*\)/\1/p')
 EL_8_PR_REPOS            ?= $(shell git show -s --format=%B | sed -ne 's/^PR-repos-el8: *\(.*\)/\1/p')
@@ -54,6 +58,7 @@ RPM_BUILD_OPTIONS := $(BUILD_DEFINES)
 GIT_DIFF_EXCLUDES := $(PATCH_EXCLUDE_FILES:%=':!%')
 endif
 
+FVERSION         ?= latest
 COMMON_RPM_ARGS  := --define "_topdir $$PWD/_topdir" $(BUILD_DEFINES)
 SPEC             := $(shell if [ -f $(NAME)-$(DISTRO_BASE).spec ]; then echo $(NAME)-$(DISTRO_BASE).spec; else echo $(NAME).spec; fi)
 VERSION           = $(eval VERSION := $(shell rpm $(COMMON_RPM_ARGS) --specfile --qf '%{version}\n' $(SPEC) | sed -n '1p'))$(VERSION)
@@ -163,7 +168,7 @@ endif
 
 $(notdir $(SOURCE) $(OTHER_SOURCES) $(REAL_SOURCE)): $(SPEC) $(CALLING_MAKEFILE)
 	# TODO: need to clean up old ones
-	$(SPECTOOL) -g $(SPEC)
+	$(SPECTOOL) $(COMMON_RPM_ARGS) -g $(SPEC)
 
 $(DEB_TOP)/%: % | $(DEB_TOP)/
 
@@ -363,12 +368,14 @@ chrootbuild: $(SRPM) $(CALLING_MAKEFILE)
 	LOCAL_REPOS='$(LOCAL_REPOS)'                            \
 	ARTIFACTORY_URL="$(ARTIFACTORY_URL)"                    \
 	DISTRO_VERSION="$(DISTRO_VERSION)"                      \
+	PACKAGE="$(NAME)"                                       \
 	TARGET="$<"                                             \
 	packaging/rpm_chrootbuild
 endif
 
 podman_chrootbuild:
 	if ! podman build --build-arg REPO_FILE_URL=$(REPO_FILE_URL) \
+	                  --build-arg FVERSION=$(FVERSION)           \
 	                  -t $(subst +,-,$(CHROOT_NAME))-chrootbuild \
 	                  -f packaging/Dockerfile.mockbuild .; then  \
 		echo "Container build failed";                           \
@@ -386,7 +393,9 @@ podman_chrootbuild:
 	                                 exit 1;                                                                                        \
 	                             fi;                                                                                                \
 	                             rpmlint $$(ls /var/lib/mock/$(CHROOT_NAME)/result/*.rpm |                                          \
-	                                 grep -v -e debuginfo -e debugsource -e src.rpm)'
+	                                 grep -v -e debuginfo -e debugsource -e src.rpm)'; then                                         \
+		exit 1;                                                                                                                 \
+	fi
 
 docker_chrootbuild:
 	if ! $(DOCKER) build --build-arg UID=$$(id -u) -t chrootbuild   \
@@ -419,6 +428,8 @@ packaging_check:
 	          --exclude libfabric.spec                      \
 	          --exclude Makefile                            \
 	          --exclude README.md                           \
+	          --exclude SECURITY.md                         \
+	          --exclude LICENSE                             \
 	          --exclude _topdir                             \
 	          --exclude \*.tar.\*                           \
 	          --exclude \*.code-workspace                   \

@@ -1,3 +1,25 @@
+pmdk (2.1.0-1) stable; urgency=medium
+
+  * Update to release 2.1.0 w/o NDCTL support which:
+    * Introduces the new logging subsystem in the release build for all libraries.
+    * Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
+    * Log level thresholds are controlled via new API, see pmem(obj)_log_set_treshold() for details.
+    * These new APIs are not available for LIBPMEMPOOL at the moment.
+    * The new logging subsystem is suppressed in the debug build when any of the legacy debug logging environment variables is set:
+      * PMEM_LOG_LEVEL/_FILE
+      * PMEMOBJ_LOG_LEVEL/_FILE
+      * PMEMPOOL_LOG_LEVEL/_FILE
+      * The debug logging subsystem becomes DEPRECATED.
+    * Drops support for building without libpthread (NO_LIBPTHREAD build-time define).
+    * Introduces fuses against ill-considered use of NDCTL_ENABLE=n.
+      * PMEMOBJ_IGNORE_DIRTY_SHUTDOWN and PMEMOBJ_IGNORE_BAD_BLOCKS are required to acknowledge the understanding of what production-critical functions are missing for the build without NDCTL.
+    * Does not allow create PMEMOBJ pool without unsafe shutdown counter (USC) if not explicitly disabled.
+      * use PMEMOBJ_CONF="sds.at_create=0" to disable USC when working without PMem (emulated PMem, Docker, etc.).
+  * Includes also release 2.0.1 which
+    * Reduces libpmemobj's stack usage below the 11kB threshold.
+
+ -- Tomasz Gromadzki <tomasz.gromadzki@intel.com>  Tue, 06 Aug 2024 10:00:00 +0000
+
 pmdk (2.0.0-1) stable; urgency=medium
 
   * Upgrade to 2.0.0 which:
