@@ -29,7 +29,7 @@
 %bcond_with ndctl
 
 %define min_ndctl_ver 63
-%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n VALGRIND=0
+%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
 
 %if %{with ndctl}
     %define make_common_args %{_make_common_args}
