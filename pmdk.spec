@@ -1,7 +1,5 @@
 
 # rpmbuild options:
-#   --with ndctl
-#   --define _testconfig <path to custom testconfig.sh>
 #   --define _skip_check 1
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
@@ -25,17 +23,10 @@
 
 %global _hardened_build 1
 
-# by default build without ndctl, unless explicitly enabled
-%bcond_with ndctl
-
 %define min_ndctl_ver 63
 %define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
 
-%if %{with ndctl}
-    %define make_common_args %{_make_common_args}
-%else
-    %define make_common_args %{_make_common_args} NDCTL_ENABLE=n PMEMOBJ_IGNORE_DIRTY_SHUTDOWN=y PMEMOBJ_IGNORE_BAD_BLOCKS=y
-%endif
+%define make_common_args %{_make_common_args}
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
@@ -61,13 +52,11 @@ BuildRequires:  pandoc
 BuildRequires:  perl
 BuildRequires:  fdupes
 
-%if %{with ndctl}
 %if %{defined suse_version}
 BuildRequires:  libndctl-devel >= %{min_ndctl_ver}
 %else
 BuildRequires:  ndctl-devel >= %{min_ndctl_ver}
 BuildRequires:  daxctl-devel >= %{min_ndctl_ver}
-%endif
 %endif
 
 # Debug variants of the libraries should be filtered out of the provides.
@@ -335,8 +324,6 @@ state.
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
-%if %{with ndctl}
-
 %package -n daxio
 Summary: Perform I/O on Device DAX devices or zero a Device DAX device
 Group: System Environment/Base
@@ -355,8 +342,6 @@ a device.
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-# _with_ndctl
-%endif
 
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
@@ -396,15 +381,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %if 0%{?_skip_check} == 1
     echo "Check skipped"
 %else
-    %if %{defined _testconfig}
-        cp %{_testconfig} src/test/testconfig.sh
-    %else
-        echo "PMEM_FS_DIR=/dev/shm" > src/test/testconfig.sh
-        echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
-        echo 'PMEMOBJ_CONF="sds.at_create=0"' >> src/test/testconfig.sh
-        echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
-        echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
-    %endif
+    echo "PMEM_FS_DIR=/dev/shm" > src/test/testconfig.sh
+    echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
+    echo 'PMEMOBJ_CONF="sds.at_create=0"' >> src/test/testconfig.sh
+    echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
+    echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
     make %{make_common_args} check
 %endif
 
@@ -431,8 +412,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
-* Thu Aug 08 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-2
+* Tue Aug 20 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-2
 - Enable NDCTL on the top of PMDK 2.1.0
+  - remove an option to build PMDK w/o NDCTL.
 
 * Tue Aug 06 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
 - Update to release 2.1.0 w/o NDCTL support which:
