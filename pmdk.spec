@@ -1,7 +1,4 @@
 
-# rpmbuild options:
-#   --define _skip_check 1
-
 # do not terminate build if files in the $RPM_BUILD_ROOT
 # directory are not found in the %%files (without rpmem case)
 #define _unpackaged_files_terminate_build 0
@@ -9,9 +6,7 @@
 # Ignore an issue with unpackaged libpmem2 files
 %define _unpackaged_files_terminate_build 0
 
-# disable 'make check' on suse
 %if %{defined suse_version}
-    %define _skip_check 1
     %define dist .suse%{suse_version}
 %endif
 
@@ -378,16 +373,12 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %check
-%if 0%{?_skip_check} == 1
-    echo "Check skipped"
-%else
-    echo "PMEM_FS_DIR=/dev/shm" > src/test/testconfig.sh
-    echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
-    echo 'PMEMOBJ_CONF="sds.at_create=0"' >> src/test/testconfig.sh
-    echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
-    echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
-    make %{make_common_args} check
-%endif
+echo "PMEM_FS_DIR=/dev/shm" > src/test/testconfig.sh
+echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
+echo 'PMEMOBJ_CONF="sds.at_create=0"' >> src/test/testconfig.sh
+echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
+echo 'TEST_FS="pmem any none"' >> src/test/testconfig.sh
+make %{make_common_args} check
 
 %if 0%{?suse_version} >= 01315
 %post   -n libpmem%{?libmajor} -p /sbin/ldconfig
