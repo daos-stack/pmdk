@@ -13,9 +13,10 @@ on:
     - cron: '17 9 * * 1'
   push:
     branches: [ "master" ]
+  pull_request:
 
-# Declare default permissions as read only.
-permissions: read-all
+
+permissions: {}
 
 jobs:
   analysis:
@@ -71,3 +72,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results.sarif
+        if: ${{ github.event_name != 'pull_request'  }}
