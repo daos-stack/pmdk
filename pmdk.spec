@@ -19,9 +19,7 @@
 %global _hardened_build 1
 
 %define min_ndctl_ver 63
-%define _make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
-
-%define make_common_args %{_make_common_args}
+%define make_common_args EXTRA_CFLAGS="-Wno-error" NORPATH=1 BUILD_EXAMPLES=n BUILD_BENCHMARKS=n
 
 Name:       pmdk
 Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
@@ -403,7 +401,7 @@ make %{make_common_args} check
 
 
 %changelog
-* Tue Aug 20 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-2
+* Wed Sep 04 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-2
 - Enable NDCTL on the top of PMDK 2.1.0
   - remove an option to build PMDK w/o NDCTL.
 
