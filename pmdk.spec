@@ -14,7 +14,7 @@
 %global minor 1
 %global bugrelease 0
 #%%global prerelease rc1
-%global buildrelease 2
+%global buildrelease 3
 
 %global _hardened_build 1
 
@@ -35,6 +35,11 @@ URL:        https://github.com/pmem/pmdk
 }
 
 Source:     https://github.com/pmem/%{name}/releases/download/%{upstream_version}/%{name}-%{upstream_version}.tar.gz
+%if "%{?commit}" != ""
+Patch0: %{version}..%{commit}.patch
+%endif
+# Fix https://github.com/pmem/pmdk/issues/6107: Annoying error message on user intentional transaction abort
+Patch1: https://github.com/pmem/pmdk/commit/61e32285370e629e2b36bbb991b919e44f87d915.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -401,11 +406,14 @@ make %{make_common_args} check
 
 
 %changelog
+* Wed Oct 23 2024  Tomasz Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-3
+- use patch to avoid anoing error message on intentional transaction abort.
+
 * Wed Sep 04 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-2
 - Enable NDCTL on the top of PMDK 2.1.0
   - remove an option to build PMDK w/o NDCTL.
 
-* Tue Aug 06 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
+* Tue Aug 06 2024  Tomasz Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-1
 - Update to release 2.1.0 w/o NDCTL support which:
   - Introduces the new logging subsystem in the release build for all libraries.
   - Messages by default are printed to syslog and stderr but might be redirected to a user-defined function, see pmem(obj)_log_set_function() for details.
