@@ -4,7 +4,7 @@
 
 set -eux -o pipefail
 IFS=' ' read -r -a add_bases <<< "${1:-}"
-origin=origin
+origin="${ORIGIN:-origin}"
 mapfile -t all_bases < <(echo "master"
                          git branch -r | sed -ne "/^  $origin\\/release\\/[0-9]/s/^  $origin\\///p")
 all_bases+=("${add_bases[@]}")
