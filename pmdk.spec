@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
-# Copyright (c) 2019-2024 Intel Corporation
+# Copyright (c) 2017-2024 Intel Corporation
 
 # rpmbuild options:
 #   --with ndctl
