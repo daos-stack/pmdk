@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+# Copyright (c) 2022-2024 Intel Corporation
+
 # This line is mandatory to access the configuration functions
 from Config import *
 

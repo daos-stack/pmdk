@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+# Copyright (c) 2017-2024 Intel Corporation
 
 # rpmbuild options:
 #   --with ndctl
@@ -42,7 +44,7 @@ Version:    %{major}.%{minor}.%{bugrelease}%{?prerelease:~%{prerelease}}
 Release:    %{buildrelease}%{?dist}
 Summary:    Persistent Memory Development Kit
 Group:      System Environment/Libraries
-License:    BSD
+License:    BSD-3-Clause
 URL:        https://github.com/pmem/pmdk
 
 # upstream version with ~ removed
