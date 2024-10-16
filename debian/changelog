@@ -1,3 +1,10 @@
+pmdk (2.1.0-2) stable; urgency=medium
+
+  * Enable NDCTL on the top of PMDK 2.1.0
+    * remove an option to build PMDK w/o NDCTL.
+
+ -- Tomasz Gromadzki <tomasz.gromadzki@intel.com>  Wed, 04 Sep 2024 10:00:00 +0000
+
 pmdk (2.1.0-1) stable; urgency=medium
 
   * Update to release 2.1.0 w/o NDCTL support which:
