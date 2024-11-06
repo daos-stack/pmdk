@@ -410,10 +410,10 @@ make %{make_common_args} check
 
 
 %changelog
-* Wed Oct 23 2024  Tomasz Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-3
-- use patch to avoid anoing error message on intentional transaction abort.
-- use patch to avoid anoing error message on PMDK used with non-PMem HW.
-
+* Wed Nov 06 2024  Tomasz Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-3
+- Apply patches to silence annoying error messages on:
+  - an intentional transaction abort and
+  - PMDK being used with non-PMem HW.
 
 * Wed Sep 04 2024  Tomasz.Gromadzki <tomasz.gromadzki@intel.com> - 2.1.0-2
 - Enable NDCTL on the top of PMDK 2.1.0
