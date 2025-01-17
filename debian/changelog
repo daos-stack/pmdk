@@ -1,3 +1,10 @@
+pmdk (2.1.0-3) stable; urgency=medium
+  * Apply patches to silence annoying error messages on:
+    * an intentional transaction abort and
+    * PMDK being used with non-PMem HW.
+
+ -- Tomasz Gromadzki <tomasz.gromadzki@intel.com>  Wed, 06 Nov 2024 10:00:00 +0000
+
 pmdk (2.1.0-2) stable; urgency=medium
 
   * Enable NDCTL on the top of PMDK 2.1.0
