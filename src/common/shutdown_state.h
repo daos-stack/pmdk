@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 /* Copyright 2017-2020, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * shutdown_state.h -- unsafe shudown detection
@@ -23,6 +24,9 @@ struct shutdown_state {
 	uint64_t checksum;
 };
 
+#define FLUSH_SDS(sds, rep) \
+	if ((rep) != NULL) os_part_deep_common(rep, 0, sds, sizeof(*(sds)), 1)
+
 int shutdown_state_init(struct shutdown_state *sds, struct pool_replica *rep);
 int shutdown_state_add_part(struct shutdown_state *sds, int fd,
 	struct pool_replica *rep);
@@ -33,6 +37,12 @@ void shutdown_state_clear_dirty(struct shutdown_state *sds,
 
 int shutdown_state_check(struct shutdown_state *curr_sds,
 	struct shutdown_state *pool_sds, struct pool_replica *rep);
+
+void shutdown_state_reinit(struct shutdown_state *curr_sds,
+	struct shutdown_state *pool_sds, struct pool_replica *rep);
+
+void shutdown_state_checksum(struct shutdown_state *sds,
+	struct pool_replica *rep);
 
 #ifdef __cplusplus
 }

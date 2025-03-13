@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2017-2024, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * shutdown_state.c -- unsafe shudown detection
@@ -17,13 +18,10 @@
 #include "bad_blocks.h"
 #include "../libpmem2/pmem2_utils.h"
 
-#define FLUSH_SDS(sds, rep) \
-	if ((rep) != NULL) os_part_deep_common(rep, 0, sds, sizeof(*(sds)), 1)
-
 /*
- * shutdown_state_checksum -- (internal) counts SDS checksum and flush it
+ * shutdown_state_checksum -- counts SDS checksum and flush it
  */
-static void
+void
 shutdown_state_checksum(struct shutdown_state *sds, struct pool_replica *rep)
 {
 	LOG(3, "sds %p", sds);
@@ -157,24 +155,6 @@ shutdown_state_clear_dirty(struct shutdown_state *sds, struct pool_replica *rep)
 	FLUSH_SDS(sds, rep);
 
 	shutdown_state_checksum(sds, rep);
-}
-
-/*
- * shutdown_state_reinit -- (internal) reinitializes shutdown_state struct
- */
-static void
-shutdown_state_reinit(struct shutdown_state *curr_sds,
-	struct shutdown_state *pool_sds, struct pool_replica *rep)
-{
-	LOG(3, "curr_sds %p, pool_sds %p", curr_sds, pool_sds);
-	shutdown_state_init(pool_sds, rep);
-	pool_sds->uuid = htole64(curr_sds->uuid);
-	pool_sds->usc = htole64(curr_sds->usc);
-	pool_sds->dirty = 0;
-
-	FLUSH_SDS(pool_sds, rep);
-
-	shutdown_state_checksum(pool_sds, rep);
 }
 
 /*
