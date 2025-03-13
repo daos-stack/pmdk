@@ -128,6 +128,7 @@ OTHER_TESTS = \
 	pmemobjcli\
 	pmemspoil\
 	scope\
+	sds_check\
 	set_funcs\
 	traces\
 	unicode_match_script\
