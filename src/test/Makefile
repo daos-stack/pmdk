@@ -148,6 +148,7 @@ OTHER_TESTS = \
 	util_poolset_size\
 	util_ravl\
 	util_sds\
+	util_sds_check\
 	util_uuid_generate\
 	util_vec\
 	util_vecq\
