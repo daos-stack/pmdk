@@ -1,11 +1,12 @@
 #
 # Copyright 2019, Intel Corporation
+# Copyright 2025 Hewlett Packard Enterprise Development LP
 #
 # 'recipe' for Docker to build an Debian package
 #
 # Pull base image
 FROM ubuntu:rolling
-Maintainer daos-stack <daos@daos.groups.io>
+LABEL org.opencontainers.image.authors="daos@daos.groups.io"
 
 # use same UID as host and default value of 1000 if not specified
 ARG UID=1000

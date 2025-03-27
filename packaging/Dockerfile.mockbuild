@@ -1,5 +1,6 @@
 #
 # Copyright 2018-2024 Intel Corporation
+# Copyright 2025 Hewlett Packard Enterprise Development LP
 #
 # 'recipe' for Docker to build an RPM
 #
@@ -13,15 +14,16 @@ LABEL maintainer="daos@daos.groups.io"
 
 # Use local repo server if present
 ARG REPO_FILE_URL
-RUN if [ -n "$REPO_FILE_URL" ]; then                            \
-        cd /etc/yum.repos.d/ &&                                 \
-        curl -k -f -o daos_ci-fedora-artifactory.repo.tmp       \
-             "$REPO_FILE_URL"daos_ci-fedora-artifactory.repo && \
-        for file in *.repo; do                                  \
-            true > $file;                                       \
-        done;                                                   \
-        mv daos_ci-fedora-artifactory.repo{.tmp,};              \
-    fi
+ARG DAOS_LAB_CA_FILE_URL
+ARG REPOSITORY_NAME
+# script to install OS updates basic tools and daos dependencies
+# COPY ./utils/scripts/install-fedora.sh /tmp/install.sh
+# script to setup local repo if available
+COPY ./packaging/scripts/repo-helper-fedora.sh /tmp/repo-helper.sh
+
+RUN chmod +x /tmp/repo-helper.sh &&                 \
+    /tmp/repo-helper.sh &&                          \
+    rm -f /tmp/repo-helper.sh
 
 # Install basic tools
 RUN dnf -y install mock make                                        \
@@ -33,13 +35,15 @@ RUN dnf -y install mock make                                        \
 ARG UID=1000
 
 # Add build user (to keep rpmbuild happy)
-ENV USER build
-ENV PASSWD build
+ENV USER=build
+ENV PASSWD=build
 # add the user to the mock group so it can run mock
 RUN if [ $UID != 0 ]; then                   \
         useradd -u $UID -ms /bin/bash $USER; \
         echo "$USER:$PASSWD" | chpasswd;     \
         usermod -a -G mock $USER;            \
+        mkdir -p /var/cache/mock;            \
+        chown $USER:root /var/cache/mock;    \
     fi
 
 ARG CB0
