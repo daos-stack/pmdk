@@ -49,8 +49,8 @@ jobs:
   # Static builds are tested in this limited scope only.
   static:
     name: Static
-    if: github.repository == 'pmem/pmdk'
-    runs-on: [self-hosted, rhel]
+    if: github.repository_owner == 'daos-stack'
+    runs-on: [self-hosted, pmdk, rhel]
     strategy:
       fail-fast: false
       matrix:
@@ -74,8 +74,8 @@ jobs:
   # at compile time.
   fault_injection:
     name: Fault injection
-    if: github.repository == 'pmem/pmdk'
-    runs-on: [self-hosted, rhel]
+    if: github.repository_owner == 'daos-satck'
+    runs-on: [self-hosted, pmdk, rhel]
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -100,8 +100,8 @@ jobs:
   # https://github.com/daos-stack/pmdk/pull/35
   ndctl_enable_n:
     name: Without ndctl
-    if: github.repository == 'pmem/pmdk'
-    runs-on: [self-hosted, rhel]
+    if: github.repository_owner == 'daos-stack'
+    runs-on: [self-hosted, pmdk, rhel]
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
