@@ -24,11 +24,11 @@ jobs:
           fetch-depth: 50
 
       - name: Check changelog
-        # Skip for pmem/pmdk/master and stable-* branches
+        # Skip for master and stable-* branches
         if: |
-          !(github.repository == 'pmem/pmdk' &&
-            (github.ref_name == 'master' || startsWith(github.ref_name, 'stable-'))) &&
-            github.event_name == 'pull_request'
+          !(github.repository_owner == 'daos-stack' &&
+          (github.ref_name == 'master' || startsWith(github.ref_name, 'stable-'))) &&
+          github.event_name == 'pull_request'
         uses: Zomzog/changelog-checker@09cfe9ad3618dcbfdba261adce0c41904cabb8c4 # v1.3.0
         with:
           fileName: ChangeLog
