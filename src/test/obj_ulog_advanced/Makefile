@@ -1,11 +1,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2024, Intel Corporation
+# Copyright 2025, Hewlett Packard Enterprise Development LP
 
 #
 # src/test/obj_ulog_advanced/Makefile -- build obj_ulog_advanced test
 #
+TOP = ../../..
+vpath % .c $(TOP)/src/common/
+
 TARGET = obj_ulog_advanced
-OBJS = obj_ulog_advanced.o
+OBJS = obj_ulog_advanced.o shutdown_state_helper.o
 
 BUILD_STATIC_DEBUG=n
 BUILD_STATIC_NONDEBUG=n

@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2015-2020, Intel Corporation
+# Copyright 2025, Hewlett Packard Enterprise Development LP
 
 #
 # src/test/util_sds/Makefile -- shutdown_tests unit test
@@ -13,7 +14,8 @@ OBJS = util_sds.o\
 	shutdown_state.o\
 	ut_pmem2_config.o\
 	ut_pmem2_source.o\
-	ut_pmem2_utils.o
+	ut_pmem2_utils.o\
+	shutdown_state_helper.o
 
 LIBPMEM2=internal-debug
 

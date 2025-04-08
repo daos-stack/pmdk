@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2017-2022, Intel Corporation
+# Copyright 2025, Hewlett Packard Enterprise Development LP
 
 #
 # src/test/pmem_deep_persist/Makefile -- build pmem_deep_persist test
@@ -11,6 +12,7 @@ vpath %.c $(TOP)/src/libpmem
 vpath %.c $(TOP)/src/libpmem2
 vpath %.c $(TOP)/src/libpmem2/$(ARCH)
 vpath %.c $(TOP)/src/libpmemobj
+vpath %.c $(TOP)/src/common
 
 TARGET = pmem_deep_persist
 
@@ -18,7 +20,8 @@ OBJS = pmem_deep_persist.o\
 	pmem.o\
 	pmem_posix.o\
 	memops_generic.o\
-	mocks_posix.o
+	mocks_posix.o\
+	shutdown_state_helper.o
 
 ifeq ($(ARCH), aarch64)
 OBJS += init.o
