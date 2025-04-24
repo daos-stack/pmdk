@@ -10,7 +10,7 @@ on:
 env:
   # Note: All coverage scans, e.g. on pull requests, should be run in the same
   # environment.
-  GITHUB_REPO:  pmem/pmdk
+  GITHUB_REPO:  ${{ github.repository }}
   DOCKER_REPO:  ghcr.io/pmem/pmdk
   HOST_WORKDIR: /home/runner/work/pmdk/pmdk
   WORKDIR:      utils/docker
