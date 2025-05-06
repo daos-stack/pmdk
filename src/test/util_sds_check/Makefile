@@ -10,7 +10,7 @@ BUILD_STATIC_NONDEBUG=n
 TARGET = util_sds_check
 OBJS = util_sds_check.o
 
-LIBPMEM=internal-debug
+LIBPMEM=y
 LIBPMEMCOMMON=internal-debug
 
 include ../Makefile.inc

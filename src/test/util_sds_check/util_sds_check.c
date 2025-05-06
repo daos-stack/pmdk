@@ -47,8 +47,8 @@ static int
 test_invalid_checksum()
 {
 	SET_SDS(Pool_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
+	/* Pool_sds.checksum left zeroed out (invalid) */
 	SET_SDS(Curr_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
-	shutdown_state_checksum(&Curr_sds, &Rep);
 
 	int ret = shutdown_state_check(&Curr_sds, &Pool_sds, &Rep);
 	UT_ASSERTeq(ret, 0);
