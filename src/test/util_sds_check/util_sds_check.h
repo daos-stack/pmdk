@@ -9,6 +9,8 @@
 #include "shutdown_state.h"
 #include "set.h"
 
+#define NO_ARGS_CONSUMED 0
+
 #define DIRTY_SET 1
 #define DIRTY_CLEAR 0
 

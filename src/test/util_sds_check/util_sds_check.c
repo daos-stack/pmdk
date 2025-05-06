@@ -39,7 +39,7 @@ test_dirty_clear()
 	UT_ASSERTeq(ret, 0);
 	UT_ASSERTeq(RCOUNTER(shutdown_state_reinit), 1);
 
-	return ret;
+	return NO_ARGS_CONSUMED;
 }
 
 /* Pool_sds having an invalid checksum. */
@@ -54,7 +54,7 @@ test_invalid_checksum()
 	UT_ASSERTeq(ret, 0);
 	UT_ASSERTeq(RCOUNTER(shutdown_state_reinit), 1);
 
-	return ret;
+	return NO_ARGS_CONSUMED;
 }
 
 /*
@@ -73,7 +73,7 @@ test_dirty_set()
 	UT_ASSERTeq(ret, 0);
 	UT_ASSERTeq(RCOUNTER(shutdown_state_reinit), 1);
 
-	return ret;
+	return NO_ARGS_CONSUMED;
 }
 
 /* Pool_sds and Curr_sds having different uuid. */
@@ -89,7 +89,7 @@ test_invalid_uuid()
 	UT_ASSERTeq(ret, 0);
 	UT_ASSERTeq(RCOUNTER(shutdown_state_reinit), 1);
 
-	return ret;
+	return NO_ARGS_CONSUMED;
 }
 
 /*
@@ -108,7 +108,7 @@ test_invalid_uuid_set_dirty()
 	UT_ASSERTeq(ret, 1);
 	UT_ASSERTeq(RCOUNTER(shutdown_state_reinit), 0);
 
-	return ret;
+	return NO_ARGS_CONSUMED;
 }
 
 /* Pool_sds and Curr_sds having different USC and the same UUID. */
@@ -124,7 +124,7 @@ test_invalid_usc()
 	UT_ASSERTeq(ret, 0);
 	UT_ASSERTeq(RCOUNTER(shutdown_state_reinit), 1);
 
-	return ret;
+	return NO_ARGS_CONSUMED;
 }
 
 /*
@@ -143,7 +143,7 @@ test_invalid_usc_set_dirty()
 	UT_ASSERTeq(ret, 1);
 	UT_ASSERTeq(RCOUNTER(shutdown_state_reinit), 0);
 
-	return ret;
+	return NO_ARGS_CONSUMED;
 }
 
 /* Pool_sds and Curr_sds having identical values (dirty==0). */
@@ -159,7 +159,7 @@ test_happy_day()
 	UT_ASSERTeq(ret, 0);
 	UT_ASSERTeq(RCOUNTER(shutdown_state_reinit), 0);
 
-	return ret;
+	return NO_ARGS_CONSUMED;
 }
 
 static struct test_case test_cases[] = {
