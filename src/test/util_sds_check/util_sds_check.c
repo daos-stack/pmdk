@@ -67,7 +67,6 @@ test_dirty_set()
 	SET_SDS(Pool_sds, SDS_CUSTOM(USC, UUID, DIRTY_SET));
 	shutdown_state_checksum(&Pool_sds, &Rep);
 	SET_SDS(Curr_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
-	shutdown_state_checksum(&Curr_sds, &Rep);
 
 	int ret = shutdown_state_check(&Curr_sds, &Pool_sds, &Rep);
 	UT_ASSERTeq(ret, 0);
@@ -83,7 +82,6 @@ test_invalid_uuid()
 	SET_SDS(Pool_sds, SDS_CUSTOM(USC, UUID ^ INVALID_VALUE, DIRTY_CLEAR));
 	shutdown_state_checksum(&Pool_sds, &Rep);
 	SET_SDS(Curr_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
-	shutdown_state_checksum(&Curr_sds, &Rep);
 
 	int ret = shutdown_state_check(&Curr_sds, &Pool_sds, &Rep);
 	UT_ASSERTeq(ret, 0);
@@ -102,7 +100,6 @@ test_invalid_uuid_set_dirty()
 	SET_SDS(Pool_sds, SDS_CUSTOM(USC, UUID ^ INVALID_VALUE, DIRTY_SET));
 	shutdown_state_checksum(&Pool_sds, &Rep);
 	SET_SDS(Curr_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
-	shutdown_state_checksum(&Curr_sds, &Rep);
 
 	int ret = shutdown_state_check(&Curr_sds, &Pool_sds, &Rep);
 	UT_ASSERTeq(ret, 1);
@@ -118,7 +115,6 @@ test_invalid_usc()
 	SET_SDS(Pool_sds, SDS_CUSTOM(USC ^ INVALID_VALUE, UUID, DIRTY_CLEAR));
 	shutdown_state_checksum(&Pool_sds, &Rep);
 	SET_SDS(Curr_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
-	shutdown_state_checksum(&Curr_sds, &Rep);
 
 	int ret = shutdown_state_check(&Curr_sds, &Pool_sds, &Rep);
 	UT_ASSERTeq(ret, 0);
@@ -137,7 +133,6 @@ test_invalid_usc_set_dirty()
 	SET_SDS(Pool_sds, SDS_CUSTOM(USC ^ INVALID_VALUE, UUID, DIRTY_SET));
 	shutdown_state_checksum(&Pool_sds, &Rep);
 	SET_SDS(Curr_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
-	shutdown_state_checksum(&Curr_sds, &Rep);
 
 	int ret = shutdown_state_check(&Curr_sds, &Pool_sds, &Rep);
 	UT_ASSERTeq(ret, 1);
@@ -153,7 +148,6 @@ test_happy_day()
 	SET_SDS(Pool_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
 	shutdown_state_checksum(&Pool_sds, &Rep);
 	SET_SDS(Curr_sds, SDS_CUSTOM(USC, UUID, DIRTY_CLEAR));
-	shutdown_state_checksum(&Curr_sds, &Rep);
 
 	int ret = shutdown_state_check(&Curr_sds, &Pool_sds, &Rep);
 	UT_ASSERTeq(ret, 0);
