@@ -1,0 +1,6 @@
+util_sds_check$(nW)TEST0: START: util_sds_check
+ $(nW)util_sds_check test_dirty_clear
+src version: $(nW)
+compiled with support for shutdown state
+compiled with libndctl $(nW)
+util_sds_check$(nW)TEST0: DONE

@@ -1,0 +1,7 @@
+util_sds_check$(nW)TEST5: START: util_sds_check
+ $(nW)util_sds_check test_invalid_usc
+src version: $(nW)
+compiled with support for shutdown state
+compiled with libndctl $(nW)
+an ADR failure was detected but the pool was closed - SDS will be reinitialized
+util_sds_check$(nW)TEST5: DONE
