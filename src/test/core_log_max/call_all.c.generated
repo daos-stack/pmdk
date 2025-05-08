@@ -181,11 +181,11 @@ call_all_ERR_WO_ERRNO(void)
 	// src/common/set_badblocks.c
 	ERR_WO_ERRNO("part file contains bad blocks -- '%s'", _s);
 	// src/common/shutdown_state.c
-	ERR_WO_ERRNO("cannot read uuid of %d", _d);
-	// src/common/shutdown_state.c
-	ERR_WO_ERRNO("an ADR failure was detected, the pool might be corrupted");
+	ERR_WO_ERRNO("%s, the pool might be corrupted", _s);
 	// src/common/shutdown_state.c
 	ERR_WO_ERRNO("Cannot read unsafe shutdown count. For more information please check https://github.com/pmem/pmdk/issues/4207");
+	// src/common/shutdown_state.c
+	ERR_WO_ERRNO("cannot read uuid of %d", _d);
 	// src/common/shutdown_state.c
 	ERR_WO_ERRNO("cannot read uuid of %d", _d);
 	// src/libpmem/libpmem.c
@@ -462,11 +462,13 @@ call_all_CORE_LOG_WARNING(void)
 	// src/common/set.c
 	CORE_LOG_WARNING("file permissions changed during pool initialization, file: %s (%o)", _s, _u);
 	// src/common/shutdown_state.c
+	CORE_LOG_WARNING("zeroed out - SDS will be reinitialized");
+	// src/common/shutdown_state.c
 	CORE_LOG_WARNING("incorrect checksum - SDS will be reinitialized");
 	// src/common/shutdown_state.c
 	CORE_LOG_WARNING("the pool was not closed - SDS will be reinitialized");
 	// src/common/shutdown_state.c
-	CORE_LOG_WARNING("an ADR failure was detected but the pool was closed - SDS will be reinitialized");
+	CORE_LOG_WARNING("%s - SDS will be reinitialized", _s);
 	// src/libpmemobj/heap.c
 	CORE_LOG_WARNING("failed to allocate memory block runtime tracking info");
 	// src/libpmemobj/heap.c
