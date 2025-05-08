@@ -212,17 +212,16 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 		return 0;
 	}
 	if (dirty == 0) {
-		CORE_LOG_WARNING(
+		CORE_LOG_WARNING("%s - SDS will be reinitialized",
 			is_uuid_correct ?
-			"an ADR failure was detected but the pool was closed - SDS will be reinitialized" :
-			"the pool has moved to a new location but it was closed properly - SDS will be reinitialized");
+			"an ADR failure was detected but the pool was closed" :
+			"the pool has moved to a new location but it was closed properly");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
 
-	ERR_WO_ERRNO(
-		is_uuid_correct ?
-		"an ADR failure was detected, the pool might be corrupted" :
-		"the pool has moved to a new location while it was not closed properly, the pool might be corrupted");
+	ERR_WO_ERRNO("%s, the pool might be corrupted", is_uuid_correct ?
+		"an ADR failure was detected" :
+		"the pool has moved to a new location while it was not closed properly");
 	return 1;
 }
