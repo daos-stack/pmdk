@@ -166,15 +166,25 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 {
 	LOG(3, "curr_sds %p, pool_sds %p", curr_sds, pool_sds);
 
+	/*
+	 * This is likely to occur only when the pool is being opened for
+	 * the first time after the SHUTDOWN_STATE feature has been enabled on
+	 * the pool, for example, via (lib)pmempool.
+	 * Please do not confuse this with establishing SDS during creation.
+	 */
 	if (util_is_zeroed(pool_sds, sizeof(*pool_sds)) &&
 			!util_is_zeroed(curr_sds, sizeof(*curr_sds))) {
+		CORE_LOG_WARNING("zeroed out - SDS will be reinitialized");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
 
+	bool is_uuid_correct =
+		le64toh(pool_sds->uuid) == le64toh(curr_sds->uuid);
+
 	bool is_uuid_usc_correct =
 		le64toh(pool_sds->usc) == le64toh(curr_sds->usc) &&
-		le64toh(pool_sds->uuid) == le64toh(curr_sds->uuid);
+		is_uuid_correct;
 
 	bool is_checksum_correct = util_checksum(pool_sds,
 		sizeof(*pool_sds), &pool_sds->checksum, 0, 0);
@@ -202,14 +212,19 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 		return 0;
 	}
 	if (dirty == 0) {
-		/* an ADR failure but the pool was closed */
 		CORE_LOG_WARNING(
-			"an ADR failure was detected but the pool was closed - SDS will be reinitialized");
+			is_uuid_correct ?
+			"the pool has moved to a new location but it was closed properly - SDS will be reinitialized" :
+			"an ADR failure was detected but the pool was closed - SDS will be reinitialized"
+		);
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
-	/* an ADR failure - the pool might be corrupted */
+	
 	ERR_WO_ERRNO(
-		"an ADR failure was detected, the pool might be corrupted");
+		is_uuid_correct ?
+		"the pool has moved to a new location while it was not closed properly, the pool might be corrupted" :
+		"an ADR failure was detected, the pool might be corrupted"
+	);
 	return 1;
 }
