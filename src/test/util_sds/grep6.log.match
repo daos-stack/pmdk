@@ -1,1 +1,1 @@
-<libpmem2>: <1> [shutdown_state.c:$(N) shutdown_state_check] an ADR failure was detected, the pool might be corrupted
+<libpmem2>: <1> [shutdown_state.c:$(N) shutdown_state_check] the pool has moved to a new location while it was not closed properly, the pool might be corrupted
