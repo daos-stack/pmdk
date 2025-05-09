@@ -1,0 +1,6 @@
+util_sds_check$(nW)TEST7: START: util_sds_check
+ $(nW)util_sds_check test_happy_day
+src version: $(nW)
+compiled with support for shutdown state
+compiled with libndctl $(nW)
+util_sds_check$(nW)TEST7: DONE
