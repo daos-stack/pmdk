@@ -1,1 +1,1 @@
-<libpmem2>: <2> [shutdown_state.c:$(N) shutdown_state_check] the pool has moved to a new location but it was closed properly - SDS will be reinitialized
+<libpmem2>: <1> [shutdown_state.c:$(N) shutdown_state_check] The pool has moved to a new location but it was closed properly - the ADR failure detection will be reinitialized.

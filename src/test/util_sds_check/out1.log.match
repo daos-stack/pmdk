@@ -3,5 +3,5 @@ util_sds_check$(nW)TEST1: START: util_sds_check
 src version: $(nW)
 compiled with support for shutdown state
 compiled with libndctl $(nW)
-incorrect checksum - SDS will be reinitialized
+Incorrect checksum - the ADR failure detection will be reinitialized.
 util_sds_check$(nW)TEST1: DONE

@@ -174,7 +174,8 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 	 */
 	if (util_is_zeroed(pool_sds, sizeof(*pool_sds)) &&
 			!util_is_zeroed(curr_sds, sizeof(*curr_sds))) {
-		CORE_LOG_WARNING("zeroed out - SDS will be reinitialized");
+		CORE_LOG_WARNING(
+			"Enabling ADR failure detection, assuming pool consistency up to this point.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
@@ -194,7 +195,7 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 	if (!is_checksum_correct) {
 		/* the program was killed during opening or closing the pool */
 		CORE_LOG_WARNING(
-			"incorrect checksum - SDS will be reinitialized");
+			"Incorrect checksum - the ADR failure detection will be reinitialized.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
@@ -207,21 +208,23 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 		 * but there wasn't an ADR failure
 		 */
 		CORE_LOG_WARNING(
-			"the pool was not closed - SDS will be reinitialized");
+			"The pool was not closed - the ADR failure detection will be reinitialized.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
 	if (dirty == 0) {
-		CORE_LOG_WARNING("%s - SDS will be reinitialized",
-			is_uuid_correct ?
-			"an ADR failure was detected but the pool was closed" :
-			"the pool has moved to a new location but it was closed properly");
+		if (is_uuid_correct)
+			CORE_LOG_WARNING(
+				"The ADR failure was detected but the pool was closed - the ADR failure detection will be reinitialized.");
+		else
+			CORE_LOG_HARK(
+				"The pool has moved to a new location but it was closed properly - the ADR failure detection will be reinitialized.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
 
-	ERR_WO_ERRNO("%s, the pool might be corrupted", is_uuid_correct ?
-		"an ADR failure was detected" :
-		"the pool has moved to a new location while it was not closed properly");
+	ERR_WO_ERRNO("%s, the pool might be corrupted.", is_uuid_correct ?
+		"The ADR failure was detected" :
+		"The pool has moved to a new location while it was not closed properly");
 	return 1;
 }

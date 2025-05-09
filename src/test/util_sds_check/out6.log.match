@@ -3,5 +3,5 @@ util_sds_check$(nW)TEST6: START: util_sds_check
 src version: $(nW)
 compiled with support for shutdown state
 compiled with libndctl $(nW)
-an ADR failure was detected, the pool might be corrupted
+The ADR failure was detected, the pool might be corrupted.
 util_sds_check$(nW)TEST6: DONE

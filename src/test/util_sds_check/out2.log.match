@@ -3,5 +3,5 @@ util_sds_check$(nW)TEST2: START: util_sds_check
 src version: $(nW)
 compiled with support for shutdown state
 compiled with libndctl $(nW)
-the pool was not closed - SDS will be reinitialized
+The pool was not closed - the ADR failure detection will be reinitialized.
 util_sds_check$(nW)TEST2: DONE
