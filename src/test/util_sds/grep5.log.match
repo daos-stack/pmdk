@@ -1,1 +1,1 @@
-<libpmem2>: <2> [shutdown_state.c:$(N) shutdown_state_check] The ADR failure was detected but the pool was closed properly - reinitializing the ADR failure detection.
+<libpmem2>: <2> [shutdown_state.c:$(N) shutdown_state_check] The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.

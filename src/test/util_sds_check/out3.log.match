@@ -3,5 +3,5 @@ util_sds_check$(nW)TEST3: START: util_sds_check
 src version: $(nW)
 compiled with support for shutdown state
 compiled with libndctl $(nW)
-The pool has moved to a new location but it was closed properly - the ADR failure detection will be reinitialized.
+The pool has moved to a new location but it was closed properly - reinitializing ADR failure detection.
 util_sds_check$(nW)TEST3: DONE

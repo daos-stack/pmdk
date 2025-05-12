@@ -3,5 +3,5 @@ util_sds_check$(nW)TEST2: START: util_sds_check
 src version: $(nW)
 compiled with support for shutdown state
 compiled with libndctl $(nW)
-The ADR failure was detected but the pool was closed properly - reinitializing the ADR failure detection.
+The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.
 util_sds_check$(nW)TEST2: DONE

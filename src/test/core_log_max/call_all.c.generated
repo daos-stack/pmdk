@@ -464,11 +464,11 @@ call_all_CORE_LOG_WARNING(void)
 	// src/common/shutdown_state.c
 	CORE_LOG_WARNING("Enabling ADR failure detection, assuming pool consistency up to this point.");
 	// src/common/shutdown_state.c
-	CORE_LOG_WARNING("Incorrect checksum - the ADR failure detection will be reinitialized.");
+	CORE_LOG_WARNING("Incorrect checksum - reinitializing ADR failure detection.");
 	// src/common/shutdown_state.c
-	CORE_LOG_WARNING("The ADR failure was detected but the pool was closed properly - reinitializing the ADR failure detection.");
+	CORE_LOG_WARNING("The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.");
 	// src/common/shutdown_state.c
-	CORE_LOG_WARNING("The ADR failure was detected but the pool was closed properly - the ADR failure detection will be reinitialized.");
+	CORE_LOG_WARNING("The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.");
 	// src/libpmemobj/heap.c
 	CORE_LOG_WARNING("failed to allocate memory block runtime tracking info");
 	// src/libpmemobj/heap.c
