@@ -208,14 +208,14 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 		 * but there wasn't an ADR failure
 		 */
 		CORE_LOG_WARNING(
-			"The pool was not closed - the ADR failure detection will be reinitialized.");
+			"The ADR failure was detected but the pool was closed properly - reinitializing the ADR failure detection.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
 	if (dirty == 0) {
 		if (is_uuid_correct)
 			CORE_LOG_WARNING(
-				"The ADR failure was detected but the pool was closed - the ADR failure detection will be reinitialized.");
+				"The ADR failure was detected but the pool was closed properly - the ADR failure detection will be reinitialized.");
 		else
 			CORE_LOG_HARK(
 				"The pool has moved to a new location but it was closed properly - the ADR failure detection will be reinitialized.");
