@@ -3,5 +3,5 @@ util_sds_check$(nW)TEST1: START: util_sds_check
 src version: $(nW)
 compiled with support for shutdown state
 compiled with libndctl $(nW)
-Incorrect checksum - reinitializing ADR failure detection.
+The pool was not opened/closed properly - reinitializing ADR failure detection.
 util_sds_check$(nW)TEST1: DONE

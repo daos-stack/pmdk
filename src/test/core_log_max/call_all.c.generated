@@ -464,7 +464,7 @@ call_all_CORE_LOG_WARNING(void)
 	// src/common/shutdown_state.c
 	CORE_LOG_WARNING("Enabling ADR failure detection, assuming pool consistency up to this point.");
 	// src/common/shutdown_state.c
-	CORE_LOG_WARNING("Incorrect checksum - reinitializing ADR failure detection.");
+	CORE_LOG_WARNING("The pool was not opened/closed properly - reinitializing ADR failure detection.");
 	// src/common/shutdown_state.c
 	CORE_LOG_WARNING("The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.");
 	// src/common/shutdown_state.c

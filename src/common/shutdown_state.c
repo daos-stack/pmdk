@@ -195,7 +195,7 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 	if (!is_checksum_correct) {
 		/* the program was killed during opening or closing the pool */
 		CORE_LOG_WARNING(
-			"Incorrect checksum - reinitializing ADR failure detection.");
+			"The pool was not opened/closed properly - reinitializing ADR failure detection.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
