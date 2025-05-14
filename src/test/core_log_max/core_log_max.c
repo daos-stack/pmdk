@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2024, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * core_log_max.c -- unit test to verify max size of log buffers
@@ -119,7 +120,7 @@ test_ERR_W_ERRNO(const struct test_case *tc, int argc, char *argv[])
 	return NO_ARGS_CONSUMED;
 }
 
-#define TOTAL_MESSAGE_NUM_EXPECTED 213
+#define TOTAL_MESSAGE_NUM_EXPECTED 214
 static int Max_message_len = 0;
 static int Total_message_num = 0;
 static char The_longest_message[BIG_BUF_SIZE];

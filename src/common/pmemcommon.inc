@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2017-2023, Intel Corporation
+# Copyright 2025, Hewlett Packard Enterprise Development LP
 #
 # src/pmemcommon.inc -- common SOURCE definitions for PMDK libraries
 #
@@ -21,6 +22,7 @@ SOURCE +=\
 	$(COMMON)/rand.c\
 	$(COMMON)/set.c\
 	$(COMMON)/shutdown_state.c\
+	$(COMMON)/shutdown_state_helper.c\
 	$(COMMON)/uuid.c\
 	$(COMMON)/uuid_linux.c\
 	$(PMEM2)/pmem2_utils.c\
