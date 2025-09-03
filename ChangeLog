@@ -1,3 +1,10 @@
+XXX
+
+	* Version X.X.X
+
+	- introduce pmemobj_xopen()
+	  - POBJ_XOPEN_IGNORE_SDS — disables all warnings related to the absence of the SDS feature. Use of this flag is highly discouraged.
+
 Thu May 23 2024 Oksana Sałyk <oksana.salyk@intel.com>
 
 	* Version 2.1.0

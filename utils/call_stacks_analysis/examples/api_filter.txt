@@ -12,6 +12,7 @@ pmemobj_flush
 pmemobj_free
 pmemobj_memcpy_persist
 pmemobj_open
+pmemobj_xopen
 pmemobj_reserve
 pmemobj_root
 pmemobj_tx_abort

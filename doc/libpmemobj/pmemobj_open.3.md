@@ -24,6 +24,7 @@ header: "pmemobj API version 2.3"
 
 **pmemobj_open**(), **pmemobj_create**(),
 **pmemobj_close**(), **pmemobj_check**(),
+**pmemobj_xopen**(),
 **pmemobj_set_user_data**(), **pmemobj_get_user_data**()
 - create, open, close and validate persistent memory transactional object store
 
@@ -38,6 +39,8 @@ PMEMobjpool *pmemobj_create(const char *path, const char *layout,
 void pmemobj_close(PMEMobjpool *pop);
 int pmemobj_check(const char *path, const char *layout);
 
+PMEMobjpool *pmemobj_xopen(const char *path, const char *layout, uint64_t flags);
+
 void pmemobj_set_user_data(PMEMobjpool *pop, void *data);
 void *pmemobj_get_user_data(PMEMobjpool *pop);
 ```
@@ -47,7 +50,7 @@ void *pmemobj_get_user_data(PMEMobjpool *pop);
 To use the pmem-resident transactional object store provided by
 **libpmemobj**(7), a *memory pool* must first be created
 with the **pmemobj_create**() function described below. Existing pools
-may be opened with the **pmemobj_open**() function.
+may be opened with either the **pmemobj_open**() or **pmemobj_xopen** function.
 
 As of **libpmemobj** **1.11**, these functions are thread-safe; be careful
 if you have to use earlier versions of the library.
@@ -65,7 +68,7 @@ The **pmemobj_create**() function creates a transactional object store with the
 given total *poolsize*. *path* specifies the name of the memory pool file to be
 created. *layout* specifies the application's layout type in the form of a
 string. The layout name is not interpreted by **libpmemobj**(7), but may be
-used as a check when **pmemobj_open**() is called. The layout name, including
+used as a check when **pmemobj_open**()/**pmemobj_xopen**() is called. The layout name, including
 the terminating null byte ('\0'), cannot be longer than **PMEMOBJ_MAX_LAYOUT**
 as defined in **\<libpmemobj.h\>**. A NULL *layout* is equivalent
 to using an empty string as a layout name. *mode* specifies the permissions to
@@ -118,6 +121,11 @@ by the SIGBUS signal, because currently the pool is not checked against
 bad blocks during opening. It can be turned on by setting the CHECK_BAD_BLOCKS
 compat feature. For details see description of this feature
 in **pmempool-feature**(1).
+
+**pmemobj_xopen**() is equivalent to **pmemobj_open**(), but with an additional *flags* argument
+that is a bitmask of the following values:
+
++ **POBJ_XOPEN_IGNORE_SDS** — disables all warnings related to the absence of the SDS feature. See **pmempool_feature_query**(3) for details about SDS (SHUTDOWN_STATE). **Use of this flag is highly discouraged.**
 
 The **pmemobj_close**() function closes the memory pool indicated by *pop* and
 deletes the memory pool handle. The object store itself lives on in the file

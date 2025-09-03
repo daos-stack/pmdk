@@ -26,9 +26,15 @@ extern "C" {
 #define PMEMOBJ_MIN_PART ((size_t)(1024 * 1024 * 2)) /* 2 MiB */
 
 /*
+ * pool management flags
+ */
+#define POBJ_XOPEN_IGNORE_SDS	(((uint64_t)1) << 0)
+
+/*
  * Pool management.
  */
 PMEMobjpool *pmemobj_open(const char *path, const char *layout);
+PMEMobjpool *pmemobj_xopen(const char *path, const char *layout, uint64_t flags);
 
 PMEMobjpool *pmemobj_create(const char *path, const char *layout,
 	size_t poolsize, mode_t mode);

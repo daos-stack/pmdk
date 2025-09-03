@@ -341,6 +341,7 @@ pmemobj_tx_zalloc
 pmemobj_tx_zrealloc
 pmemobj_wcsdup
 pmemobj_xalloc
+pmemobj_xopen
 pmemobj_xreserve
 pmemobj_zalloc
 pmemobj_zrealloc
