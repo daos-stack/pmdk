@@ -70,7 +70,7 @@ prefault.at_open | rw | global | int | int | - | boolean
 
 If set, every page of the pool will be touched and written to when the pool
 is opened, in order to trigger page allocation and minimize the performance
-impact of pagefaults. Affects only the **pmemobj_open**() function.
+impact of pagefaults. Affects only **pmemobj_open**() and **pmemobj_xopen**() functions.
 
 sds.at_create | rw | global | int | int | - | boolean
 

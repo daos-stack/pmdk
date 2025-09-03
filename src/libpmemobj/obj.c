@@ -1457,6 +1457,24 @@ pmemobj_open(const char *path, const char *layout)
 }
 
 /*
+ * pmemobj_xopen -- open a transactional memory pool with flags
+ */
+PMEMobjpool *
+pmemobj_xopen(const char *path, const char *layout, uint64_t flags)
+{
+	PMEMOBJ_API_START();
+	LOG(3, "path %s layout %s", path, layout);
+	PMEMobjpool *pop;
+	unsigned int flags_internal = COW_at_open ? POOL_OPEN_COW : 0;
+	flags_internal |= (flags & POBJ_XOPEN_IGNORE_SDS) ? POOL_OPEN_IGNORE_SDS : 0;
+
+	pop = obj_open_common(path, layout, flags_internal, 1 /** boot */);
+
+	PMEMOBJ_API_END();
+	return pop;
+}
+
+/*
  * obj_pool_lock_cleanup -- (internal) Destroy any locks or condition
  *	variables that were allocated at run time
  */
