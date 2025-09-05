@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2018-2021, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * ctl_sds.c -- implementation of the sds CTL namespace
@@ -31,6 +32,10 @@ CTL_WRITE_HANDLER(at_create)(void *ctx, enum ctl_query_source source,
 	SUPPRESS_UNUSED(ctx, source, indexes);
 
 	int arg_in = *(int *)arg;
+
+	if (SDS_at_create != arg_in && arg_in == 0) {
+		CORE_LOG_HARK("PMEM feature disabled: SDS_at_create=0");
+	}
 
 	SDS_at_create = arg_in;
 
