@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2014-2024, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * obj.c -- transactional object store implementation
@@ -1046,6 +1047,17 @@ no_valid_env:
 	return OBJ_NLANES;
 }
 
+static inline void
+pool_attr_adjust(struct pool_attr *attr)
+{
+	/* force set SDS feature */
+	if (SDS_at_create) {
+		attr->features.incompat |= POOL_FEAT_SDS; /* on */
+	} else {
+		attr->features.incompat &= ~POOL_FEAT_SDS; /* off */
+	}
+}
+
 /*
  * pmemobj_createU -- create a transactional memory pool (set)
  */
@@ -1077,12 +1089,7 @@ pmemobj_createU(const char *path, const char *layout,
 	unsigned runtime_nlanes = obj_get_nlanes();
 
 	struct pool_attr adj_pool_attr = Obj_create_attr;
-
-	/* force set SDS feature */
-	if (SDS_at_create)
-		adj_pool_attr.features.incompat |= POOL_FEAT_SDS;
-	else
-		adj_pool_attr.features.incompat &= ~POOL_FEAT_SDS;
+	pool_attr_adjust(&adj_pool_attr);
 
 	if (util_pool_create(&set, path, poolsize, PMEMOBJ_MIN_POOL,
 			PMEMOBJ_MIN_PART, &adj_pool_attr, &runtime_nlanes,
@@ -1233,7 +1240,10 @@ static int
 obj_pool_open(struct pool_set **set, const char *path, unsigned flags,
 	unsigned *nlanes)
 {
-	if (util_pool_open(set, path, PMEMOBJ_MIN_PART, &Obj_open_attr,
+	struct pool_attr adj_pool_attr = Obj_open_attr;
+	pool_attr_adjust(&adj_pool_attr);
+
+	if (util_pool_open(set, path, PMEMOBJ_MIN_PART, &adj_pool_attr,
 				nlanes, NULL, flags) != 0) {
 		CORE_LOG_ERROR("cannot open pool or pool set");
 		return -1;

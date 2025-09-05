@@ -74,9 +74,12 @@ impact of pagefaults. Affects only the **pmemobj_open**() function.
 
 sds.at_create | rw | global | int | int | - | boolean
 
-If set, force-enables or force-disables SDS feature during pool creation.
-Affects only the **pmemobj_create**() function. See **pmempool_feature_query**(3)
-for information about SDS (SHUTDOWN_STATE) feature.
+If set, this option force-enables or force-disables the SDS feature.
+It affects both the **pmemobj_create**() and **pmemobj_open**() functions.
+A pool created while SDS is force-disabled will have the feature persistently disabled.
+To enable the feature for an existing pool, use **pmempool_feature_enable**(3).
+**pmemobj_open**() cannot open a pool with SDS enabled if the feature is currently force-disabled.
+For more information about the SDS (SHUTDOWN_STATE) feature, see **pmempool_feature_query**(3).
 
 copy_on_write.at_open | rw | global | int | int | - | boolean
 
