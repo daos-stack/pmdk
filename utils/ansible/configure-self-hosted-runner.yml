@@ -38,9 +38,9 @@
 #- hosts: localhost
 #  connection: local
   vars:
-    package_url: https://github.com/actions/runner/releases/download/v2.311.0/actions-runner-linux-x64-2.311.0.tar.gz
+    package_url: https://github.com/actions/runner/releases/download/v2.328.0/actions-runner-linux-x64-2.328.0.tar.gz
     runner_folder: /home/{{ ansible_user }}/actions-runner
-    repo_url: https://github.com/pmem/pmdk
+    repo_url: https://github.com/daos-stack/pmdk
     vars_list: "{{ vars_gha.split(',') }}"
 #    token: # a GitHub token generated for a new self-hosted runner
 #    label: # rhel or opensuse
@@ -93,6 +93,6 @@
       # repo_url: https://github.com/{OWNER}/{REPO}
       # service: actions.runner.{OWNER}-{REPO}.{{ runner_name }}.service
       shell: |
-        systemctl enable actions.runner.pmem-pmdk.{{ runner_name }}.service
-        systemctl restart actions.runner.pmem-pmdk.{{ runner_name }}.service
+        systemctl enable actions.runner.daos-stack-pmdk.{{ runner_name }}.service
+        systemctl restart actions.runner.daos-stack-pmdk.{{ runner_name }}.service
       become: true

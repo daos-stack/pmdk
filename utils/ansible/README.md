@@ -183,7 +183,7 @@ export GHA_TOKEN= # GitHub token generated for a new self-hosted runner
 export HOST_NAME=`hostname`
 export LABELS=rhel
 export VARS_GHA=http_proxy=http://proxy-dmz.{XXX}.com:911,https_proxy=http://proxy-dmz.{XXX}.com:912
-ansible-playbook configure-self-hosted-runner.yml -extra-vars \
+ansible-playbook configure-self-hosted-runner.yml --extra-vars \
 "ansible_user=pmdkuser runner_name=$HOST_NAME labels=$LABELS token=$GHA_TOKEN vars_gha=$VARS_GHA"
 cd
 rm -rf pmdk
@@ -223,7 +223,7 @@ export GHA_TOKEN= # GitHub token generated for a new self-hosted runner
 export HOST_NAME=`hostname`
 export LABELS=opensuse
 export VARS_GHA=http_proxy=http://proxy-dmz.{XXX}.com:911,https_proxy=http://proxy-dmz.{XXX}.com:912
-ansible-playbook configure-self-hosted-runner.yml -extra-vars \
+ansible-playbook configure-self-hosted-runner.yml --extra-vars \
 "ansible_user=pmdkuser runner_name=$HOST_NAME labels=$LABELS token=$GHA_TOKEN vars_gha=$VARS_GHA"
 cd
 rm -rf pmdk
