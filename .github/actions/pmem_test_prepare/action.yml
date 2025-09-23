@@ -17,9 +17,6 @@ runs:
   using: composite
   steps:
 
-    - name: Update OS (may reboot the system and fail the run)
-      uses: ./.github/actions/pmem_host_update
-
     - name: Ensure appropriate DAX permissions
       uses: ./.github/actions/update_dax_permissions
 
