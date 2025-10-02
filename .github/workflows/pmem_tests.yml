@@ -74,7 +74,7 @@ jobs:
   # at compile time.
   fault_injection:
     name: Fault injection
-    if: github.repository_owner == 'daos-satck'
+    if: github.repository_owner == 'daos-stack'
     runs-on: [self-hosted, pmdk, rhel]
 
     steps:
