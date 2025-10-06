@@ -6,8 +6,8 @@ name: PMEM tests w/o valgrind
 on:
   workflow_dispatch:
   schedule:
-    # run this job at 18:00 UTC every day
-    - cron:  '0 18 * * *'
+    # run this job at 18:00 UTC every other day (even-numbered)
+    - cron:  '0 18 2-31/2 * *'
 
 permissions: {}
 
