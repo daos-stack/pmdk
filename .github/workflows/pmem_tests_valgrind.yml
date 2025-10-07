@@ -37,7 +37,7 @@ jobs:
     with:
       force_enable: '["drd", "helgrind"]'
       valgrind: 1
-      # 12h = 720m (the longest workflow execution time) + ~20% leeway.
+      # 12h = 720m (arbitrarily picked in hope it will be enough).
       timeout_minutes: 720
 
 
