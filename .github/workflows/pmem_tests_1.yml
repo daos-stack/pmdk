@@ -1,44 +1,29 @@
-# Run all tests with valgrind on PMEM.
+# Run all tests on PMEM.
 #
 # This workflow is run on 'self-hosted' runners.
-name: PMEM tests w/ valgrind
+name: PMEM tests part 1
 
 on:
   workflow_dispatch:
   schedule:
-    # run this job at 18:00 UTC every other day (odd-numbered)
-    - cron:  '0 18 */2 * *'
+    # run this job at 18:00 UTC every other day (even-numbered)
+    - cron:  '0 18 2-31/2 * *'
 
 permissions: {}
 
 jobs:
   # Test the default build with the basic test suite.
   Basic:
-    name: Basic w/ Valgrind
+    strategy:
+      matrix:
+        VALGRIND: [0, 1]
+    name: Basic ${{ matrix.VALGRIND == 0  && 'w/o Valgrind' || 'w/ Valgrind' }}
     uses: ./.github/workflows/pmem_test_matrix.yml
     with:
+      # Exclude all Valgrind tests. All tests employing Valgrind tooling are run
+      # in the dedicated workflows below.
       force_enable: '["none"]'
-      valgrind: 1
-
-
-  # Test the default build with force-enabled Valgrind tooling for (persistent)
-  # memory error detection.
-  Memory:
-    uses: ./.github/workflows/pmem_test_matrix.yml
-    with:
-      force_enable: '["pmemcheck", "memcheck"]'
-      valgrind: 1
-
-
-  # Test the default build with force-enabled Valgrind tooling for thread error
-  # detection.
-  Thread:
-    uses: ./.github/workflows/pmem_test_matrix.yml
-    with:
-      force_enable: '["drd", "helgrind"]'
-      valgrind: 1
-      # 12h = 720m (arbitrarily picked in hope it will be enough).
-      timeout_minutes: 720
+      valgrind: ${{ matrix.VALGRIND }}
 
 
   # Static builds are tested in this limited scope only.
@@ -46,6 +31,8 @@ jobs:
     name: Static
     if: github.repository_owner == 'daos-stack'
     runs-on: [self-hosted, pmdk, rhel]
+    with:
+      timeout_minutes: 540 # 9h
     strategy:
       fail-fast: false
       matrix:
@@ -86,3 +73,28 @@ jobs:
         with:
           build: nondebug # only the production build is considered
           test_label: fault_injection # only dedicated scenarios
+
+
+  # By default, PMDK is built with NDCTL in order to provide RAS features.
+  # This build is only viable as long as DAOS builds PMDK with NDCTL_ENABLE=n
+  # https://github.com/daos-stack/pmdk/pull/12
+  # It should be removed as soon as following PR is merged
+  # https://github.com/daos-stack/pmdk/pull/35
+  ndctl_enable_n:
+    name: Without ndctl
+    if: github.repository_owner == 'daos-stack'
+    runs-on: [self-hosted, pmdk, rhel]
+
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Test prepare
+        uses: ./.github/actions/pmem_test_prepare
+        with:
+          ndctl_enable: n
+          valgrind: 0
+
+      - name: Test run
+        uses: ./.github/actions/pmem_test_run
+        with:
+          build: nondebug # only the production build is considered
