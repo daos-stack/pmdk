@@ -31,7 +31,7 @@ jobs:
     name: Static
     if: github.repository_owner == 'daos-stack'
     runs-on: [self-hosted, pmdk, rhel]
-    timeout-minutes: 540 # 9h
+    timeout-minutes: 720 # 12h
     strategy:
       fail-fast: false
       matrix:
