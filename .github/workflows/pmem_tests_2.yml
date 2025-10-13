@@ -19,6 +19,8 @@ jobs:
     with:
       force_enable: '["pmemcheck", "memcheck"]'
       valgrind: 1
+      # 12h = 720m (arbitrarily picked in hope it will be enough).
+      timeout_minutes: 720
 
 
   # Test the default build with force-enabled Valgrind tooling for thread error
