@@ -23,7 +23,7 @@ jobs:
   job:
     name: ${{ matrix.force_enable }}, ${{ matrix.test_script }}, ${{ matrix.os }}, ${{ matrix.build }}
     if: github.repository_owner == 'daos-stack'
-    runs-on: [self-hosted, pmdk, "${{ matrix.os }}", wp, icx]
+    runs-on: [self-hosted, pmdk, "${{ matrix.os }}"]
     timeout-minutes: ${{ inputs.timeout_minutes }}
     strategy:
       fail-fast: false
