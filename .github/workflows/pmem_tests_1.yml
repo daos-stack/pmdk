@@ -30,7 +30,7 @@ jobs:
   static:
     name: Static
     if: github.repository_owner == 'daos-stack'
-    runs-on: [self-hosted, pmdk, rhel]
+    runs-on: [self-hosted, pmdk, rhel, icx]
     timeout-minutes: 1440 # 24h
     strategy:
       fail-fast: false
@@ -56,7 +56,7 @@ jobs:
   fault_injection:
     name: Fault injection
     if: github.repository_owner == 'daos-stack'
-    runs-on: [self-hosted, pmdk, rhel]
+    runs-on: [self-hosted, pmdk, rhel, wp, icx]
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -82,7 +82,7 @@ jobs:
   ndctl_enable_n:
     name: Without ndctl
     if: github.repository_owner == 'daos-stack'
-    runs-on: [self-hosted, pmdk, rhel]
+    runs-on: [self-hosted, pmdk, rhel, wp, icx]
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
