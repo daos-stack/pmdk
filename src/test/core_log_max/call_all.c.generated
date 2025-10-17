@@ -259,6 +259,8 @@ call_all_ERR_WO_ERRNO(void)
 	// src/libpmemobj/obj.c
 	ERR_WO_ERRNO("%s variable must be a positive integer", _s);
 	// src/libpmemobj/obj.c
+	ERR_WO_ERRNO("The SDS feature cannot be force-enabled, as it was disabled at compile time.");
+	// src/libpmemobj/obj.c
 	ERR_WO_ERRNO("Layout too long");
 	// src/libpmemobj/obj.c
 	ERR_WO_ERRNO("initialization of replica #%u failed", _u);
