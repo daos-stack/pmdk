@@ -1,6 +1,6 @@
-XXX
+Mon Oct 20 2025 Oksana Sałyk <oksana.salyk@hpe.com>
 
-	* Version X.X.X
+	* Version 2.1.2
 
 	- expand the sds.at_create CTL to also cover pmemobj_open() (daos-stack/pmdk#5, DAOS-17449)
 	  - Previously, this CTL affected only pmemobj_create().
