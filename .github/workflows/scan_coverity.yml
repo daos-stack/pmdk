@@ -10,7 +10,7 @@ on:
         required: true
 
 env:
-  GITHUB_REPO: pmem/pmdk
+  GITHUB_REPO: ${{ github.repository }}
   DOCKER_REPO: ghcr.io/pmem/pmdk
   COVERITY_SCAN_NOTIFICATION_EMAIL:  ${{ secrets.COVERITY_SCAN_NOTIFICATION_EMAIL }}
   COVERITY_SCAN_TOKEN:               ${{ secrets.COVERITY_SCAN_TOKEN }}

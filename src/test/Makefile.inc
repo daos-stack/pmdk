@@ -246,6 +246,7 @@ OBJS +=\
 	$(TOP)/src/nondebug/common/pool_hdr.o\
 	$(TOP)/src/nondebug/common/set.o\
 	$(TOP)/src/nondebug/common/shutdown_state.o\
+	$(TOP)/src/nondebug/common/shutdown_state_helper.o\
 	$(TOP)/src/nondebug/common/util.o\
 	$(TOP)/src/nondebug/common/util_posix.o\
 	$(TOP)/src/nondebug/common/uuid.o\
@@ -287,6 +288,7 @@ OBJS +=\
 	$(TOP)/src/debug/common/pool_hdr.o\
 	$(TOP)/src/debug/common/set.o\
 	$(TOP)/src/debug/common/shutdown_state.o\
+	$(TOP)/src/debug/common/shutdown_state_helper.o\
 	$(TOP)/src/debug/common/uuid.o\
 	$(TOP)/src/debug/common/uuid_linux.o\
 	$(TOP)/src/debug/libpmem2/pmem2_utils.o\

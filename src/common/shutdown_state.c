@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2017-2024, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * shutdown_state.c -- unsafe shudown detection
@@ -17,13 +18,10 @@
 #include "bad_blocks.h"
 #include "../libpmem2/pmem2_utils.h"
 
-#define FLUSH_SDS(sds, rep) \
-	if ((rep) != NULL) os_part_deep_common(rep, 0, sds, sizeof(*(sds)), 1)
-
 /*
- * shutdown_state_checksum -- (internal) counts SDS checksum and flush it
+ * shutdown_state_checksum -- counts SDS checksum and flush it
  */
-static void
+void
 shutdown_state_checksum(struct shutdown_state *sds, struct pool_replica *rep)
 {
 	LOG(3, "sds %p", sds);
@@ -160,24 +158,6 @@ shutdown_state_clear_dirty(struct shutdown_state *sds, struct pool_replica *rep)
 }
 
 /*
- * shutdown_state_reinit -- (internal) reinitializes shutdown_state struct
- */
-static void
-shutdown_state_reinit(struct shutdown_state *curr_sds,
-	struct shutdown_state *pool_sds, struct pool_replica *rep)
-{
-	LOG(3, "curr_sds %p, pool_sds %p", curr_sds, pool_sds);
-	shutdown_state_init(pool_sds, rep);
-	pool_sds->uuid = htole64(curr_sds->uuid);
-	pool_sds->usc = htole64(curr_sds->usc);
-	pool_sds->dirty = 0;
-
-	FLUSH_SDS(pool_sds, rep);
-
-	shutdown_state_checksum(pool_sds, rep);
-}
-
-/*
  * shutdown_state_check -- compares and fixes shutdown state
  */
 int
@@ -186,15 +166,26 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 {
 	LOG(3, "curr_sds %p, pool_sds %p", curr_sds, pool_sds);
 
+	/*
+	 * This is likely to occur only when the pool is being opened for
+	 * the first time after the SHUTDOWN_STATE feature has been enabled on
+	 * the pool, for example, via (lib)pmempool.
+	 * Please do not confuse this with establishing SDS during creation.
+	 */
 	if (util_is_zeroed(pool_sds, sizeof(*pool_sds)) &&
 			!util_is_zeroed(curr_sds, sizeof(*curr_sds))) {
+		CORE_LOG_WARNING(
+			"Enabling ADR failure detection, assuming pool consistency up to this point.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
 
+	bool is_uuid_correct =
+		le64toh(pool_sds->uuid) == le64toh(curr_sds->uuid);
+
 	bool is_uuid_usc_correct =
 		le64toh(pool_sds->usc) == le64toh(curr_sds->usc) &&
-		le64toh(pool_sds->uuid) == le64toh(curr_sds->uuid);
+		is_uuid_correct;
 
 	bool is_checksum_correct = util_checksum(pool_sds,
 		sizeof(*pool_sds), &pool_sds->checksum, 0, 0);
@@ -204,7 +195,7 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 	if (!is_checksum_correct) {
 		/* the program was killed during opening or closing the pool */
 		CORE_LOG_WARNING(
-			"incorrect checksum - SDS will be reinitialized");
+			"The pool was not opened/closed properly - reinitializing ADR failure detection.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
@@ -217,19 +208,23 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 		 * but there wasn't an ADR failure
 		 */
 		CORE_LOG_WARNING(
-			"the pool was not closed - SDS will be reinitialized");
+			"The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
 	if (dirty == 0) {
-		/* an ADR failure but the pool was closed */
-		CORE_LOG_WARNING(
-			"an ADR failure was detected but the pool was closed - SDS will be reinitialized");
+		if (is_uuid_correct)
+			CORE_LOG_WARNING(
+				"The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.");
+		else
+			CORE_LOG_HARK(
+				"The pool has moved to a new location but it was closed properly - reinitializing ADR failure detection.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
-	/* an ADR failure - the pool might be corrupted */
-	ERR_WO_ERRNO(
-		"an ADR failure was detected, the pool might be corrupted");
+
+	ERR_WO_ERRNO("%s, the pool might be corrupted.", is_uuid_correct ?
+		"The ADR failure was detected" :
+		"The pool has moved to a new location while it was not closed properly");
 	return 1;
 }

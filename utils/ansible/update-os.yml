@@ -17,4 +17,4 @@
     - { role: update_suse, when: ansible_os_family == "Suse" }
     - { role: update_rocky, when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky" }
   handlers:
-    - include: handlers/reboot.yml
+    - import_tasks: handlers/reboot.yml

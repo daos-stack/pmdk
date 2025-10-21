@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 env:
-  GITHUB_REPO: pmem/pmdk
+  GITHUB_REPO: ${{ github.repository }}
   DOCKER_REPO: ghcr.io/pmem/pmdk
 
 permissions: {}
