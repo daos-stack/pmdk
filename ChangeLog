@@ -2,8 +2,8 @@ XXX
 
 	* Version X.X.X
 
-	- PMem HW tests have been reorganized. (daos-stack/pmdk#9-12)
-	- A new home for pmdk software has been set up.
+	- PMem HW tests have been reorganized (daos-stack/pmdk#9-12).
+	- A new home for pmdk software has been set up (pmem/pmdk -> daos-stack/pmdk).
 	- Expand the sds.at_create CTL to also cover pmemobj_open() (daos-stack/pmdk#5, DAOS-17449)
 	  - Previously, this CTL affected only pmemobj_create().
 	  - Now, it affects both pmemobj_create() and pmemobj_open().
