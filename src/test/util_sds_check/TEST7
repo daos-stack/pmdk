@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2025, Hewlett Packard Enterprise Development LP
+
+#
+# src/test/util_sds_check/TEST7 -- unittest for shutdown_state_check
+#
+
+. ../unittest/unittest.sh
+
+require_test_type short
+
+require_fs_type none
+
+require_build_type debug
+
+setup
+
+expect_normal_exit ./util_sds_check test_happy_day
+
+check
+
+pass

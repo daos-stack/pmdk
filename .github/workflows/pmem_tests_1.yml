@@ -1,13 +1,13 @@
 # Run all tests on PMEM.
 #
 # This workflow is run on 'self-hosted' runners.
-name: PMEM tests
+name: PMEM tests part 1
 
 on:
   workflow_dispatch:
   schedule:
-    # run this job at 18:00 UTC every day
-    - cron:  '0 18 * * *'
+    # run this job at 18:00 UTC every other day (even-numbered)
+    - cron:  '0 18 2-31/2 * *'
 
 permissions: {}
 
@@ -26,31 +26,12 @@ jobs:
       valgrind: ${{ matrix.VALGRIND }}
 
 
-  # Test the default build with force-enabled Valgrind tooling for (persistent)
-  # memory error detection.
-  Memory:
-    uses: ./.github/workflows/pmem_test_matrix.yml
-    with:
-      force_enable: '["pmemcheck", "memcheck"]'
-      valgrind: 1
-
-
-  # Test the default build with force-enabled Valgrind tooling for thread error
-  # detection.
-  Thread:
-    uses: ./.github/workflows/pmem_test_matrix.yml
-    with:
-      force_enable: '["drd", "helgrind"]'
-      valgrind: 1
-      # 9h = 7h20m (the longest workflow execution time) + ~20% leeway.
-      timeout_minutes: 540
-
-
   # Static builds are tested in this limited scope only.
   static:
     name: Static
-    if: github.repository == 'pmem/pmdk'
-    runs-on: [self-hosted, rhel]
+    if: github.repository_owner == 'daos-stack'
+    runs-on: [self-hosted, pmdk, rhel, icx]
+    timeout-minutes: 1440 # 24h
     strategy:
       fail-fast: false
       matrix:
@@ -74,8 +55,8 @@ jobs:
   # at compile time.
   fault_injection:
     name: Fault injection
-    if: github.repository == 'pmem/pmdk'
-    runs-on: [self-hosted, rhel]
+    if: github.repository_owner == 'daos-stack'
+    runs-on: [self-hosted, pmdk, rhel]
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -100,8 +81,8 @@ jobs:
   # https://github.com/daos-stack/pmdk/pull/35
   ndctl_enable_n:
     name: Without ndctl
-    if: github.repository == 'pmem/pmdk'
-    runs-on: [self-hosted, rhel]
+    if: github.repository_owner == 'daos-stack'
+    runs-on: [self-hosted, pmdk, rhel]
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
