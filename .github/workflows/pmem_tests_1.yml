@@ -6,8 +6,8 @@ name: PMEM tests part 1
 on:
   workflow_dispatch:
   schedule:
-    # run this job at 18:00 UTC every Monday
-    - cron:  '0 18 * * 1'
+    # run this job at 18:00 UTC every Friday
+    - cron:  '0 18 * * 5'
 
 permissions: {}
 
