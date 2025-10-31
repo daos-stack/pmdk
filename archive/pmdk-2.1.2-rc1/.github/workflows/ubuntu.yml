@@ -1,0 +1,59 @@
+# Validate on Ubuntu.
+name: Ubuntu
+
+on:
+  workflow_call:
+
+env:
+  GITHUB_REPO: ${{ github.repository }}
+  DOCKER_REPO: ghcr.io/pmem/pmdk
+
+permissions: {}
+
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    env:
+      HOST_WORKDIR:    /home/runner/work/pmdk/pmdk
+      WORKDIR:         utils/docker
+      PMDK_CC:         gcc
+      PMDK_CXX:        g++
+      MAKE_PKG:        0
+      SRC_CHECKERS:    0
+      OS:              ubuntu
+      OS_VER:          22.04
+      FAULT_INJECTION: 1
+    strategy:
+      matrix:
+        TEST_BUILD: ['debug', 'nondebug']
+    steps:
+      - name: Clone the git repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 50
+
+      - name: Get system information
+        run: ./$WORKDIR/get-system-info.sh
+
+      - name: Pull the image
+        run: cd $WORKDIR && ./pull-or-rebuild-image.sh
+
+      - name: Run the build
+        env:
+          TEST_BUILD: ${{ matrix.TEST_BUILD }}
+        run: cd $WORKDIR && ./build-CI.sh
+        continue-on-error: true
+        id: build
+
+      - name: Archive logs
+        if: steps.build.outcome != 'success'
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+        with:
+          name: logs-${{ matrix.TEST_BUILD }}
+          path: ${{env.HOST_WORKDIR}}/src/test/**/*.log
+
+      - name: Exit code
+        run: |
+          [ "${{steps.build.outcome}}" != "success" ] && exit 1
+          exit 0

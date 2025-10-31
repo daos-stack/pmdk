@@ -1,0 +1,48 @@
+# Rebuild docker images if needed.
+name: Docker rebuild
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'utils/docker/images/**'
+      - '.github/workflows/docker_rebuild.yml'
+  schedule:
+    # run this job at 22:00 UTC every other day (hopefully just before the nightly)
+    - cron:  '0 22 */2 * *'
+
+env:
+  # use org's Private Access Token to log in to GitHub Container Registry
+  GH_CR_USER: ${{ secrets.GH_CR_USER }}
+  GH_CR_PAT:  ${{ secrets.GH_CR_PAT }}
+
+  GITHUB_REPO: ${{ github.repository }}
+  DOCKER_REPO: ghcr.io/pmem/pmdk
+  WORKDIR:     utils/docker
+  PUSH_IMAGE:  1
+
+permissions: {}
+
+jobs:
+  image:
+    if: ${{ github.repository_owner == 'daos-stack' }}
+    name: Image
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - {OS: opensuse-leap, OS_VER: 15}
+          - {OS: rockylinux, OS_VER: 8}
+          - {OS: rockylinux, OS_VER: 9}
+          - {OS: ubuntu, OS_VER: 22.04}
+    steps:
+      - name: Clone the git repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Rebuild the image
+        env:
+          OS: ${{ matrix.OS }}
+          OS_VER: ${{ matrix.OS_VER }}
+        run: cd $WORKDIR && ./pull-or-rebuild-image.sh rebuild

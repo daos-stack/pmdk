@@ -1,0 +1,23 @@
+ignore:
+  - '.*test.*'
+  - '.*valgrind.*'
+  - '.*benchmarks.*'
+
+comment:
+  layout: "diff"
+  behavior: default
+  require_changes: yes
+
+coverage:
+  status:
+    project:
+      default:
+        threshold: 1%
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: false
+      loop: false
+      method: false
+      macro: false

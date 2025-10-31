@@ -1,0 +1,56 @@
+# Run RAS test: Unsafe Shutdown Local.
+#
+# This workflow is run on 'self-hosted' runners.
+#
+# RAS tests require a different approach compared to the standard tests - they need to
+# reboot the runner during the test. Normally, rebooting and continuing the job on GHA
+# is not possible, due to losing connection with the runner. To work around this issue,
+# an additional runner (not connected to the GH) runs the tests instead.
+#
+# The general idea of the solution is:
+#  - First platform [self-hosted runner] functions as the controller [ras_controller],
+#  - Second platform functions as the test runner [ras_runner],
+#  - The workflow launches its steps on the controller,
+#  - The controller will then run an ansible playbook on the second platform [ras_runner],
+#    with options provided by the workflow,
+#  - The test runner follows the steps given by the controller,
+#    running the tests in the process and providing results as output,
+#  - The controller gathers this output and prints it in GHA job.
+#
+# The only drawback of this idea is that workflow would always finish successfully.
+# The solution was added as an additional step, at the end of the workflow, parsing the output.
+#
+# More detailed information about the ansible playbook and tests themselves can be found in:
+# utils/gha-runners/run-ras-linux.yml
+name: PMEM RAS
+
+on:
+  workflow_dispatch:
+  schedule:
+    # run this job every 8 hours
+    - cron:  '0 */8 * * *'
+
+permissions: {}
+
+jobs:
+  linux:
+    name: PMEM_RAS
+    if: github.repository_owner == 'daos-stack'
+    runs-on: [self-hosted, ras_controller]
+    env:
+      WORKDIR: utils/gha-runners
+
+    steps:
+      - name: Clone the git repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      # Variables, such as $ras_runner are set on the controller platform
+      # as environment variables.
+      - name: Prepare and run RAS Linux tests via ansible-playbook
+        working-directory: ${{ env.WORKDIR }}
+        env:
+          # Increases human readability in case of a failure
+          ANSIBLE_STDOUT_CALLBACK: yaml
+        run: >
+          ansible-playbook -i $ras_runner, run-ras-linux.yml
+          -e "host=all ansible_user=$ras_user"

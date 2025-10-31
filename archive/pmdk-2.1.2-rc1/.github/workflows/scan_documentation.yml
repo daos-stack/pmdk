@@ -1,0 +1,35 @@
+# Scan the PMDK's documentation for missing man pages, etc.
+name: Documentation
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  linux:
+    name: Documentation
+    runs-on: ubuntu-latest
+    env:
+      TEST_SCRIPT: utils/check_docs/docs_tests.py
+
+    steps:
+      - name: Clone the git repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Install required packages
+        run: |
+          export BASE_DEPS="build-essential \
+            libdaxctl-dev \
+            libndctl-dev \
+            pandoc \
+            pkg-config"
+
+          sudo apt-get update \
+          && sudo apt-get install -y --no-install-recommends ${BASE_DEPS}
+
+      - name: Build and install PMDK with docs
+        run: make doc install prefix=$(pwd)/../install -j$(nproc)
+
+      - name: Run docs' tests
+        run: python3 ${TEST_SCRIPT} -r $(pwd) -i $(pwd)/../install -v

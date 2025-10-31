@@ -1,0 +1,143 @@
+# Validate on default OSes.
+name: Main
+
+on:
+  workflow_dispatch:
+  schedule:
+    # run this job at 23:00 UTC every other day
+    - cron:  '0 23 */2 * *'
+  pull_request:
+
+permissions: {}
+
+jobs:
+  src_checkers:
+    name: Source checkers
+    runs-on: ubuntu-latest
+    permissions:
+      issues: read
+    steps:
+      - name: Clone the git repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          # required for `make check-license` to work properly
+          fetch-depth: 50
+
+      - name: Check changelog
+        # Skip for master and stable-* branches
+        if: |
+          !(github.repository_owner == 'daos-stack' &&
+          (github.ref_name == 'master' || startsWith(github.ref_name, 'stable-'))) &&
+          github.event_name == 'pull_request'
+        uses: Zomzog/changelog-checker@09cfe9ad3618dcbfdba261adce0c41904cabb8c4 # v1.3.0
+        with:
+          fileName: ChangeLog
+          noChangelogLabel: no changelog # the default
+          checkNotification: Simple
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          sudo pip install flake8
+          sudo apt-get install clang-format-14
+
+      - name: Check license
+        id: check_license
+        continue-on-error: true
+        env:
+          NDCTL_ENABLE: n # just to speed up the job
+          PMEMOBJ_IGNORE_DIRTY_SHUTDOWN: y # not recommended for production
+          PMEMOBJ_IGNORE_BAD_BLOCKS: y # not recommended for production
+        run: |
+          make -j$(nproc) check-license || true
+          git diff > /tmp/check-license.diff
+          [ $(cat /tmp/check-license.diff | wc -l ) -gt 0 ] && exit 1
+          exit 0
+
+      - name: Upload check license diff
+        if: steps.check_license.outcome != 'success'
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+        with:
+          name: check-license.diff
+          path: /tmp/check-license.diff
+
+      - name: Check license - Exit code
+        run: |
+          [ "${{steps.check_license.outcome}}" != "success" ] && exit 1
+          exit 0
+
+      - name: Check style
+        env:
+          CSTYLE_FAIL_IF_CLANG_FORMAT_MISSING: 1
+          NDCTL_ENABLE: n # just to speed up the job
+          PMEMOBJ_IGNORE_DIRTY_SHUTDOWN: y # not recommended for production
+          PMEMOBJ_IGNORE_BAD_BLOCKS: y # not recommended for production
+        run: make cstyle
+
+
+  basic_build:
+    name: Basic build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        CC: [gcc, clang]
+        include:
+          # common parameters for both gcc and clang
+          - LD: ld
+            OBJCOPY: objcopy
+            ARCH: x86_64
+            BUILD_ALL: y
+          # include CXX specific for each of the x86_64 compilers
+          - CC: gcc
+            CXX: g++
+          - CC: clang
+            CXX: clang++
+          # add aarch64 cross-compilation (requested by DAOS)
+          - CC: aarch64-linux-gnu-gcc
+            CXX: aarch64-linux-gnu-g++-11
+            LD: aarch64-linux-gnu-ld
+            OBJCOPY: aarch64-linux-gnu-objcopy
+            ARCH: aarch64
+            BUILD_ALL: n # exclude non-required parts from the build
+    steps:
+      - name: Clone the git repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Install dependencies
+        run: sudo apt-get -y install pandoc
+
+      - if: ${{ contains(matrix.CC, 'aarch64') }}
+        name: Install dependencies (aarch64)
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gcc-aarch64-linux-gnu g++-11-aarch64-linux-gnu binutils-aarch64-linux-gnu
+
+      - name: Build sources
+        env:
+          NDCTL_ENABLE: n # just to speed up the job
+          PMEMOBJ_IGNORE_DIRTY_SHUTDOWN: y # not recommended for production
+          PMEMOBJ_IGNORE_BAD_BLOCKS: y # not recommended for production
+          BUILD_EXAMPLES: ${{ matrix.BUILD_ALL }}
+          BUILD_BENCHMARKS: ${{ matrix.BUILD_ALL }}
+          DOC: ${{ matrix.BUILD_ALL }}
+          CC: ${{ matrix.CC }}
+          CXX: ${{ matrix.CXX }}
+          LD: ${{ matrix.LD }}
+          OBJCOPY: ${{ matrix.OBJCOPY }}
+          ARCH: ${{ matrix.ARCH }}
+        run: make -j$(nproc) test
+
+
+  call-ubuntu:
+    needs: [src_checkers, basic_build]
+    uses: ./.github/workflows/ubuntu.yml
+    name: Ubuntu
+
+  coverage_scan:
+    needs: [src_checkers, basic_build]
+    uses: ./.github/workflows/scan_coverage.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    name: Coverage
