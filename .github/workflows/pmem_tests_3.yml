@@ -1,23 +1,23 @@
 # Run all tests on PMEM.
 #
 # This workflow is run on 'self-hosted' runners.
-name: PMEM tests part 2
+name: PMEM tests part 3
 
 on:
   workflow_dispatch:
   schedule:
-    # run this job at 18:00 UTC every Tuesday
-    - cron:  '0 18 * * 2'
+    # run this job at 18:00 UTC every Wednesday
+    - cron:  '0 18 * * 3'
 
 permissions: {}
 
 jobs:
-  # Test the default build with force-enabled Valgrind tooling for (persistent)
-  # memory error detection.
-  Memory:
+  # Test the default build with force-enabled Valgrind tooling for thread error
+  # detection.
+  Thread:
     uses: ./.github/workflows/pmem_test_matrix.yml
     with:
-      force_enable: '["pmemcheck", "memcheck"]'
+      force_enable: '["drd", "helgrind"]'
       valgrind: 1
       # 24h = 1440m (arbitrarily picked in hope it will be enough).
       timeout_minutes: 1440
