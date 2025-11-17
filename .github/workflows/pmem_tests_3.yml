@@ -17,7 +17,7 @@ jobs:
   Thread:
     uses: ./.github/workflows/pmem_test_matrix.yml
     with:
-      force_enable: '["drd", "helgrind"]'
+      force_enable: '["helgrind", "drd"]'
       valgrind: 1
       # 24h = 1440m (arbitrarily picked in hope it will be enough).
       timeout_minutes: 1440
