@@ -1,7 +1,7 @@
 # Run all tests on PMEM.
 #
 # This workflow is run on 'self-hosted' runners.
-name: PMEM tests part 3 (helgrind)
+name: PMEM tests part 4 (drd)
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
   Thread:
     uses: ./.github/workflows/pmem_test_matrix.yml
     with:
-      force_enable: '["helgrind"]'
+      force_enable: '["drd"]'
       valgrind: 1
       # 24h = 1440m (arbitrarily picked in hope it will be enough).
       timeout_minutes: 1440
