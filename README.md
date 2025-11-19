@@ -109,8 +109,7 @@ information on this port, contact Rajalakshmi Srinivasaraghavan
 
 ## Contact Us
 
-For more information on this library, contact
+For more information on this project, contact
 Tomasz Gromadzki (tomasz.gromadzki@hpe.com),
 Jan Michalski (jan-marian.michalski@hpe.com),
-Oksana Sałyk (oksana.salyk@hpe.com), or post to
-the [Persistent Memory Programming Google group](https://groups.google.com/group/pmem).
+Oksana Sałyk (oksana.salyk@hpe.com).
