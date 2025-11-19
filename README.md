@@ -111,5 +111,5 @@ information on this port, contact Rajalakshmi Srinivasaraghavan
 
 For more information on this project, contact
 Tomasz Gromadzki (tomasz.gromadzki@hpe.com),
-Jan Michalski (jan-marian.michalski@hpe.com),
+Jan Michalski (jan-marian.michalski@hpe.com), or
 Oksana Sałyk (oksana.salyk@hpe.com).
