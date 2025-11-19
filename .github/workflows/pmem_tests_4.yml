@@ -1,7 +1,7 @@
 # Run all tests on PMEM.
 #
 # This workflow is run on 'self-hosted' runners.
-name: PMEM tests part 4 (drd)
+name: PMEM tests part 4
 
 on:
   workflow_dispatch:

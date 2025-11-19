@@ -111,6 +111,6 @@ information on this port, contact Rajalakshmi Srinivasaraghavan
 
 For more information on this library, contact
 Tomasz Gromadzki (tomasz.gromadzki@hpe.com),
-Jan Michalski (jan.michalski@hpe.com),
+Jan Michalski (jan-marian.michalski@hpe.com),
 Oksana Sałyk (oksana.salyk@hpe.com), or post to
 the [Persistent Memory Programming Google group](https://groups.google.com/group/pmem).

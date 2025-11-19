@@ -1,7 +1,7 @@
 # Run all tests on PMEM.
 #
 # This workflow is run on 'self-hosted' runners.
-name: PMEM tests part 3 (helgrind)
+name: PMEM tests part 3
 
 on:
   workflow_dispatch:
