@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2016-2024, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * memblock.c -- implementation of memory block
@@ -1185,8 +1186,8 @@ static void
 huge_reinit_chunk(const struct memory_block *m)
 {
 	struct chunk_header *hdr = heap_get_chunk_hdr(m->heap, m);
-	if (hdr->type == CHUNK_TYPE_USED)
-		huge_write_footer(hdr, hdr->size_idx);
+	ASSERT(hdr->type == CHUNK_TYPE_USED || hdr->type == CHUNK_TYPE_FREE);
+	huge_write_footer(hdr, hdr->size_idx);
 }
 
 /*
