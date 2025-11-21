@@ -1,6 +1,6 @@
-XXX
+Tue Nov 4 2025 Oksana Sałyk <oksana.salyk@hpe.com>
 
-	* Version X.X.X
+	* Version 2.1.2
 
 	- Set up a new home for pmdk software (pmem/pmdk -> daos-stack/pmdk).
 	  - Reorganized PMem HW tests to accommodate changes in HW supplies (daos-stack/pmdk#9-12).
