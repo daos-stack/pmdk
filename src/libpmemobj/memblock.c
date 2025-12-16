@@ -1174,8 +1174,13 @@ huge_write_footer(struct chunk_header *hdr, uint32_t size_idx)
 	struct chunk_header f = *hdr;
 	f.type = CHUNK_TYPE_FOOTER;
 	f.size_idx = size_idx;
+
+	/*
+	 * no need to transact and persist,
+	 * footers are recreated in heap_populate_buckets
+	 */
+	VALGRIND_ADD_TO_GLOBAL_TX_IGNORE(hdr + size_idx - 1, sizeof(f));
 	*(hdr + size_idx - 1) = f;
-	/* no need to persist, footers are recreated in heap_populate_buckets */
 	VALGRIND_SET_CLEAN(hdr + size_idx - 1, sizeof(f));
 }
 
