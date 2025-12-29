@@ -1059,6 +1059,7 @@ pool_attr_adjust(struct pool_attr *attr)
 		}
 	} else {
 		attr->features.incompat &= ~POOL_FEAT_SDS; /* off */
+		attr->features.compat &= ~POOL_FEAT_CHECK_BAD_BLOCKS;
 	}
 
 	return 0;
