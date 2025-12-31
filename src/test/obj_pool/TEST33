@@ -11,7 +11,7 @@
 . ../unittest/unittest.sh
 
 require_test_type medium
-require_fs_type pmem
+require_real_pmem
 
 setup
 

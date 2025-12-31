@@ -2610,3 +2610,25 @@ function set_test_labels() {
 	verbose_msg "$UNITTEST_NAME: SKIP ($TEST/$REAL_FS/$BUILD$MCSTR$PROV$PM) test-labels: $* ($TEST_LABEL required)"
 	exit 0
 }
+
+#
+# require_real_pmem -- run tests only on real pmem
+#
+function require_real_pmem() {
+	local path="$1"
+	if [ -z "$path" ]; then
+		path="$DIR"
+	fi
+	if [ "$PMEM_IS_PMEM_FORCE" != "" ]; then
+		echo "require_real_pmem: PMEM is forced (PMEM_IS_PMEM_FORCE=$PMEM_IS_PMEM_FORCE)"
+		exit 0
+	fi
+	case "$REAL_FS" in
+		pmem)
+			;;
+		*)
+			echo "require_real_pmem: REAL_FS=$REAL_FS, this is not real PMEM"
+			exit 0
+			;;
+	esac
+}
