@@ -2619,15 +2619,15 @@ function require_real_pmem() {
 	if [ -z "$path" ]; then
 		path="$DIR"
 	fi
-	if [ "$PMEM_IS_PMEM_FORCE" != "" ]; then
-		echo "require_real_pmem: PMEM is forced (PMEM_IS_PMEM_FORCE=$PMEM_IS_PMEM_FORCE)"
+	if [ "$PMEM_IS_PMEM_FORCE" == "1" ]; then
+		verbose_msg "$UNITTEST_NAME: SKIP ($TEST/$REAL_FS/$BUILD$MCSTR$PROV$PM) PMEM is forced (PMEM_IS_PMEM_FORCE=$PMEM_IS_PMEM_FORCE), real PMEM required"
 		exit 0
 	fi
 	case "$REAL_FS" in
 		pmem)
 			;;
 		*)
-			echo "require_real_pmem: REAL_FS=$REAL_FS, this is not real PMEM"
+			verbose_msg "$UNITTEST_NAME: SKIP ($TEST/$REAL_FS/$BUILD$MCSTR$PROV$PM) REAL_FS $REAL_FS (pmem required)"
 			exit 0
 			;;
 	esac
