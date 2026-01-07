@@ -1,0 +1,2 @@
+{obj_ndctl_bb.c:$(N) __wrap_badblocks_check_poolset} obj_ndctl_bb/TEST1: Error: assertion failure: 0
+{obj_ndctl_bb.c:$(N) __wrap_badblocks_recovery_file_exists} obj_ndctl_bb/TEST1: Error: assertion failure: 0
