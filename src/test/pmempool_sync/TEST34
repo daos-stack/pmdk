@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2018-2024, Intel Corporation
+# Copyright 2025-2026, Hewlett Packard Enterprise Development LP
 #
 #
 # pmempool_sync/TEST34 -- test for sync command
@@ -14,8 +15,8 @@
 
 . setup.sh
 
+require_real_pmem
 require_test_type medium
-require_fs_type non-pmem
 require_build_type debug nondebug
 require_linked_with_ndctl $PMEMPOOL$EXESUFFIX
 
