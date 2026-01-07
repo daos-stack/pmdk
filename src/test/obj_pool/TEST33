@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2018-2019, Intel Corporation
-# Copyright 2025, Hewlett Packard Enterprise Development LP
+# Copyright 2025-2026, Hewlett Packard Enterprise Development LP
 
 #
 # src/test/obj_pool/TEST33 -- unit test for pmemobj_open
@@ -13,6 +13,7 @@
 require_test_type medium
 # For non-pmem POOL_FEAT_CHECK_BAD_BLOCKS is turned off via PMEMOBJ_CONF="sds.at_create=0"
 require_real_pmem
+require_badblock_tests_enabled $DIR/testset1
 
 setup
 
