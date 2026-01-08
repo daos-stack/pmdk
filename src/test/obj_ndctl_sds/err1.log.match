@@ -1,0 +1,2 @@
+{obj_ndctl_sds.c:$(N) __wrap_shutdown_state_init} obj_ndctl_sds/TEST1: Error: assertion failure: 0
+{obj_ndctl_sds.c:$(N) __wrap_shutdown_state_init} obj_ndctl_sds/TEST1: Error: assertion failure: 0
