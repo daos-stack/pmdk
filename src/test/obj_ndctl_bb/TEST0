@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2026, Hewlett Packard Enterprise Development LP
+#
+#
+# obj_ndctl_bb/TEST0 -- check if the badblocks-related code is not run when no PMem is in use.
+#                       DAOS-18296
+#
+
+. ../unittest/unittest.sh
+
+require_fs_type non-pmem
+require_ndctl_enable
+require_test_type short
+
+setup
+
+FILE=$DIR/testfile
+
+# obj_ndctl_bb commands
+CREATE=c
+OPEN=o
+
+expect_normal_exit obj_ndctl_bb $FILE $CREATE
+
+expect_normal_exit obj_ndctl_bb $FILE $OPEN
+
+check
+
+pass
