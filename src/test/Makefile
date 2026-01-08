@@ -70,6 +70,8 @@ OBJ_TESTS = \
 	obj_memcheck\
 	obj_memcheck_register\
 	obj_memops\
+	obj_ndctl_bb\
+	obj_ndctl_sds\
 	obj_oid_thread\
 	obj_out_of_memory\
 	obj_persist_count\
