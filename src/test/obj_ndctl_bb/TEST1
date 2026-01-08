@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2026, Hewlett Packard Enterprise Development LP
+#
+#
+# obj_ndctl_bb/TEST1 -- check if the executable works as intended. Sanity check.
+#
+
+. ../unittest/unittest.sh
+
+require_real_pmem
+require_ndctl_enable
+require_test_type short
+
+setup
+
+TMP=tmp${UNITTEST_NUM}.log
+rm -f $TMP
+
+FILE=$DIR/testfile
+
+# obj_ndctl_bb commands
+CREATE=c
+OPEN=o
+
+expect_abnormal_exit obj_ndctl_bb $FILE $CREATE
+cat $ERR_LOG_FILE >> $TMP
+
+expect_normal_exit $PMEMPOOL$EXESUFFIX create obj $FILE
+
+expect_abnormal_exit obj_ndctl_bb $FILE $OPEN
+cat $ERR_LOG_FILE >> $TMP
+
+# move combined error log in place
+mv $TMP $ERR_LOG_FILE
+
+check
+
+pass
