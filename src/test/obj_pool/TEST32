@@ -13,7 +13,6 @@
 require_test_type medium
 # For non-pmem POOL_FEAT_CHECK_BAD_BLOCKS is turned off via PMEMOBJ_CONF="sds.at_create=0"
 require_real_pmem
-require_sds ./obj_pool
 
 setup
 
@@ -25,8 +24,6 @@ expect_normal_exit ./obj_pool$EXESUFFIX c $DIR/testfile "test" 20 0640
 
 # create a bad block recovery file
 create_recovery_file $DIR/testfile_r0_p0_badblocks.txt
-
-turn_on_checking_bad_blocks $DIR/testfile
 
 # pmemobj_open() should fail, because the bad block recovery file exists
 expect_normal_exit ./obj_pool$EXESUFFIX o $DIR/testfile "test"
