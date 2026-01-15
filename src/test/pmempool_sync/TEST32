@@ -13,12 +13,13 @@
 
 . ../unittest/unittest.sh
 
-require_real_pmem
 require_test_type medium
 require_build_type debug nondebug
 require_linked_with_ndctl $PMEMPOOL$EXESUFFIX
 
 setup
+
+require_sds $PMEMPOOL$EXESUFFIX
 
 LOG=out${UNITTEST_NUM}.log
 rm -f $LOG && touch $LOG

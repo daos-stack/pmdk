@@ -14,8 +14,6 @@ require_fs_type none
 
 require_build_type debug
 
-require_sds ./util_sds_check
-
 setup
 
 expect_normal_exit ./util_sds_check test_invalid_checksum

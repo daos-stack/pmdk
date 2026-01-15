@@ -8,11 +8,12 @@
 
 . ../unittest/unittest.sh
 
-require_real_pmem
 require_ndctl_enable
 require_test_type short
 
 setup
+
+require_sds ./obj_ndctl_sds
 
 TMP=tmp${UNITTEST_NUM}.log
 rm -f $TMP
