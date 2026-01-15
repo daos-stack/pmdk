@@ -16,12 +16,13 @@
 
 . setup.sh
 
-require_real_pmem
 require_test_type medium
 require_build_type debug nondebug
 require_linked_with_ndctl $PMEMPOOL$EXESUFFIX
 
 setup
+
+require_sds $PMEMPOOL$EXESUFFIX
 
 LOG=out${UNITTEST_NUM}.log
 rm -f $LOG && touch $LOG
@@ -38,8 +39,6 @@ expect_normal_exit $PMEMPOOL$EXESUFFIX rm $POOLSET
 expect_normal_exit $PMEMPOOL$EXESUFFIX create obj --layout pmempool$SUFFIX $POOLSET
 
 expect_normal_exit "$OBJ_VERIFY$EXESUFFIX $POOLSET pmempool$SUFFIX c v &>> $LOG"
-
-turn_on_checking_bad_blocks $POOLSET
 
 # zero blocks: offset: 125 length: 125
 zero_blocks $DIR/testfile1 125 125

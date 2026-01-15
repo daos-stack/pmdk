@@ -15,12 +15,13 @@
 
 . setup.sh
 
-require_real_pmem
 require_test_type medium
 require_build_type debug nondebug
 require_linked_with_ndctl $PMEMPOOL$EXESUFFIX
 
 setup
+
+require_sds $PMEMPOOL$EXESUFFIX
 
 LOG=out${UNITTEST_NUM}.log
 rm -f $LOG && touch $LOG
@@ -49,8 +50,6 @@ create_recovery_file $DIR/testset1_r0_p0_badblocks.txt 1000 250
 create_recovery_file $DIR/testset1_r0_p1_badblocks.txt
 create_recovery_file $DIR/testset1_r0_p2_badblocks.txt
 create_recovery_file $DIR/testset1_r1_p0_badblocks.txt
-
-turn_on_checking_bad_blocks $POOLSET
 
 # fail because of recovery files
 expect_abnormal_exit "$OBJ_VERIFY$EXESUFFIX $POOLSET pmempool$SUFFIX v &>> $LOG"
