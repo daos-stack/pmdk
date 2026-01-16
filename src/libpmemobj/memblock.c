@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2016-2024, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * memblock.c -- implementation of memory block
@@ -1173,8 +1174,13 @@ huge_write_footer(struct chunk_header *hdr, uint32_t size_idx)
 	struct chunk_header f = *hdr;
 	f.type = CHUNK_TYPE_FOOTER;
 	f.size_idx = size_idx;
+
+	/*
+	 * no need to transact and persist,
+	 * footers are recreated in heap_populate_buckets
+	 */
+	VALGRIND_ADD_TO_GLOBAL_TX_IGNORE(hdr + size_idx - 1, sizeof(f));
 	*(hdr + size_idx - 1) = f;
-	/* no need to persist, footers are recreated in heap_populate_buckets */
 	VALGRIND_SET_CLEAN(hdr + size_idx - 1, sizeof(f));
 }
 
@@ -1185,8 +1191,8 @@ static void
 huge_reinit_chunk(const struct memory_block *m)
 {
 	struct chunk_header *hdr = heap_get_chunk_hdr(m->heap, m);
-	if (hdr->type == CHUNK_TYPE_USED)
-		huge_write_footer(hdr, hdr->size_idx);
+	ASSERT(hdr->type == CHUNK_TYPE_USED || hdr->type == CHUNK_TYPE_FREE);
+	huge_write_footer(hdr, hdr->size_idx);
 }
 
 /*

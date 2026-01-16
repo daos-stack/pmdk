@@ -5,6 +5,8 @@
 [![Scans](https://github.com/daos-stack/pmdk/actions/workflows/scans.yml/badge.svg?branch=master)](https://github.com/daos-stack/pmdk/actions/workflows/scans.yml)
 [![PMem test 1](https://github.com/daos-stack/pmdk/workflows/PMEM%20tests%20part%201/badge.svg)](https://github.com/daos-stack/pmdk/actions/workflows/pmem_tests_1.yml)
 [![PMem test 2](https://github.com/daos-stack/pmdk/workflows/PMEM%20tests%20part%202/badge.svg)](https://github.com/daos-stack/pmdk/actions/workflows/pmem_tests_2.yml)
+[![PMem test 3](https://github.com/daos-stack/pmdk/workflows/PMEM%20tests%20part%203/badge.svg)](https://github.com/daos-stack/pmdk/actions/workflows/pmem_tests_3.yml)
+[![PMem test 4](https://github.com/daos-stack/pmdk/workflows/PMEM%20tests%20part%204/badge.svg)](https://github.com/daos-stack/pmdk/actions/workflows/pmem_tests_4.yml)
 
 The **Persistent Memory Development Kit (PMDK)** is a collection of libraries and tools for System Administrators and Application Developers to simplify managing and accessing persistent memory devices. For more information, see https://pmem.io.
 
@@ -107,10 +109,7 @@ information on this port, contact Rajalakshmi Srinivasaraghavan
 
 ## Contact Us
 
-For more information on this library, contact
-Tomasz Gromadzki (tomasz.gromadzki@intel.com),
-Jan Michalski (jan.michalski@intel.com),
-Oksana Sałyk (oksana.salyk@intel.com),
-Piotr Balcer (piotr.balcer@intel.com),
-Andy Rudoff (andy.rudoff@intel.com), or post to
-the [Persistent Memory Programming Google group](https://groups.google.com/group/pmem).
+For more information on this project, contact
+Tomasz Gromadzki (tomasz.gromadzki@hpe.com),
+Jan Michalski (jan-marian.michalski@hpe.com), or
+Oksana Sałyk (oksana.salyk@hpe.com).

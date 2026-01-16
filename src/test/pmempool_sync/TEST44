@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2018-2024, Intel Corporation
+# Copyright 2025-2026, Hewlett Packard Enterprise Development LP
 #
 #
 # pmempool_sync/TEST44 -- test for sync command with badblocks
@@ -17,11 +18,12 @@
 . setup.sh
 
 require_test_type medium
-require_fs_type non-pmem
 require_build_type debug nondebug
 require_linked_with_ndctl $PMEMPOOL$EXESUFFIX
 
 setup
+
+require_sds $PMEMPOOL$EXESUFFIX
 
 export PMEMPOOL_LOG_LEVEL=10
 
@@ -69,8 +71,6 @@ create_recovery_file $DIR/testset1_r1_p2_badblocks.txt
 create_recovery_file $DIR/testset1_r2_p0_badblocks.txt 1000 1 1002 1
 create_recovery_file $DIR/testset1_r2_p1_badblocks.txt
 create_recovery_file $DIR/testset1_r2_p2_badblocks.txt
-
-turn_on_checking_bad_blocks $POOLSET
 
 # fail because of bad blocks
 expect_abnormal_exit "$OBJ_VERIFY$EXESUFFIX $POOLSET pmempool$SUFFIX v &>> $LOG"

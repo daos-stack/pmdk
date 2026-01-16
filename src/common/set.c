@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2015-2024, Intel Corporation */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 /*
  * Copyright (c) 2016, Microsoft Corporation. All rights reserved.
  *
@@ -3041,6 +3042,9 @@ util_pool_open(struct pool_set **setp, const char *path, size_t minpartsize,
 		CORE_LOG_ERROR("reading compat features failed");
 		goto err_poolset_free;
 	}
+
+	/* filter out unsupported or turned off features */
+	compat_features &= attr->features.compat;
 
 	if (compat_features & POOL_FEAT_CHECK_BAD_BLOCKS) {
 		/* check if any bad block recovery file exists */
