@@ -1,9 +1,9 @@
-XXX
+Fri Jan 16 2026 Oksana Sałyk <oksana.salyk@hpe.com>
 
-	* Version X.X.X
+	* Version 2.1.3-rc1
 
 	- Expand the sds.at_create CTL to also cover the POOL_FEAT_CHECK_BAD_BLOCKS feature (daos-stack/pmdk#28, DAOS-18296).
-	- Until now, it controlled only the POOL_FEAT_SDS feature, but both may use NDCTL calls and increase stack usage.
+	  - Until now, it controlled only the POOL_FEAT_SDS feature, but both may use NDCTL calls and increase stack usage.
 	- Fix an issue in the PMEMOBJ allocator with a potential to corrupt the allocator's metadata (daos-stack/pmdk#24, DAOS-18195).
 	- Fix compilation error on LoongArch. Thank you @liuxiang88 and @bgermann for your persistence in making it happen! (daos-stack/pmdk#29, pmem/pmdk#5957).
 
