@@ -208,7 +208,7 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 		 * but there wasn't an ADR failure
 		 */
 		CORE_LOG_WARNING(
-			"The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.");
+			"The pool was not closed - reinitializing ADR failure detection.");
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
