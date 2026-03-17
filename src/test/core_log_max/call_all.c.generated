@@ -468,7 +468,7 @@ call_all_CORE_LOG_WARNING(void)
 	// src/common/shutdown_state.c
 	CORE_LOG_WARNING("The pool was not opened/closed properly - reinitializing the ADR failure detection state.");
 	// src/common/shutdown_state.c
-	CORE_LOG_WARNING("The pool was not closed - reinitializing the ADR failure detection state.");
+	CORE_LOG_WARNING("The pool was not closed last time, leaving it vulnerable to ADR failures. Luckily, no ADR failure occurred this time - reinitializing the ADR failure detection state.");
 	// src/common/shutdown_state.c
 	CORE_LOG_WARNING("The ADR failure was detected but the pool was closed properly - reinitializing the ADR failure detection state.");
 	// src/libpmemobj/heap.c
