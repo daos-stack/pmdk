@@ -157,6 +157,8 @@ shutdown_state_clear_dirty(struct shutdown_state *sds, struct pool_replica *rep)
 	shutdown_state_checksum(sds, rep);
 }
 
+#define SDS_REINIT_SUFFIX " - reinitializing the ADR failure detection state."
+
 /*
  * shutdown_state_check -- compares and fixes shutdown state
  */
@@ -194,8 +196,7 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 
 	if (!is_checksum_correct) {
 		/* the program was killed during opening or closing the pool */
-		CORE_LOG_WARNING(
-			"The pool was not opened/closed properly - reinitializing ADR failure detection.");
+		CORE_LOG_WARNING("The pool was not opened/closed properly" SDS_REINIT_SUFFIX);
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
@@ -203,22 +204,18 @@ shutdown_state_check(struct shutdown_state *curr_sds,
 	if (is_uuid_usc_correct) {
 		if (dirty == 0)
 			return 0;
-		/*
-		 * the program was killed when the pool was opened
-		 * but there wasn't an ADR failure
-		 */
-		CORE_LOG_WARNING(
-			"The pool was not closed - reinitializing ADR failure detection.");
+		/* the program was killed when the pool was opened but there wasn't an ADR failure */
+		CORE_LOG_WARNING("The pool was not closed" SDS_REINIT_SUFFIX);
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
 	if (dirty == 0) {
 		if (is_uuid_correct)
 			CORE_LOG_WARNING(
-				"The ADR failure was detected but the pool was closed properly - reinitializing ADR failure detection.");
+				"The ADR failure was detected but the pool was closed properly" SDS_REINIT_SUFFIX);
 		else
 			CORE_LOG_HARK(
-				"The pool has moved to a new location but it was closed properly - reinitializing ADR failure detection.");
+				"The pool has moved to a new location but it was closed properly" SDS_REINIT_SUFFIX);
 		shutdown_state_reinit(curr_sds, pool_sds, rep);
 		return 0;
 	}
