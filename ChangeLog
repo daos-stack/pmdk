@@ -1,3 +1,9 @@
+XXX
+
+	* Version X.X.X
+
+	- Fix "The pool was not closed" message (no ADR failure) (daos-stack/pmdk#1, DAOS-18692)
+
 Fri Jan 16 2026 Oksana Sałyk <oksana.salyk@hpe.com>
 
 	* Version 2.1.3

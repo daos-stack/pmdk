@@ -274,7 +274,8 @@ def call_get_format_tokens(call):
 
 LITERAL_TO_STRING = {
     'PRIx64': 'lx',
-    'PRIu64': 'lu'
+    'PRIu64': 'lu',
+    'SDS_REINIT_SUFFIX': ' - reinitializing the ADR failure detection state.',
 }
 
 def token_stringify(token: str) -> str:
