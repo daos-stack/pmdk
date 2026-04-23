@@ -972,13 +972,6 @@ obj_runtime_init(PMEMobjpool *pop, int rdonly, int boot, unsigned nlanes)
 			goto err_tree_insert;
 		}
 
-		/*
-		 * heap_curr_allocated is maintained by non-ULOG INC/SUB ops
-		 * that are only flushed at pmemobj_close(). After an
-		 * ungraceful shutdown the counter can be left underflowed.
-		 * Detect and rebuild it here; healthy pools pay only a
-		 * single atomic load.
-		 */
 		heap_curr_allocated_wa(&pop->heap);
 	}
 
