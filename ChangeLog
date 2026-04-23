@@ -3,6 +3,7 @@ XXX
 	* Version X.X.X
 
 	- Fix "The pool was not closed" message (no ADR failure) (daos-stack/pmdk#1, DAOS-18692)
+	- Recalculate curr_allocated on underflow WA (daos-stack/pmdk#37, DAOS-18882)
 
 Fri Jan 16 2026 Oksana Sałyk <oksana.salyk@hpe.com>
 

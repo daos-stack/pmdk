@@ -75,7 +75,7 @@ void
 heap_ensure_zone_reclaimed(struct palloc_heap *heap, uint32_t zone_id);
 
 void
-heap_curr_allocated_repair_if_needed(struct palloc_heap *heap);
+heap_curr_allocated_wa(struct palloc_heap *heap);
 
 int
 heap_free_chunk_reuse(struct palloc_heap *heap,

@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <float.h>
+#include <inttypes.h>
 
 #include "bucket.h"
 #include "libpmemobj/ctl.h"
@@ -813,11 +814,14 @@ heap_reclaim_zone_garbage(struct palloc_heap *heap, struct bucket *bucket,
 }
 
 /*
- * heap_zone_count_used -- (internal) compute live byte count for one zone
- *	from the on-media chunk headers and run bitmaps.
+ * heap_zone_get_allocated -- (internal) sums up the real size of all allocated
+ * (non-free) memory blocks in the zone.
+ *
+ * Note: It is not meant to calculate the sum of all allocations.
+ * It follows the algorithm used to calculate the heap_curr_allocated statistic.
  */
 static uint64_t
-heap_zone_count_used(struct palloc_heap *heap, uint32_t zone_id)
+heap_zone_get_allocated(struct palloc_heap *heap, uint32_t zone_id)
 {
 	struct zone *z = ZID_TO_ZONE(heap->layout, zone_id);
 	uint64_t used = 0;
@@ -837,21 +841,9 @@ heap_zone_count_used(struct palloc_heap *heap, uint32_t zone_id)
 
 		switch (hdr->type) {
 		case CHUNK_TYPE_USED:
+		case CHUNK_TYPE_RUN:
 			used += m.m_ops->get_real_size(&m);
 			break;
-		case CHUNK_TYPE_RUN: {
-			struct chunk_run *run = heap_get_chunk_run(heap, &m);
-			struct alloc_class *c = alloc_class_by_run(
-				heap->rt->alloc_classes,
-				run->hdr.block_size, hdr->flags, m.size_idx);
-			if (c != NULL) {
-				struct recycler_element e =
-					recycler_element_new(heap, &m);
-				used += (uint64_t)(c->rdsc.nallocs -
-					e.free_space) * run->hdr.block_size;
-			}
-			break;
-		}
 		case CHUNK_TYPE_FREE:
 			break;
 		default:
@@ -864,38 +856,58 @@ heap_zone_count_used(struct palloc_heap *heap, uint32_t zone_id)
 	return used;
 }
 
+#define CURR_ALLOCATED_UNDERFLOW_FMT \
+	"heap_curr_allocated underflowed: %" PRIu64 " > heap.size: %" PRIu64 \
+	"; recalculating"
+
 /*
- * heap_curr_allocated_repair_if_needed -- rebuild heap_curr_allocated from
- *	on-media state if the counter has underflowed.
+ * heap_curr_allocated_fix -- recalculate heap_curr_allocated from scratch if it
+ * is bigger than heap size
  *
- * This function is called once during pmemobj_open(): for healthy pools the
- * counter is non-negative and this function returns after a single atomic
- * load, so overhead in the common case is effectively zero.
+ * heap_curr_allocated although is stored persistently it is not updated
+ * transactionally nor reliably persisted. This means e.g. that in case
+ * a transaction succeeds but the process will get terminated before the update
+ * of heap_curr_allocated, the value of heap_curr_allocated will get out of sync
+ * with the actual heap state.
+ *
+ * The most obvious case of this happening is when heap_curr_allocated is
+ * actually smaller than the sum of the sizes of all allocations in the heap,
+ * so in case all of the allocations are freed, heap_curr_allocated will
+ * underflow and get a very big value, bigger than heap size.
+ *
+ * Ref: https://daosio.atlassian.net/browse/DAOS-18882
+ *
+ * This workaround detects this most obvious case and recalculates.
+ * It is intended to be used during open only.
  */
 void
-heap_curr_allocated_repair_if_needed(struct palloc_heap *heap)
+heap_curr_allocated_wa(struct palloc_heap *heap)
 {
-	uint64_t curr;
-	util_atomic_load_explicit64(
-		&heap->stats->persistent->heap_curr_allocated,
-		&curr, memory_order_acquire);
+	uint64_t *allocatedp = &heap->stats->persistent->heap_curr_allocated;
+	uint64_t value;
 
-	if ((int64_t)curr >= 0)
+	/* load the value and check if it is not bigger than heap size */
+	util_atomic_load_explicit64(allocatedp, &value, memory_order_acquire);
+
+	if (value <= *heap->sizep) {
+		/*
+		 * It doesn't mean the value is incorrect, just that it is
+		 * reasonable.
+		 */
 		return;
+	}
 
-	CORE_LOG_WARNING("heap_curr_allocated underflowed (0x%" PRIx64
-		"); rebuilding from on-media state", curr);
+	CORE_LOG_WARNING(CURR_ALLOCATED_UNDERFLOW_FMT, value, *heap->sizep);
 
-	uint64_t total = 0;
-	for (uint32_t z = 0; z < heap->rt->nzones; ++z)
-		total += heap_zone_count_used(heap, z);
+	/* calculate the correct value */
+	value = 0;
+	for (uint32_t z = 0; z < heap->rt->nzones; ++z) {
+		value += heap_zone_get_allocated(heap, z);
+	}
 
-	util_atomic_store_explicit64(
-		&heap->stats->persistent->heap_curr_allocated,
-		total, memory_order_release);
-	pmemops_persist(&heap->p_ops,
-		&heap->stats->persistent->heap_curr_allocated,
-		sizeof(heap->stats->persistent->heap_curr_allocated));
+	/* store and persist the corrected value */
+	util_atomic_store_explicit64(allocatedp, value, memory_order_release);
+	pmemops_persist(&heap->p_ops, allocatedp, sizeof(*allocatedp));
 }
 
 /*
