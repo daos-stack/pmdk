@@ -950,6 +950,15 @@ obj_runtime_init(PMEMobjpool *pop, int rdonly, int boot, unsigned nlanes)
 		if ((errno = obj_runtime_init_common(pop)) != 0)
 			goto err_boot;
 
+		/*
+		 * heap_curr_allocated is maintained by non-ULOG INC/SUB ops
+		 * that are only flushed at pmemobj_close(). After an
+		 * ungraceful shutdown the counter can be left underflowed.
+		 * Detect and rebuild it here; healthy pools pay only a
+		 * single atomic load.
+		 */
+		heap_curr_allocated_repair_if_needed(&pop->heap);
+
 #if VG_MEMCHECK_ENABLED
 		if (On_memcheck) {
 			/* mark unused part of the pool as not accessible */

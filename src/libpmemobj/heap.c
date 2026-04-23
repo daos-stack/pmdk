@@ -813,6 +813,92 @@ heap_reclaim_zone_garbage(struct palloc_heap *heap, struct bucket *bucket,
 }
 
 /*
+ * heap_zone_count_used -- (internal) compute live byte count for one zone
+ *	from the on-media chunk headers and run bitmaps.
+ */
+static uint64_t
+heap_zone_count_used(struct palloc_heap *heap, uint32_t zone_id)
+{
+	struct zone *z = ZID_TO_ZONE(heap->layout, zone_id);
+	uint64_t used = 0;
+
+	if (z->header.magic != ZONE_HEADER_MAGIC)
+		return 0;
+
+	for (uint32_t i = 0; i < z->header.size_idx; ) {
+		struct chunk_header *hdr = &z->chunk_headers[i];
+		ASSERT(hdr->size_idx != 0);
+
+		struct memory_block m = MEMORY_BLOCK_NONE;
+		m.zone_id = zone_id;
+		m.chunk_id = i;
+		m.size_idx = hdr->size_idx;
+		memblock_rebuild_state(heap, &m);
+
+		switch (hdr->type) {
+		case CHUNK_TYPE_USED:
+			used += m.m_ops->get_real_size(&m);
+			break;
+		case CHUNK_TYPE_RUN: {
+			struct chunk_run *run = heap_get_chunk_run(heap, &m);
+			struct alloc_class *c = alloc_class_by_run(
+				heap->rt->alloc_classes,
+				run->hdr.block_size, hdr->flags, m.size_idx);
+			if (c != NULL) {
+				struct recycler_element e =
+					recycler_element_new(heap, &m);
+				used += (uint64_t)(c->rdsc.nallocs -
+					e.free_space) * run->hdr.block_size;
+			}
+			break;
+		}
+		case CHUNK_TYPE_FREE:
+			break;
+		default:
+			ASSERT(0);
+		}
+
+		i = m.chunk_id + m.size_idx;
+	}
+
+	return used;
+}
+
+/*
+ * heap_curr_allocated_repair_if_needed -- rebuild heap_curr_allocated from
+ *	on-media state if the counter has underflowed.
+ *
+ * This function is called once during pmemobj_open(): for healthy pools the
+ * counter is non-negative and this function returns after a single atomic
+ * load, so overhead in the common case is effectively zero.
+ */
+void
+heap_curr_allocated_repair_if_needed(struct palloc_heap *heap)
+{
+	uint64_t curr;
+	util_atomic_load_explicit64(
+		&heap->stats->persistent->heap_curr_allocated,
+		&curr, memory_order_acquire);
+
+	if ((int64_t)curr >= 0)
+		return;
+
+	CORE_LOG_WARNING("heap_curr_allocated underflowed (0x%" PRIx64
+		"); rebuilding from on-media state", curr);
+
+	uint64_t total = 0;
+	for (uint32_t z = 0; z < heap->rt->nzones; ++z)
+		total += heap_zone_count_used(heap, z);
+
+	util_atomic_store_explicit64(
+		&heap->stats->persistent->heap_curr_allocated,
+		total, memory_order_release);
+	pmemops_persist(&heap->p_ops,
+		&heap->stats->persistent->heap_curr_allocated,
+		sizeof(heap->stats->persistent->heap_curr_allocated));
+}
+
+/*
  * heap_ensure_zone_reclaimed -- make sure that the specified zone has been
  * already reclaimed.
  */
