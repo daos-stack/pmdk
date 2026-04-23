@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 /* Copyright 2015-2024, Intel Corporation */
+/* Copyright 2026, Hewlett Packard Enterprise Development LP */
 
 /*
  * heap.h -- internal definitions for heap
