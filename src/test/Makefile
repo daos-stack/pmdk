@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2024, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 #
 
 #
@@ -39,6 +40,7 @@ OBJ_TESTS = \
 	obj_ctl_debug\
 	obj_ctl_heap_size\
 	obj_ctl_stats\
+	obj_ctl_stats_curr_allocated_wa\
 	obj_debug\
 	obj_defrag\
 	obj_defrag_advanced\

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2026, Hewlett Packard Enterprise Development LP
+
+. ../unittest/unittest.sh
+
+require_test_type short
+require_fs_type any
+require_build_type nondebug
+
+setup
+
+OUT_TEMP=out${UNITTEST_NUM}_temp.log
+
+# i - init
+# b - break
+# c - check
+for step in i b c; do
+        expect_normal_exit ./obj_ctl_stats_curr_allocated_wa$EXESUFFIX $DIR/testfile1 $step
+        cat $OUT_LOG_FILE >> $OUT_TEMP
+done
+
+mv $OUT_TEMP $OUT_LOG_FILE
+
+check
+
+pass
