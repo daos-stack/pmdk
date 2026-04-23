@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-/* Copyright 2017-2023, Intel Corporation */
 /* Copyright 2026, Hewlett Packard Enterprise Development LP */
 
 /*
