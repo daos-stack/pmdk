@@ -68,22 +68,19 @@ underflow(PMEMobjpool *pop, uint64_t *exp_allocated)
 	pmemobj_free(&oid);
 }
 
-/*
- * test -- allocates an object to make sure that stats are initialized.
- */
 static void
 test(PMEMobjpool *pop)
 {
 	PMEMoid oid;
 	uint64_t exp_allocated;
 
-	/* trigger underflow */
+	/* 1. trigger underflow */
 	underflow(pop, &exp_allocated);
 
 	/* Check the statistic is updated correctly. */
 	UT_ASSERTeq(get_curr_allocated(pop), 0);
 
-	/* trigger underflow and attempt crossing zero again */
+	/* 2. trigger underflow and attempt crossing zero again */
 	underflow(pop, &exp_allocated);
 	huge_alloc(pop, &oid);
 
