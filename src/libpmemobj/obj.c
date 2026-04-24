@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2014-2024, Intel Corporation */
-/* Copyright 2025-2026, Hewlett Packard Enterprise Development LP */
+/* Copyright 2025, Hewlett Packard Enterprise Development LP */
 
 /*
  * obj.c -- transactional object store implementation
@@ -21,7 +21,6 @@
 #include "ravl.h"
 
 #include "heap_layout.h"
-#include "heap.h"
 #include "os.h"
 #include "os_thread.h"
 #include "pmemops.h"
@@ -971,8 +970,6 @@ obj_runtime_init(PMEMobjpool *pop, int rdonly, int boot, unsigned nlanes)
 			ERR_W_ERRNO("critnib_insert to pools_tree");
 			goto err_tree_insert;
 		}
-
-		heap_curr_allocated_wa(&pop->heap);
 	}
 
 	if (obj_ctl_init_and_load(pop) != 0) {

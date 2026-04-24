@@ -75,8 +75,8 @@ heap_memblock_on_free(struct palloc_heap *heap, const struct memory_block *m);
 void
 heap_ensure_zone_reclaimed(struct palloc_heap *heap, uint32_t zone_id);
 
-void
-heap_curr_allocated_wa(struct palloc_heap *heap);
+uint64_t
+heap_curr_allocated_sum(struct palloc_heap *heap);
 
 int
 heap_free_chunk_reuse(struct palloc_heap *heap,

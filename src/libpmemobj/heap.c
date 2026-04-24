@@ -857,58 +857,19 @@ heap_zone_get_allocated(struct palloc_heap *heap, uint32_t zone_id)
 	return used;
 }
 
-#define CURR_ALLOCATED_UNDERFLOW_FMT \
-	"heap_curr_allocated underflowed: %" PRIu64 " > heap.size: %" PRIu64 \
-	"; recalculating"
-
 /*
- * heap_curr_allocated_fix -- recalculate heap_curr_allocated from scratch if it
- * is bigger than heap size
- *
- * heap_curr_allocated although is stored persistently it is not updated
- * transactionally nor reliably persisted. This means e.g. that in case
- * a transaction succeeds but the process will get terminated before the update
- * of heap_curr_allocated, the value of heap_curr_allocated will get out of sync
- * with the actual heap state.
- *
- * The most obvious case of this happening is when heap_curr_allocated is
- * actually smaller than the sum of the sizes of all allocations in the heap,
- * so in case all of the allocations are freed, heap_curr_allocated will
- * underflow and get a very big value, bigger than heap size.
- *
- * Ref: https://daosio.atlassian.net/browse/DAOS-18882
- *
- * This workaround detects this most obvious case and recalculates.
- * It is intended to be used during open only.
+ * heap_curr_allocated_sum -- calculate the curr_allocated statistic
  */
-void
-heap_curr_allocated_wa(struct palloc_heap *heap)
+uint64_t
+heap_curr_allocated_sum(struct palloc_heap *heap)
 {
-	uint64_t *allocatedp = &heap->stats->persistent->heap_curr_allocated;
-	uint64_t value;
+	uint64_t value = 0;
 
-	/* load the value and check if it is not bigger than heap size */
-	util_atomic_load_explicit64(allocatedp, &value, memory_order_acquire);
-
-	if (value <= *heap->sizep) {
-		/*
-		 * It doesn't mean the value is incorrect, just that it is
-		 * reasonable.
-		 */
-		return;
-	}
-
-	CORE_LOG_WARNING(CURR_ALLOCATED_UNDERFLOW_FMT, value, *heap->sizep);
-
-	/* calculate the correct value */
-	value = 0;
 	for (uint32_t z = 0; z < heap->rt->nzones; ++z) {
 		value += heap_zone_get_allocated(heap, z);
 	}
 
-	/* store and persist the corrected value */
-	util_atomic_store_explicit64(allocatedp, value, memory_order_release);
-	pmemops_persist(&heap->p_ops, allocatedp, sizeof(*allocatedp));
+	return value;
 }
 
 /*

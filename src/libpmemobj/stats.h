@@ -56,10 +56,29 @@ struct stats {
 		util_fetch_and_sub64((&(stats)->transient->name), (value));\
 } while (0)
 
+/*
+ * This macro handles only the curr_allocated statistic. Sadly, it's current
+ * design makes it possible for it to underflow, which would lead to very large
+ * values due to the unsigned type. To mitigate this, if the value is already at
+ * UINT64_MAX or the subtraction would cause an underflow, the value is set to
+ * UINT64_MAX to indicate that it's broken and needs to be recalculated.
+ */
 #define STATS_SUB_persistent(stats, name, value) do {\
 	if ((stats)->enabled == POBJ_STATS_ENABLED_PERSISTENT ||\
-	(stats)->enabled == POBJ_STATS_ENABLED_BOTH)\
-		util_fetch_and_sub64((&(stats)->persistent->name), (value));\
+	(stats)->enabled == POBJ_STATS_ENABLED_BOTH) {\
+		uint64_t curr_value;\
+		util_atomic_load_explicit64((&(stats)->persistent->name),\
+			&curr_value, memory_order_acquire);\
+		if (curr_value != UINT64_MAX) {\
+			curr_value = util_fetch_and_sub64(\
+				(&(stats)->persistent->name), (value));\
+			if (curr_value < value || curr_value == UINT64_MAX) {\
+				util_atomic_store_explicit64(\
+					(&(stats)->persistent->name),\
+					UINT64_MAX, memory_order_release);\
+			}\
+		}\
+	}\
 } while (0)
 
 #define STATS_SET(stats, type, name, value) do {\

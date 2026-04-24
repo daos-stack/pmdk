@@ -5,11 +5,14 @@
  * stats.c -- implementation of statistics
  */
 
+#include "heap.h"
 #include "obj.h"
 #include "stats.h"
 #include "core_assert.h"
 
-STATS_CTL_HANDLER(persistent, curr_allocated, heap_curr_allocated);
+static int
+CTL_READ_HANDLER(persistent_curr_allocated)(void *ctx,
+	enum ctl_query_source source, void *arg, struct ctl_indexes *indexes);
 
 STATS_CTL_HANDLER(transient, run_allocated, heap_run_allocated);
 STATS_CTL_HANDLER(transient, run_active, heap_run_active);
@@ -21,6 +24,52 @@ static const struct ctl_node CTL_NODE(heap)[] = {
 
 	CTL_NODE_END
 };
+
+/*
+ * CTL_READ_HANDLER(persistent_curr_allocated) -- returns curr_allocated field
+ */
+static int
+CTL_READ_HANDLER(persistent_curr_allocated)(void *ctx,
+	enum ctl_query_source source, void *arg, struct ctl_indexes *indexes)
+{
+	/* suppress unused-parameter errors */
+	SUPPRESS_UNUSED(source, indexes);
+
+	PMEMobjpool *pop = ctx;
+	uint64_t *curr_allocated = &pop->stats->persistent->heap_curr_allocated;
+
+	uint64_t *argv = arg;
+	util_atomic_load_explicit64(curr_allocated, argv, memory_order_acquire);
+
+	/*
+	 * heap_curr_allocated although is stored persistently it is not updated
+	 * transactionally nor reliably persisted. This means e.g. that in case
+	 * a transaction succeeds but the process will get terminated before
+	 * the update of heap_curr_allocated, the value of heap_curr_allocated
+	 * will get out of sync with the actual heap state.
+	 *
+	 * The most obvious case of this happening is when heap_curr_allocated
+	 * is actually smaller than the sum of the sizes of all allocations in
+	 * the heap, so in case all of the allocations are freed,
+	 * heap_curr_allocated will underflow and get a very big value, bigger
+	 * than heap size.
+	 *
+	 * Ref: https://daosio.atlassian.net/browse/DAOS-18882
+	 *
+	 * This workaround detects this most obvious case and recalculates.
+	 *
+	 * Note: Not thread-safe.
+	 */
+	if (*argv > *pop->heap.sizep) { /* covers the == UINT64_MAX case */
+		/* if the value is broken, recalculate it */
+		*argv = heap_curr_allocated_sum(&pop->heap);
+
+		util_atomic_store_explicit64(curr_allocated, *argv,
+			memory_order_release);
+	}
+
+	return 0;
+}
 
 /*
  * CTL_READ_HANDLER(enabled) -- returns whether or not statistics are enabled
