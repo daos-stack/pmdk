@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 /* Copyright 2015-2024, Intel Corporation */
+/* Copyright 2026, Hewlett Packard Enterprise Development LP */
 
 /*
  * heap.h -- internal definitions for heap
@@ -73,6 +74,9 @@ heap_memblock_on_free(struct palloc_heap *heap, const struct memory_block *m);
 
 void
 heap_ensure_zone_reclaimed(struct palloc_heap *heap, uint32_t zone_id);
+
+uint64_t
+heap_curr_allocated_sum(struct palloc_heap *heap);
 
 int
 heap_free_chunk_reuse(struct palloc_heap *heap,
