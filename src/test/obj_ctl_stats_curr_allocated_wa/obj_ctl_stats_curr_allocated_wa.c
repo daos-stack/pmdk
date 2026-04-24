@@ -11,75 +11,84 @@
 
 #define LAYOUT "ctl"
 
-/*
- * init -- creates a pool, enables stats, and allocates an object to make sure
- * that stats are initialized.
- */
-static void
-init(const char *path)
-{
-	PMEMobjpool *pop;
-	pop = pmemobj_create(path, LAYOUT, PMEMOBJ_MIN_POOL, S_IWUSR | S_IRUSR);
-	UT_ASSERTne(pop, NULL);
-
-	int enabled = 1;
-	uint64_t allocated = 0;
-	int ret;
-
-	ret = pmemobj_ctl_set(pop, "stats.enabled", &enabled);
-	UT_ASSERTeq(ret, 0);
-
-	PMEMoid oid;
-	ret = pmemobj_alloc(pop, &oid, 1, 0, NULL, NULL);
-	UT_ASSERTeq(ret, 0);
-
-	ret = pmemobj_ctl_get(pop, "stats.heap.curr_allocated", &allocated);
-	UT_ASSERTeq(ret, 0);
-	UT_ASSERTne(allocated, 0);
-
-	UT_OUT("curr_allocated: %lu", allocated);
-
-	pmemobj_close(pop);
-}
+#define MB (1 << 20)
 
 /*
- * break_curr_allocated -- break curr_allocated
+ * set_curr_allocated -- set curr_allocated to a specific value
  */
 static void
-break_curr_allocated(const char *path)
+set_curr_allocated(PMEMobjpool *pop, uint64_t value)
 {
-	PMEMobjpool *pop = pmemobj_open(path, LAYOUT);
-	UT_ASSERTne(pop, NULL);
-
 	struct pmemobjpool *ppop = (struct pmemobjpool *)pop;
 	uint64_t *curr_allocated = &ppop->stats_persistent.heap_curr_allocated;
-	*curr_allocated = UINT64_MAX;
+	*curr_allocated = value;
 	pmem_persist(curr_allocated, sizeof(*curr_allocated));
-
-	pmemobj_close(pop);
 }
 
 /*
- * check -- opens the pool, trigger the curr_allocated WA and checks that it is
- * fixed.
+ * get_curr_allocated -- get the curr_allocated value
  */
-static void
-check(const char *path)
+static uint64_t
+get_curr_allocated(PMEMobjpool *pop)
 {
-	PMEMobjpool *pop = pmemobj_open(path, LAYOUT);
-	UT_ASSERTne(pop, NULL);
-
-	uint64_t allocated = 0;
 	int ret;
+	uint64_t allocated;
 
 	ret = pmemobj_ctl_get(pop, "stats.heap.curr_allocated", &allocated);
 	UT_ASSERTeq(ret, 0);
-	UT_ASSERTne(allocated, 0);
-	UT_ASSERTne(allocated, UINT64_MAX);
 
-	UT_OUT("curr_allocated: %lu", allocated);
+	return allocated;
+}
 
-	pmemobj_close(pop);
+/*
+ * huge_alloc -- make a huge allocation
+ */
+static void
+huge_alloc(PMEMobjpool *pop, PMEMoid *oid)
+{
+	int ret = pmemobj_alloc(pop, oid, 4 * MB, 0, NULL, NULL);
+	UT_ASSERTeq(ret, 0);
+}
+
+static void
+underflow(PMEMobjpool *pop, uint64_t *exp_allocated)
+{
+	UT_ASSERTne(exp_allocated, NULL);
+
+	/* Create a huge allocation and query the statistic */
+	PMEMoid oid;
+	huge_alloc(pop, &oid);
+
+	*exp_allocated = get_curr_allocated(pop);
+
+	/* Inject a smaller than expected value. */
+	set_curr_allocated(pop, *exp_allocated - 1);
+
+	/* Trigger underflow. */
+	pmemobj_free(&oid);
+}
+
+/*
+ * test -- allocates an object to make sure that stats are initialized.
+ */
+static void
+test(PMEMobjpool *pop)
+{
+	PMEMoid oid;
+	uint64_t exp_allocated;
+
+	/* trigger underflow */
+	underflow(pop, &exp_allocated);
+
+	/* Check the statistic is updated correctly. */
+	UT_ASSERTeq(get_curr_allocated(pop), 0);
+
+	/* trigger underflow and attempt crossing zero again */
+	underflow(pop, &exp_allocated);
+	huge_alloc(pop, &oid);
+
+	/* Check the statistic is updated correctly. */
+	UT_ASSERTeq(get_curr_allocated(pop), exp_allocated);
 }
 
 int
@@ -87,26 +96,26 @@ main(int argc, char *argv[])
 {
 	START(argc, argv, "obj_ctl_stats_curr_allocated_wa");
 
-	if (argc != 3) {
-		UT_FATAL("usage: %s file-name step", argv[0]);
+	if (argc != 2) {
+		UT_FATAL("usage: %s file-name", argv[0]);
 	}
 
 	const char *path = argv[1];
-	const char step = argv[2][0];
 
-	switch (step) {
-		case 'i':
-			init(path);
-			break;
-		case 'b':
-			break_curr_allocated(path);
-			break;
-		case 'c':
-			check(path);
-			break;
-		default:
-			UT_FATAL("invalid step");
-	}
+	PMEMobjpool *pop;
+	pop = pmemobj_create(path, LAYOUT, PMEMOBJ_MIN_POOL, S_IWUSR | S_IRUSR);
+	UT_ASSERTne(pop, NULL);
+
+	int enabled = 1;
+	int ret;
+
+	/* Enable stats. */
+	ret = pmemobj_ctl_set(pop, "stats.enabled", &enabled);
+	UT_ASSERTeq(ret, 0);
+
+	test(pop);
+
+	pmemobj_close(pop);
 
 	DONE(NULL);
 }

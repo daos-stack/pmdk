@@ -819,6 +819,7 @@ heap_reclaim_zone_garbage(struct palloc_heap *heap, struct bucket *bucket,
  *
  * Note: It is not meant to calculate the sum of all allocations.
  * It follows the algorithm used to calculate the heap_curr_allocated statistic.
+ * e.g. It does not take into account free space in runs.
  */
 static uint64_t
 heap_zone_get_allocated(struct palloc_heap *heap, uint32_t zone_id)

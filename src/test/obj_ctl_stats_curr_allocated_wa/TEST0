@@ -6,21 +6,15 @@
 
 require_test_type short
 require_fs_type any
-require_build_type nondebug
+require_build_type debug
 
 setup
 
-OUT_TEMP=out${UNITTEST_NUM}_temp.log
+OUT_CHECK=pmemobj_grep${UNITTEST_NUM}.log
 
-# i - init
-# b - break
-# c - check
-for step in i b c; do
-        expect_normal_exit ./obj_ctl_stats_curr_allocated_wa$EXESUFFIX $DIR/testfile1 $step
-        cat $OUT_LOG_FILE >> $OUT_TEMP
-done
+expect_normal_exit ./obj_ctl_stats_curr_allocated_wa$EXESUFFIX $DIR/testfile1
 
-mv $OUT_TEMP $OUT_LOG_FILE
+cat $PMEMOBJ_LOG_FILE | grep "ctl__persistent_curr_allocated_read" > $OUT_CHECK
 
 check
 

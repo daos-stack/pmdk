@@ -42,8 +42,15 @@ struct stats {
 
 #define STATS_INC_persistent(stats, name, value) do {\
 	if ((stats)->enabled == POBJ_STATS_ENABLED_PERSISTENT ||\
-	(stats)->enabled == POBJ_STATS_ENABLED_BOTH)\
-		util_fetch_and_add64((&(stats)->persistent->name), (value));\
+	(stats)->enabled == POBJ_STATS_ENABLED_BOTH) {\
+		uint64_t curr_value;\
+		util_atomic_load_explicit64((&(stats)->persistent->name),\
+			&curr_value, memory_order_acquire);\
+		if (curr_value != UINT64_MAX) {\
+			util_fetch_and_add64(\
+				(&(stats)->persistent->name), (value));\
+		}\
+	}\
 } while (0)
 
 #define STATS_SUB(stats, type, name, value) do {\

@@ -1,0 +1,2 @@
+$(S) heap_curr_allocated underflowed: $(N) > heap.size: $(N); recalculating
+$(S) heap_curr_allocated underflowed: $(N) > heap.size: $(N); recalculating
