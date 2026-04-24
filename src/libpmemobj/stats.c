@@ -5,6 +5,8 @@
  * stats.c -- implementation of statistics
  */
 
+#include <inttypes.h>
+
 #include "heap.h"
 #include "obj.h"
 #include "stats.h"
@@ -24,6 +26,10 @@ static const struct ctl_node CTL_NODE(heap)[] = {
 
 	CTL_NODE_END
 };
+
+#define CURR_ALLOCATED_UNDERFLOW_FMT \
+	"heap_curr_allocated underflowed: %" PRIu64 " > heap.size: %" PRIu64 \
+	"; recalculating"
 
 /*
  * CTL_READ_HANDLER(persistent_curr_allocated) -- returns curr_allocated field
@@ -61,6 +67,9 @@ CTL_READ_HANDLER(persistent_curr_allocated)(void *ctx,
 	 * Note: Not thread-safe.
 	 */
 	if (*argv > *pop->heap.sizep) { /* covers the == UINT64_MAX case */
+		CORE_LOG_WARNING(CURR_ALLOCATED_UNDERFLOW_FMT,
+			*argv, *pop->heap.sizep);
+
 		/* if the value is broken, recalculate it */
 		*argv = heap_curr_allocated_sum(&pop->heap);
 
