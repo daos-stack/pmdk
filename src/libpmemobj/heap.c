@@ -10,7 +10,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <float.h>
-#include <inttypes.h>
 
 #include "bucket.h"
 #include "libpmemobj/ctl.h"
