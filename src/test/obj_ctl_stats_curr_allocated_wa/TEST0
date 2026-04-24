@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2026, Hewlett Packard Enterprise Development LP
+
+. ../unittest/unittest.sh
+
+require_test_type short
+require_fs_type any
+require_build_type debug
+
+setup
+
+OUT_CHECK=pmemobj_grep${UNITTEST_NUM}.log
+
+expect_normal_exit ./obj_ctl_stats_curr_allocated_wa$EXESUFFIX $DIR/testfile1
+
+cat $PMEMOBJ_LOG_FILE | grep "ctl__persistent_curr_allocated_read" > $OUT_CHECK
+
+check
+
+pass

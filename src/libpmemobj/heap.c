@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2015-2024, Intel Corporation */
+/* Copyright 2026, Hewlett Packard Enterprise Development LP */
 
 /*
  * heap.c -- heap implementation
@@ -810,6 +811,65 @@ heap_reclaim_zone_garbage(struct palloc_heap *heap, struct bucket *bucket,
 
 		i = m.chunk_id + m.size_idx; /* hdr might have changed */
 	}
+}
+
+/*
+ * heap_zone_get_allocated -- (internal) sums up the real size of all allocated
+ * (non-free) memory blocks in the zone.
+ *
+ * Note: It is not meant to calculate the sum of all allocations.
+ * It follows the algorithm used to calculate the heap_curr_allocated statistic.
+ * e.g. It does not take into account free space in runs.
+ */
+static uint64_t
+heap_zone_get_allocated(struct palloc_heap *heap, uint32_t zone_id)
+{
+	struct zone *z = ZID_TO_ZONE(heap->layout, zone_id);
+	uint64_t used = 0;
+
+	if (z->header.magic != ZONE_HEADER_MAGIC)
+		return 0;
+
+	for (uint32_t i = 0; i < z->header.size_idx; ) {
+		struct chunk_header *hdr = &z->chunk_headers[i];
+		ASSERT(hdr->size_idx != 0);
+
+		struct memory_block m = MEMORY_BLOCK_NONE;
+		m.zone_id = zone_id;
+		m.chunk_id = i;
+		m.size_idx = hdr->size_idx;
+		memblock_rebuild_state(heap, &m);
+
+		switch (hdr->type) {
+		case CHUNK_TYPE_USED:
+		case CHUNK_TYPE_RUN:
+			used += m.m_ops->get_real_size(&m);
+			break;
+		case CHUNK_TYPE_FREE:
+			break;
+		default:
+			ASSERT(0);
+		}
+
+		i = m.chunk_id + m.size_idx;
+	}
+
+	return used;
+}
+
+/*
+ * heap_curr_allocated_sum -- calculate the curr_allocated statistic
+ */
+uint64_t
+heap_curr_allocated_sum(struct palloc_heap *heap)
+{
+	uint64_t value = 0;
+
+	for (uint32_t z = 0; z < heap->rt->nzones; ++z) {
+		value += heap_zone_get_allocated(heap, z);
+	}
+
+	return value;
 }
 
 /*
