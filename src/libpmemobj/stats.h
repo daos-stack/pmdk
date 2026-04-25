@@ -47,8 +47,13 @@ struct stats {
 		util_atomic_load_explicit64((&(stats)->persistent->name),\
 			&curr_value, memory_order_acquire);\
 		if (curr_value != UINT64_MAX) {\
-			util_fetch_and_add64(\
+			curr_value = util_fetch_and_add64(\
 				(&(stats)->persistent->name), (value));\
+			if (curr_value > UINT64_MAX - (value)) {\
+				util_atomic_store_explicit64(\
+					(&(stats)->persistent->name),\
+					UINT64_MAX, memory_order_release);\
+			}\
 		}\
 	}\
 } while (0)
