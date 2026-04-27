@@ -43,18 +43,18 @@ struct stats {
 #define STATS_INC_persistent(stats, name, value) do {\
 	if ((stats)->enabled == POBJ_STATS_ENABLED_PERSISTENT ||\
 	(stats)->enabled == POBJ_STATS_ENABLED_BOTH) {\
-		uint64_t curr_value;\
-		util_atomic_load_explicit64((&(stats)->persistent->name),\
-			&curr_value, memory_order_acquire);\
-		if (curr_value != UINT64_MAX) {\
-			curr_value = util_fetch_and_add64(\
-				(&(stats)->persistent->name), (value));\
-			if (curr_value > UINT64_MAX - (value)) {\
-				util_atomic_store_explicit64(\
-					(&(stats)->persistent->name),\
-					UINT64_MAX, memory_order_release);\
-			}\
-		}\
+		uint64_t old;\
+		uint64_t new_val;\
+		do {\
+			util_atomic_load_explicit64(\
+				(&(stats)->persistent->name),\
+				&old, memory_order_acquire);\
+			if (old == UINT64_MAX)\
+				break;\
+			new_val = (old > UINT64_MAX - (value)) ?\
+				UINT64_MAX : (old + (value));\
+		} while (!util_bool_compare_and_swap64(\
+			(&(stats)->persistent->name), old, new_val));\
 	}\
 } while (0)
 
@@ -78,18 +78,18 @@ struct stats {
 #define STATS_SUB_persistent(stats, name, value) do {\
 	if ((stats)->enabled == POBJ_STATS_ENABLED_PERSISTENT ||\
 	(stats)->enabled == POBJ_STATS_ENABLED_BOTH) {\
-		uint64_t curr_value;\
-		util_atomic_load_explicit64((&(stats)->persistent->name),\
-			&curr_value, memory_order_acquire);\
-		if (curr_value != UINT64_MAX) {\
-			curr_value = util_fetch_and_sub64(\
-				(&(stats)->persistent->name), (value));\
-			if (curr_value < value || curr_value == UINT64_MAX) {\
-				util_atomic_store_explicit64(\
-					(&(stats)->persistent->name),\
-					UINT64_MAX, memory_order_release);\
-			}\
-		}\
+		uint64_t old;\
+		uint64_t new_val;\
+		do {\
+			util_atomic_load_explicit64(\
+				(&(stats)->persistent->name),\
+				&old, memory_order_acquire);\
+			if (old == UINT64_MAX)\
+				break;\
+			new_val = (old < (value)) ?\
+				UINT64_MAX : (old - (value));\
+		} while (!util_bool_compare_and_swap64(\
+			(&(stats)->persistent->name), old, new_val));\
 	}\
 } while (0)
 
