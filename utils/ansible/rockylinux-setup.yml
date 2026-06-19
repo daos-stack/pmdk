@@ -25,6 +25,12 @@
     new_user_pass: pmdkpass
 
   tasks:
+    - name: Ensure kmod-mlnx-ofa_kernel is not installed
+      ansible.builtin.dnf:
+      name: kmod-mlnx-ofa_kernel
+      state: absent
+      autoremove: true
+
     - name: Update kernel packages
       package:
         name: "kernel.x86_64"
