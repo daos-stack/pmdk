@@ -1,19 +1,10 @@
 # Contributing to the Persistent Memory Development Kit
 
-Down below you'll find instructions on how to contribute to the
-Persistent Memory Development Kit.
+Please [contact us](README.md#contact-us) before contributing any changes.
 
-Your contributions are most welcome!  You'll find it is best to begin
-with a conversation about your changes, rather than just writing a bunch
-of code and contributing it out of the blue.
-There are several good ways to suggest new features, offer to add a feature,
-or just begin a dialog about the Persistent Memory Development Kit:
+**NOTE**: We do not accept feature requests not related to the [DAOS Project](https://daos.io/).
 
-* Open an issue in our [GitHub Issues Database](https://github.com/pmem/pmdk/issues)
-* Suggest a feature, ask a question, start a discussion, etc. in our [pmem Google group](https://groups.google.com/group/pmem)
-* Chat with members of the PMDK team real-time on the **#pmem** IRC channel on [OFTC](https://www.oftc.net)
-
-**NOTE: If you do decide to implement code changes and contribute them,
+**NOTE: When implementing code changes and contribute them,
 please make sure you agree your contribution can be made available
 under the [BSD-style License used for the Persistent Memory Development Kit](LICENSE.txt).**
 
@@ -60,9 +51,7 @@ Author: Random J Developer <random@developer.example.org>
 
 ### Code Contributions
 
-Please feel free to use the forums mentioned above to ask
-for comments & questions on your code before submitting
-a pull request.  The Persistent Memory Development Kit project uses the common
+The Persistent Memory Development Kit project uses the common
 *fork and merge* workflow used by most GitHub-hosted projects.
 The [Git Workflow blog article](https://pmem.io/2014/09/09/git-workflow.html)
 describes our workflow in more detail.
@@ -88,18 +77,11 @@ no clang-format or it pointing to an older version. In such case run:
 	$ make CLANG_FORMAT=/path/to/clang-format cstyle|format
 ```
 
-If you are actively working on a PMDK feature, please let other
-developers know by [creating an issue](https://github.com/pmem/pmdk/issues).
-Use the template `Feature` and assign it to yourself (due to the way
-GitHub permissions work, you may have to ask a team member to assign it to you).
-
 ### Bug Reports
 
-Bugs for the PMDK project are tracked in our
-[GitHub Issues Database](https://github.com/pmem/pmdk/issues).
+Before reporting a new bug please check if it is not already known: [here](https://daosio.atlassian.net/issues?jql=component%20%3D%20PMDK%20ORDER%20BY%20created%20DESC) or [here](https://github.com/pmem/pmdk/issues).
 
-When reporting a new bug, please use `New issue` button, pick proper template and fill
-in all fields. Provide as much information as possible, including the product version:
+To report a bug please [contact us](README.md#contact-us) and use the [template](.github/ISSUE_TEMPLATE/bug_report.md).
 
 #### PMDK version
 
@@ -107,10 +89,10 @@ Put the release name of the version of PMDK running when the
 bug was discovered in a bug comment.  If you saw this bug in multiple PMDK
 versions, please put at least the most recent version and list the others
 if necessary.
-- Stable release names are in the form `#.#` (where `#` represents
-  an integer); for example `0.3`.
-- Release names from working versions look like `#.#+b#` (adding a build #)
-  or `#.#-rc#` (adding a release candidate number)
+- Stable release names are in the form `#.#.#` (where `#` represents
+  an integer); for example `2.1.0`.
+- Release names from working versions look like `#.#.#+b#` (adding a build #)
+  or `#.#.#-rc#` (adding a release candidate number)
 If PMDK was built from source, the version number can be retrieved
 from git using this command: `git describe`
 
@@ -131,10 +113,3 @@ that the bug does not prevent the next release of the library.
 * **P3**: Medium-priority bug.  The expectation is that the bug will be
 evaluated and a plan will be made for when the bug will be resolved.
 * **P4**: Low-priority bug, the least urgent.  Fixed when the resources are available.
-
-### Other issues
-
-On our issues page we also gather feature requests and questions. Templates to use
-are `Feature` and `Question`, respectively.  They should help deliver a meaningful
-description of a feature or ask a question to us (remember though we have
-different means of communication, as described at the top of the page).
