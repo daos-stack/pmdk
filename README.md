@@ -10,11 +10,9 @@
 
 The **Persistent Memory Development Kit (PMDK)** is a collection of libraries and tools for System Administrators and Application Developers to simplify managing and accessing persistent memory devices. For more information, see https://pmem.io.
 
-To install PMDK libraries please clone the tree and build it yourself. Specific installation instructions are outlined below.
+The only supported user is the [DAOS Project](https://daos.io/). Bugs and feature requests for PMDK are tracked [here](https://daosio.atlassian.net/issues?jql=component%20%3D%20PMDK%20ORDER%20BY%20created%20DESC). Older known issues can be found [here](https://github.com/pmem/pmdk/issues).
 
-Pre-built packages can be found in popular Linux distribution package repositories but we do not keep them anymore up to date because of the limited resources.
-
-Bugs and feature requests for this repo are tracked in our [GitHub Issues Database](https://github.com/pmem/pmdk/issues).
+PMDK is delivered as part of a DAOS release. If you want to experiment with PMDK without DAOS it is recommended to build it yourself as outlined [below](#building-and-installing). Pre-built packages found in popular Linux distribution package repositories are no longer kept up to date.
 
 ## Contents
 1. [Libraries and Utilities](#libraries-and-utilities)
@@ -59,8 +57,8 @@ Additionally, we recommend reading [Introduction to Programming with Persistent 
 
 ## Version Conventions
 
-- **Release Candidates** have a '-rc{version}' tag, e.g. `0.2-rc3`, meaning _Release Candidate 3 for version 0.2_
-- **Stable Releases** use a _major.minor_ tag like `0.2`
+- **Release Candidates** have a '-rc{version}' tag, e.g. `2.2.0-rc3`, meaning _Release Candidate 3 for version 2.2.0_
+- **Stable Releases** use a _major.minor.patch_ tag like `2.2.0`.
 
 ## Building and installing
 
