@@ -32,11 +32,11 @@ see https://github.com/pmem/pmdk/issues/4207.
 To build from source, clone this tree:
 
 ```sh
-git clone https://github.com/pmem/pmdk
+git clone https://github.com/daos-stack/pmdk
 cd pmdk
 ```
 
-For a stable version, checkout a [release tag](https://github.com/pmem/pmdk/releases) as follows. Otherwise skip this step to build the latest development release.
+For a stable version, checkout a [release tag](https://github.com/daos-stack/pmdk/releases) as follows. Otherwise skip this step to build the latest development release.
 
 ```sh
 git checkout tags/2.1.3
@@ -128,7 +128,7 @@ To enable logging of debug information, use debug version of a library and set
 desired log level using (library-specific) variable, e.g. `PMEM_LOG_LEVEL=<level>`.
 
 For more details see appropriate manpage (debbuging section), e.g.
-[libpmem(7)](https://github.com/pmem/pmdk/blob/master/doc/libpmem/libpmem.7.md#error-handling-1).
+[libpmem(7)](doc/libpmem/libpmem.7.md#error-handling-1).
 
 ## Experimental Packages
 

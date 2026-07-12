@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2024, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # build-dpkg.sh - Script for building deb packages
@@ -292,7 +293,7 @@ Section: libs
 Priority: optional
 Standards-version: 4.1.4
 Build-Depends: debhelper (>= 9)
-Homepage: https://github.com/pmem/pmdk
+Homepage: https://github.com/daos-stack/pmdk
 
 Package: libpmem
 Architecture: any

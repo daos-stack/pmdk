@@ -99,7 +99,7 @@ git commit --reset-author
 
 ## 5. Publish package and make it official
 
-- go to [GitHub's releases tab](https://github.com/pmem/pmdk/releases/new) and fill in the form:
+- go to [GitHub's releases tab](https://github.com/daos-stack/pmdk/releases/new) and fill in the form:
   - tag version: $VERSION,
   - release title: PMDK Version $VERSION,
   - description: copy entry from the ChangeLog

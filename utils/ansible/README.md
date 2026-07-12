@@ -4,7 +4,7 @@ This is utils/ansible/README.md.
 
 The scripts in this directory allow you to set up a RockyLinux and OpenSUSE
 environment on a real hardware to be able build a PMDK project on it or use the
-node as a self-hosted runner for pmem/pmdk repository.
+node as a self-hosted runner for daos-stack/pmdk repository.
 
 # Installing Ansible
 To use playbooks it is required to install Ansible first. It must be done
@@ -89,7 +89,7 @@ ansible-playbook -i $TARGET_IP, configure-pmem.yml \
 # Installing a GitHub Action self-hosted runner using Ansible palybook
 The sequence of commands below setup a new server, with persistent memory and
 a CI environment already installed, to be used as a self-hosted runner in
-the pmem/pmdk repository.
+the daos-stack/pmdk repository.
 
 ```sh
 export TARGET_IP= # ip of the target
@@ -103,7 +103,7 @@ ansible-playbook -i $TARGET_IP, configure-self-hosted-runner.yml --extra-vars \
   runner_name=$HOST_NAME labels=$LABELS token=$GHA_TOKEN vars_gha=$VARS_GHA"
 ```
 **Note**: To obtain a token for a new self-hosted runer visit
-[Create self-hosted runner](https://gib.com/pmem/pmdk/settings/actions/runners/new)
+[Create self-hosted runner](https://github.com/daos-stack/pmdk/settings/actions/runners/new)
 .
 
 **Note**: In case of any problems, please refer to
@@ -154,7 +154,7 @@ GHA runner without a control node.
 dnf install git-core -y
 dnf install ansible-core -y
 ansible-galaxy collection install ansible.posix
-git clone https://github.com/pmem/pmdk.git
+git clone https://github.com/daos-stack/pmdk.git
 cd pmdk/utils/ansible
 ```
 Update playbooks to be used directly on the target as described [above](#provisioning-from-the-target-platform-itself)
@@ -194,7 +194,7 @@ rm -rf pmdk
 # as root:
 zypper install git-core -y
 zypper install ansible -y
-git clone https://github.com/pmem/pmdk.git
+git clone https://github.com/daos-stack/pmdk.git
 cd pmdk/utils/ansible
 ```
 Update playbooks to be used directly on the target as described [above](#provisioning-from-the-target-platform-itself)
