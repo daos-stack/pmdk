@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2023-2024, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
-# This playbook is designed to add a new self-hosted runner to pmem/pmdk.
+# This playbook is designed to add a new self-hosted runner to daos-stack/pmdk.
 # Examples below show how to use this file:
 # 1) remotely
 # export TARGET_IP= # ip of the target

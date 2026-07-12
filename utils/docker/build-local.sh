@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2017-2023, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # build-local.sh - runs a Docker container from a Docker image with environment
@@ -34,7 +35,7 @@ export PMDK_CXX=${PMDK_CXX:-g++}
 export EXPERIMENTAL=${EXPERIMENTAL:-n}
 export VALGRIND=${VALGRIND:-1}
 export DOCKER_REPO=${DOCKER_REPO:-ghcr.io/pmem/pmdk}
-export GITHUB_REPO=${GITHUB_REPO:-pmem/pmdk}
+export GITHUB_REPO=${GITHUB_REPO:-daos-stack/pmdk}
 
 if [[ -z "$IMG_VER" ]]; then
 	# set the IMG_VER variable - version of Docker images

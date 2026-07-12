@@ -20,7 +20,7 @@ coded in the same style as the file being modified.
 
 ### Code formatting
 Most of the common stylistic errors can be detected by the
-[style checker program](https://github.com/pmem/pmdk/blob/master/utils/cstyle)
+[style checker program](utils/cstyle)
 included in the repo.
 Simply run `make cstyle` to verify if your code is well-formatted.
 
@@ -47,7 +47,7 @@ Otherwise, just use `unsigned`, `long`, etc.
 ### License & copyright
 - Make sure you have the right to submit your contribution under the BSD license,
 especially if it is based upon previous work.
-See [CONTRIBUTING.md](https://github.com/pmem/pmdk/blob/master/CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 - Place a [SPDX short-form identifier](https://spdx.dev/learn/handling-license-info/) for
 the BSD-3-Clause license at the beginning of each new source file, script or man page.
 (Obviously, it does not apply to README's, Visual Studio projects and \*.match files.)
@@ -81,8 +81,8 @@ log level for most frequently called routines.
 ### Unit tests
 - There **must** be unit tests provided for each new function/module added.
 - Test scripts **must** start with `#!/usr/bin/env <shell>` for portability between Linux and FreeBSD.
-- Please, see [this](https://github.com/pmem/pmdk/blob/master/src/test/README)
-and [that](https://github.com/pmem/pmdk/blob/master/src/test/unittest/README)
+- Please, see [this](src/test/README)
+and [that](src/test/unittest/README)
 document to get familiar with
 our test framework and the guidelines on how to write and run unit tests.
 

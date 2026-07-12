@@ -68,7 +68,7 @@ Install a few [dependencies](INSTALL.md#dependencies) and then build and install
 
 ```sh
 # get the source code
-git clone https://github.com/pmem/pmdk
+git clone https://github.com/daos-stack/pmdk
 cd pmdk
 # build
 make -j

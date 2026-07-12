@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2022-2023, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 # Ansible playbook which is executing PMDK RAS test: Unsafe Shutdown Local on Linux.
 
@@ -87,7 +88,7 @@
 
     repo:
       pmdk:
-        url: https://github.com/pmem/pmdk.git
+        url: https://github.com/daos-stack/pmdk.git
         branch: master
         target_dir: "{{ working_dir_path }}/pmdk"
       pmdk_tests:
