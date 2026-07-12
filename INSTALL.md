@@ -17,16 +17,6 @@ You will need to install the following required packages on the build system:
 * **libdaxctl-devel** (v63 or later)
 * **pandoc** (for documentation, required during install)
 
-The following packages are required only by selected PMDK components
-or features:
-
-PMDK depends on libndctl and libdaxctl to support RAS features. It is possible
-to disable this support by passing `NDCTL_ENABLE=n` to `make`, but we strongly
-discourage users from doing that. Disabling NDCTL strips PMDK from ability to
-detect hardware failures, which may lead to silent data corruption.
-For information how to disable RAS at runtime for kernels prior to 5.0.4 please
-see https://github.com/pmem/pmdk/issues/4207.
-
 ## Building PMDK
 
 To build from source, clone this tree:
@@ -39,28 +29,13 @@ cd pmdk
 For a stable version, checkout a [release tag](https://github.com/daos-stack/pmdk/releases) as follows. Otherwise skip this step to build the latest development release.
 
 ```sh
-git checkout tags/2.1.3
+git checkout tags/X.Y.Z
 ```
 
 Once all required [dependencies](#dependencies) are installed, PMDK is built using the
 
 ```sh
 make
-```
-
-By default, all code is built with the `-Werror` flag, which fails
-the whole build when the compiler emits any warning. This is very useful during
-development, but can be annoying in deployment. If you want to disable `-Werror`,
-use the `EXTRA_CFLAGS` variable:
-
-```sh
-make EXTRA_CFLAGS="-Wno-error"
-```
-
->or
-
-```sh
-make EXTRA_CFLAGS="-Wno-error=$(type-of-warning)"
 ```
 
 ## Installing PMDK
@@ -107,7 +82,7 @@ Both building and installation scripts are very flexible. To see additional opti
 
 ### Memory Management Tools
 
-The PMDK libraries support standard Valgrind DRD, Helgrind and Memcheck, as well as a PM-aware version of [Valgrind](https://github.com/pmem/valgrind).
+The PMDK libraries support standard Valgrind DRD, Helgrind and Memcheck, as well as a PMEM-aware version of [Valgrind](https://github.com/pmem/valgrind).
 By default, support for all tools is enabled. If you wish to disable it, supply the compiler with `VALGRIND` flag set to 0:
 
 ```sh
