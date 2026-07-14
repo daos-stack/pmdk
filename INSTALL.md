@@ -82,7 +82,7 @@ Both building and installation scripts are very flexible. To see additional opti
 
 ### Memory Management Tools
 
-The PMDK libraries support standard Valgrind DRD, Helgrind and Memcheck, as well as a PMEM-aware version of [Valgrind](https://github.com/pmem/valgrind).
+The PMDK libraries support standard Valgrind DRD, Helgrind and Memcheck, as well as a PMem-aware version of [Valgrind](https://github.com/pmem/valgrind).
 By default, support for all tools is enabled. If you wish to disable it, supply the compiler with `VALGRIND` flag set to 0:
 
 ```sh

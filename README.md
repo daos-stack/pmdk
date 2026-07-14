@@ -57,8 +57,8 @@ Additionally, we recommend reading [Introduction to Programming with Persistent 
 
 ## Version Conventions
 
-- **Release Candidates** have a '-rc{version}' tag, e.g. `0.2.0-rc3`, meaning _Release Candidate 3 for version 0.2.0_
-- **Stable Releases** use a _major.minor.patch_ tag like `0.2.0`.
+- **Release Candidates** have a '-rc{version}' tag, e.g. `2.2.0-rc3`, meaning _Release Candidate 3 for version 2.2.0_
+- **Stable Releases** use a _major.minor.patch_ tag like `2.2.0`.
 
 ## Building and installing
 
