@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2023, Intel Corporation
-# Copyright 2025, Hewlett Packard Enterprise Development LP
+# Copyright 2025-2026, Hewlett Packard Enterprise Development LP
 #
 # src/common.inc -- common Makefile rules for PMDK
 #
@@ -30,7 +30,7 @@ PKG_CONFIG ?= pkg-config
 HEADERS = $(wildcard *.h) $(wildcard *.hpp)
 
 ifeq ($(SRCVERSION),)
-export SRCVERSION := $(shell $(TOP)/utils/version.sh $(TOP))
+export SRCVERSION := $(shell git describe --always)
 else
 export SRCVERSION
 endif

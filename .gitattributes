@@ -4,4 +4,3 @@
 *.gif binary
 *.ico binary
 *.match text -whitespace
-GIT_VERSION export-subst
