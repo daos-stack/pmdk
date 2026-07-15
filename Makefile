@@ -63,7 +63,6 @@ ifeq ($(DOC),y)
 	test -f .skip-doc || $(MAKE) -C doc $@
 endif
 	$(RM) -r $(RPM_BUILDDIR) $(DPKG_BUILDDIR)
-	$(RM) -f $(GIT_VERSION)
 
 clobber:
 	$(MAKE) -C src $@
@@ -71,7 +70,6 @@ ifeq ($(DOC),y)
 	test -f .skip-doc || $(MAKE) -C doc $@
 endif
 	$(RM) -r $(RPM_BUILDDIR) $(DPKG_BUILDDIR) rpm dpkg
-	$(RM) -f $(GIT_VERSION)
 
 test check pcheck pycheck: all
 	$(MAKE) -C src $@
