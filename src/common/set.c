@@ -2777,12 +2777,161 @@ util_unmap_all_hdrs(struct pool_set *set)
 }
 
 /*
+ * util_ipmctl_log_dimm_shutdown_status -- query ipmctl for every DIMM's last
+ * shutdown time and shutdown status (both latched and unlatched) and report
+ * the output of each command via CORE_LOG_ERROR.
+ *
+ * Steps:
+ *   1. Run "ipmctl show -display DimmID -dimm" and collect all DimmID values
+ *      from lines of the form ---DimmID=0x0001---.
+ *   2. For every discovered DimmID run three ipmctl queries and emit one
+ *      CORE_LOG_ERROR entry per query containing the raw command output.
+ */
+static void
+util_ipmctl_log_dimm_shutdown_status(void)
+{
+	/*
+	 * Collect DimmID strings from "ipmctl show -display DimmID -dimm".
+	 * A DimmID is always 6 characters (e.g. 0x0001) + NUL = 7 bytes.
+	 */
+#define IPMCTL_MAX_DIMMS	64
+#define IPMCTL_DIMMID_LEN	7   /* "0x0001" + NUL */
+#define IPMCTL_CMD_LEN		128
+#define IPMCTL_VAL_LEN		64
+
+	char dimm_ids[IPMCTL_MAX_DIMMS][IPMCTL_DIMMID_LEN];
+	int ndimms = 0;
+
+	/* shared across all phases */
+	char buf[256];
+	char cmd[IPMCTL_CMD_LEN];
+	char cur_val[IPMCTL_VAL_LEN];
+
+	FILE *fp = popen("ipmctl show -display DimmID -dimm", "r");
+	if (fp == NULL) {
+		CORE_LOG_ERROR_W_ERRNO(
+			"popen failed: ipmctl show -display DimmID -dimm");
+		return;
+	}
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		char id[IPMCTL_DIMMID_LEN];
+		/* match lines of the form ---DimmID=0x0001--- */
+		if (sscanf(buf, "---DimmID=%6[^-]---", id) == 1) {
+			if (ndimms < IPMCTL_MAX_DIMMS) {
+				memcpy(dimm_ids[ndimms], id, IPMCTL_DIMMID_LEN);
+				ndimms++;
+			} else {
+				CORE_LOG_ERROR(
+					"ipmctl DIMM count exceeds limit (%d); "
+					"remaining DIMMs skipped",
+					IPMCTL_MAX_DIMMS);
+				break;
+			}
+		}
+	}
+	pclose(fp);
+
+	/* Queries to run per DIMM, in order */
+	static const char * const queries[] = {
+		"HealthState",
+		"HealthStateReason",
+		"LatchedLastShutdownStatus",
+		"UnlatchedLastShutdownStatus",
+		"LastShutdownTime",
+		"BootStatus",
+		"BootStatusRegister",
+		"LatchSystemShutdownState",
+		"PreviousPowerCycleLatchSystemShutdownState"
+	};
+
+	for (int i = 0; i < ndimms; i++) {
+		for (size_t q = 0; q < ARRAY_SIZE(queries); q++) {
+			snprintf(cmd, sizeof(cmd),
+				"ipmctl show -display %s -dimm %s",
+				queries[q], dimm_ids[i]);
+
+			FILE *qfp = popen(cmd, "r");
+			if (qfp == NULL) {
+				CORE_LOG_ERROR_W_ERRNO(
+					"popen failed: %s", cmd);
+				continue;
+			}
+
+			/*
+			 * Output:
+			 *   ---DimmID=0x0001---       <- skip
+			 *   BootStatusRegister=0x...  <- log this line
+			 */
+			buf[0] = '\0';
+			if (fgets(buf, sizeof(buf), qfp) != NULL) {
+				buf[0] = '\0'; /* discard header line */
+				if (fgets(buf, sizeof(buf), qfp) != NULL)
+					buf[strcspn(buf, "\r\n")] = '\0';
+			}
+			pclose(qfp);
+
+			CORE_LOG_HARK("%s: %s", dimm_ids[i], buf);
+		}
+	}
+
+	/* Per-DIMM sensor values: one line per sensor type */
+	static const char * const sensor_types[] = {
+		"PercentageRemaining",
+		"LatchedDirtyShutdownCount",
+		"PowerCycles",
+		"FwErrorCount",
+		"UnlatchedDirtyShutdownCount",
+	};
+
+	for (int i = 0; i < ndimms; i++) {
+		for (size_t s = 0; s < ARRAY_SIZE(sensor_types); s++) {
+			snprintf(cmd, sizeof(cmd),
+				"ipmctl show -d CurrentValue -sensor %s"
+				" -dimm %s",
+				sensor_types[s], dimm_ids[i]);
+
+			FILE *sfp = popen(cmd, "r");
+			if (sfp == NULL) {
+				CORE_LOG_ERROR_W_ERRNO(
+					"popen failed: %s", cmd);
+				continue;
+			}
+
+			cur_val[0] = '\0';
+			while (fgets(buf, sizeof(buf), sfp) != NULL) {
+				char *p = strstr(buf, "CurrentValue=");
+				if (p == NULL)
+					continue;
+				p += strlen("CurrentValue=");
+				size_t vlen = strcspn(p, "\r\n");
+				if (vlen >= IPMCTL_VAL_LEN)
+					vlen = IPMCTL_VAL_LEN - 1;
+				memcpy(cur_val, p, vlen);
+				cur_val[vlen] = '\0';
+				break;
+			}
+			pclose(sfp);
+
+			CORE_LOG_HARK("%s: %s=%s",
+				dimm_ids[i], sensor_types[s], cur_val);
+		}
+	}
+
+#undef IPMCTL_MAX_DIMMS
+#undef IPMCTL_DIMMID_LEN
+#undef IPMCTL_CMD_LEN
+#undef IPMCTL_VAL_LEN
+}
+
+/*
  * util_replica_check -- check headers, check UUID's, check replicas linkage
  */
 static int
 util_replica_check(struct pool_set *set, const struct pool_attr *attr)
 {
 	LOG(3, "set %p attr %p", set, attr);
+	util_ipmctl_log_dimm_shutdown_status();
 
 	/* read shutdown state toggle from header */
 	int pool_ignore_sds = IGNORE_SDS(HDR(REP(set, 0), 0));
