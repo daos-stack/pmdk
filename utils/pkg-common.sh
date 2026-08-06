@@ -37,7 +37,7 @@ function check_tool() {
 }
 
 function get_version() {
-	echo -n $1 | sed "s/-rc/~rc/"
+	echo -n $1 | sed "s/-/~/g"
 }
 
 function get_os() {
