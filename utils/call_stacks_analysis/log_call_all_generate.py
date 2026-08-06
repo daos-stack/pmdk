@@ -286,7 +286,6 @@ def token_stringify(token: str) -> str:
         return LITERAL_TO_STRING[token]
     else:
         print(f'Unknown token: "{token}"')
-        raise RuntimeError()
         exit(1)
 
 def format_stringify(tokens: List) -> str:
