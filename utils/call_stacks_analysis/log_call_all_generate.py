@@ -48,7 +48,7 @@ def bad_line(reason: str, line: str) -> None:
 # Extract all calls from the code base
 
 def extract_append_code(file_name: str, start_line: int, code: str) -> str:
-    if not re.search(f'\.[ch]$', file_name):
+    if not re.search(r'\.[ch]$', file_name):
         print(f'Unsupported file type: {file_name}')
         exit(1)
 
@@ -63,7 +63,7 @@ def extract_append_code(file_name: str, start_line: int, code: str) -> str:
             code += " " + line
             if code[-1] == ';':
                 break
-            if re.search(f'(//|/\*)', code):
+            if re.search(r'(//|/\*)', code):
                 bad_line('Comment found', code)
     return code
 
@@ -276,6 +276,7 @@ LITERAL_TO_STRING = {
     'PRIx64': 'lx',
     'PRIu64': 'lu',
     'SDS_REINIT_SUFFIX': ' - reinitializing the ADR failure detection state.',
+    'CURR_ALLOCATED_UNDERFLOW_FMT': 'heap_curr_allocated underflowed: %lu > heap.size: %lu ; recalculating'
 }
 
 def token_stringify(token: str) -> str:
@@ -285,6 +286,7 @@ def token_stringify(token: str) -> str:
         return LITERAL_TO_STRING[token]
     else:
         print(f'Unknown token: "{token}"')
+        raise RuntimeError()
         exit(1)
 
 def format_stringify(tokens: List) -> str:
