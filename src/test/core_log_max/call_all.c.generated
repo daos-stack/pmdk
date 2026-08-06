@@ -479,6 +479,8 @@ call_all_CORE_LOG_WARNING(void)
 	CORE_LOG_WARNING("out of memory - unable to track entries");
 	// src/libpmemobj/palloc.c
 	CORE_LOG_WARNING("unable to track runtime chunk state");
+	// src/libpmemobj/stats.c
+	CORE_LOG_WARNING("heap_curr_allocated underflowed: %lu > heap.size: %lu ; recalculating", _lu, _lu);
 }
 
 void
