@@ -100,7 +100,6 @@ def get_incompatible_packages(packages_path, pkgconfig_directory, split_param):
             if 'version=' in line:
                 version = line.split('=')[1].strip(linesep)
         if not version in PMDK_VERSION:
-            print(f'{version} != {PMDK_VERSION}')
             incompatibe_packages.append(library)
     return incompatibe_packages
 
