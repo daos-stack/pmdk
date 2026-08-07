@@ -415,6 +415,7 @@ make %{?_smp_mflags} \
 %if %{without ndctl}
 	NDCTL_ENABLE=n \
 %endif
+	SRCVERSION=%{version} \
 	__MAKE_FLAGS__
 
 
@@ -424,6 +425,7 @@ make install DESTDIR=%{buildroot} \
 %if %{without ndctl}
         NDCTL_ENABLE=n \
 %endif
+	SRCVERSION=%{version} \
 	LIB_AR= \
 	prefix=%{_prefix} \
 	libdir=%{_libdir} \
