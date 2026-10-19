@@ -37,7 +37,7 @@ jobs:
 
       - name: Install cflow
         run: |
-          wget https://mirror.easyname.at/gnu/cflow/cflow-latest.tar.gz
+          wget https://ftp.gnu.org/gnu/cflow/cflow-latest.tar.gz
           tar -xzf cflow-latest.tar.gz
           rm cflow-latest.tar.gz
           echo cflow-*
