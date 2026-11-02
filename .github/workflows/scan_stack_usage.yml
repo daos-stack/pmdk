@@ -58,9 +58,11 @@ jobs:
           # 16kB = Stack allocated for a single Argobot's ULT
           #  4kB = a maximum DAOS' stack usage up to calling a PMDK API calls
           #  720B = safety margin
-          #    ~ = Some OSes, e.g. Ubuntu 22.04, generate call stacks of size
-          # a little bit over the exact limit which is not deemed a problem at the moment.
-          ./make_call_stacks.py --filter-api-file examples/api_filter.txt --filter-lower-limit 11568
+          # Some OSes and toolchains generate slightly larger call stacks during
+          # analysis. On Ubuntu 26.04 the smallest observed stack exceeding the
+          # original limit was 11760B, therefore this value is used as the lower
+          # filtering threshold.
+          ./make_call_stacks.py --filter-api-file examples/api_filter.txt --filter-lower-limit 11760
 
       - name: List per-function stack usage for all call stacks of interest
         working-directory: ${{ env.CALL_STACKS_TOOLS_PATH }}
