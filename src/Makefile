@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2023, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # src/Makefile -- Makefile for PMDK
@@ -15,6 +16,9 @@ ALL_TARGETS = $(TARGETS) common core
 # all available targets
 POSSIBLE_TARGETS = $(TARGETS) common core test\
 	examples benchmarks
+# Exclude benchmarks from cstyle due to clang-format version differences.
+CSTYLE_TARGETS = $(TARGETS) common core test\
+	examples
 
 SCOPE_DIRS = $(TARGETS) common core
 
@@ -33,7 +37,6 @@ endif
 
 CLEAN_TARGETS = $(POSSIBLE_TARGETS)
 CLOBBER_TARGETS = $(POSSIBLE_TARGETS)
-CSTYLE_TARGETS = $(POSSIBLE_TARGETS)
 INSTALL_TARGETS = $(TARGETS)
 SPARSE_TARGETS = $(POSSIBLE_TARGETS)
 EXAMPLES_TARGETS = $(TARGETS)
