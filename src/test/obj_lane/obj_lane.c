@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /* Copyright 2015-2023, Intel Corporation */
+/* Copyright 2026, Hewlett Packard Enterprise Development LP */
 
 /*
  * obj_lane.c -- unit test for lanes
@@ -110,7 +111,7 @@ static void
 test_lane_hold_release(void)
 {
 	struct ulog *mock_ulog = ZALLOC(SIZEOF_ULOG(1024));
-	struct pmem_ops p_ops;
+	struct pmem_ops p_ops = {0};
 	struct operation_context *ctx = operation_new(mock_ulog, 1024,
 		NULL, NULL, &p_ops, LOG_TYPE_REDO);
 
