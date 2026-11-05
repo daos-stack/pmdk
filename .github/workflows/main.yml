@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo pip install flake8
-          sudo apt-get install clang-format-14
+          sudo apt-get install clang-format
 
       - name: Check license
         id: check_license
