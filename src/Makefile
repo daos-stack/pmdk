@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2023, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # src/Makefile -- Makefile for PMDK
@@ -14,7 +15,7 @@ TARGETS = libpmem libpmemobj libpmempool tools libpmem2
 ALL_TARGETS = $(TARGETS) common core
 # all available targets
 POSSIBLE_TARGETS = $(TARGETS) common core test\
-	examples benchmarks
+	examples
 
 SCOPE_DIRS = $(TARGETS) common core
 
@@ -24,11 +25,6 @@ RELEASE_TARGETS = tools
 ifneq ($(BUILD_EXAMPLES),n)
 	ALL_TARGETS += examples
 	RELEASE_TARGETS += examples
-endif
-
-ifneq ($(BUILD_BENCHMARKS),n)
-	ALL_TARGETS += benchmarks
-	RELEASE_TARGETS += benchmarks
 endif
 
 CLEAN_TARGETS = $(POSSIBLE_TARGETS)
@@ -91,15 +87,14 @@ clean: $(CLEAN_TARGETS:=-clean)
 clobber: $(CLOBBER_TARGETS:=-clobber)
 cstyle: $(CSTYLE_TARGETS:=-cstyle)
 format: $(CSTYLE_TARGETS:=-format)
-examples benchmarks: $(EXAMPLES_TARGETS)
-benchmarks: examples
+examples: $(EXAMPLES_TARGETS)
 sparse: $(SPARSE_TARGETS:=-sparse)
 
 custom_build = $(DEBUG)$(OBJDIR)
 
 tools: libpmem libpmemobj libpmempool
 libpmempool libpmemobj: libpmem
-benchmarks test tools: common core
+test tools: common core
 
 pkg-cfg-common:
 	@printf "version=%s\nlibdir=%s\nprefix=%s\nrasdeps=%s\n" "$(SRCVERSION)" "$(libdir)" "$(prefix)" "$(LIBNDCTL_PKG_CONFIG_DEPS_VAR)" > $(PKG_CONFIG_COMMON)

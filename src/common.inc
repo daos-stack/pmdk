@@ -39,14 +39,6 @@ ifeq ($(SRCVERSION),)
 $(error Cannot evaluate version)
 endif
 
-ifeq ($(CLANG_FORMAT),)
-ifeq ($(shell command -v clang-format-14 > /dev/null && echo y || echo n), y)
-export CLANG_FORMAT ?= clang-format-14
-else
-export CLANG_FORMAT ?= clang-format
-endif
-endif
-
 ifeq ($(FLAKE8),)
 export FLAKE8 ?= flake8
 endif
@@ -93,7 +85,7 @@ check_librt = $(shell echo "int main() { struct timespec t; return clock_gettime
 
 # XXX: required by clock_gettime(), if glibc version < 2.17
 # The os_clock_gettime() function is now in OS abstraction layer,
-# linked to all the librariess, unit tests and benchmarks.
+# linked to all the librariess and unit tests.
 ifeq ($(LIBRT_NEEDED),)
 export LIBRT_NEEDED := $(call check_librt)
 else
@@ -204,7 +196,6 @@ export man3dir := $(mandir)/man3
 export man5dir := $(mandir)/man5
 export man7dir := $(mandir)/man7
 export cstyle_bin := $(CSTYLE)
-export clang_format_bin := $(CLANG_FORMAT)
 export flake8_bin := $(FLAKE8)
 
 ifneq ($(wildcard $(exec_prefix)/x86_64-linux-gnu),)

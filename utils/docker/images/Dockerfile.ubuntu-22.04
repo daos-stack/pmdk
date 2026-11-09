@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2016-2024, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # Dockerfile - a 'recipe' for Docker to build an image of ubuntu-based
@@ -32,9 +33,6 @@ ENV VALGRIND_DEPS "autoconf \
 	automake \
 	build-essential \
 	git"
-
-# benchmarks dependencies (optional)
-ENV BENCH_DEPS libglib2.0-dev
 
 # examples dependencies (optional)
 ENV EXAMPLES_DEPS "libfuse-dev \
@@ -69,7 +67,6 @@ ENV COVERITY_DEPS ruby gcc g++ wget
 ENV MISC_DEPS "clang \
 	hub \
 	rsync \
-	clang-format \
 	flake8 \
 	python3-pip \
 	sudo \
