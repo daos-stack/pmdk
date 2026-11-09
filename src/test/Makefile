@@ -303,7 +303,6 @@ clean   : TARGET = clean
 clobber : TARGET = clobber
 test    : TARGET = test
 cstyle  : TARGET = cstyle
-format  : TARGET = format
 check   : TARGET = check
 pcheck  : TARGET = pcheck
 sparse  : TARGET = sparse
@@ -314,7 +313,7 @@ SYNC_EXT=synced
 TESTCONFIG=$(TOP)/src/test/testconfig.sh
 FILE_MAX_DAX_DEVICES=$(TOP)/src/test/tools/anonymous_mmap/max_dax_devices
 
-all test format sparse: $(TESTS_BUILD) envconfig.sh envconfig.py
+all test sparse: $(TESTS_BUILD) envconfig.sh envconfig.py
 
 cstyle: $(TESTS_BUILD)
 	$(CHECK_SHEBANG) $(foreach dir,$(TESTS_BUILD),$(dir)/TEST? $(dir)/TEST??)
@@ -413,5 +412,5 @@ SUPP_SYNC_FILES=$(shell echo *.supp | sed s/supp/$(SYNC_EXT)/g)
 
 .PHONY: all check clean clobber cstyle pcheck pcheck-log pcheck-obj\
 	 pcheck-other pcheck-pmem pcheck-pmempool\
-	 test unittest tools format pcheck-libpmempool pycheck\
+	 test unittest tools pcheck-libpmempool pycheck\
 	 pcheck-local $(TESTS_BUILD)

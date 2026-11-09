@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2015-2023, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # src/test/tools/Makefile -- build unit test helpers
@@ -34,10 +35,9 @@ all     : TARGET = all
 clean   : TARGET = clean
 clobber : TARGET = clobber
 cstyle  : TARGET = cstyle
-format  : TARGET = format
 sparse  : TARGET = sparse
 
-all test cstyle clean clobber format sparse: $(DIRS)
+all test cstyle clean clobber sparse: $(DIRS)
 
 $(TESTCONFIG):
 
@@ -46,4 +46,4 @@ $(DIRS):
 
 check pcheck pycheck: all
 
-.PHONY: all clean clobber cstyle format check pcheck $(DIRS)
+.PHONY: all clean clobber cstyle check pcheck $(DIRS)

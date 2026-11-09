@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2024, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # src/test/unittest/Makefile -- build unittest support library
@@ -113,6 +114,6 @@ test check pcheck pycheck: all
 sparse:
 	$(sparse-c)
 
-.PHONY: all test check clean clobber cstyle format pcheck
+.PHONY: all test check clean clobber cstyle pcheck
 
 -include .deps/*.P
