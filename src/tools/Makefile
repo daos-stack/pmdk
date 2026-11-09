@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2022, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 #
 # Makefile -- top Makefile for tools
 #
@@ -39,4 +40,4 @@ cscope:
 	cscope -q -b $(SCOPEFILES)
 	ctags -e $(SCOPEFILES)
 
-.PHONY: all clean clobber cstyle format install uninstall common cscope $(TARGETS)
+.PHONY: all clean clobber cstyle install uninstall common cscope $(TARGETS)

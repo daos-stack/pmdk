@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2023, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # Makefile -- top-level Makefile for PMDK
@@ -80,10 +81,6 @@ cstyle: check-commits check-whitespace check-license
 	$(MAKE) -C src $@
 	$(MAKE) -C utils $@
 
-format:
-	$(MAKE) -C src $@
-	@echo Done.
-
 check-whitespace:
 	@echo Checking files for whitespace issues...
 	@utils/check_whitespace -g
@@ -129,5 +126,5 @@ ifeq ($(DOC),y)
 endif
 
 .PHONY: all clean clobber test check cstyle check-license install uninstall\
-	source rpm dpkg pkg-clean pcheck format doc\
+	source rpm dpkg pkg-clean pcheck doc\
 	$(SUBDIRS)
