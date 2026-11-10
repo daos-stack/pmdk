@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2014-2022, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 #
 # Makefile -- top Makefile for tools
 #
@@ -18,12 +19,11 @@ test   : TARGET = test
 clean  : TARGET = clean
 clobber: TARGET = clobber
 cstyle : TARGET = cstyle
-format : TARGET = format
 install: TARGET = install
 uninstall: TARGET = uninstall
 sparse: TARGET = sparse
 
-all clean clobber cstyle install uninstall check format test sparse: $(TARGETS)
+all clean clobber cstyle install uninstall check test sparse: $(TARGETS)
 
 $(TESTCONFIG):
 
@@ -39,4 +39,4 @@ cscope:
 	cscope -q -b $(SCOPEFILES)
 	ctags -e $(SCOPEFILES)
 
-.PHONY: all clean clobber cstyle format install uninstall common cscope $(TARGETS)
+.PHONY: all clean clobber cstyle install uninstall common cscope $(TARGETS)

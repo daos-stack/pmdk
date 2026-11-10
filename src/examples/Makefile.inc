@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright 2015-2024, Intel Corporation
+# Copyright 2026, Hewlett Packard Enterprise Development LP
 
 #
 # examples/Makefile.inc -- build the Persistent Memory Development Kit examples
@@ -39,21 +40,19 @@ all-dirs:     TARGET = all
 clean-dirs:   TARGET = clean
 clobber-dirs: TARGET = clobber
 cstyle-dirs:  TARGET = cstyle
-format-dirs:  TARGET = format
 sparse-dirs:  TARGET = sparse
 
 all: $(if $(DIRS), all-dirs) $(if $(LIBRARIES), all-libraries) $(if $(PROGS), all-progs)
 clean: $(if $(DIRS), clean-dirs) $(if $(PROGS), clean-progs) $(if $(LIBRARIES), clean-libraries)
 clobber: $(if $(DIRS), clobber-dirs) $(if $(PROGS), clobber-progs) $(if $(LIBRARIES), clobber-libraries)
 cstyle: $(if $(DIRS), cstyle-dirs)
-format: $(if $(DIRS), format-dirs)
 sparse: $(if $(DIRS), sparse-dirs)
 	$(if $(DIRS), , $(sparse-c))
 
 DYNAMIC_LIBRARIES = $(addprefix lib, $(addsuffix .so, $(LIBRARIES)))
 STATIC_LIBRARIES = $(addprefix lib, $(addsuffix .a, $(LIBRARIES)))
 
-all-dirs clean-dirs clobber-dirs cstyle-dirs format-dirs sparse-dirs: $(DIRS)
+all-dirs clean-dirs clobber-dirs cstyle-dirs sparse-dirs: $(DIRS)
 all-progs: $(PROGS)
 all-libraries: $(DYNAMIC_LIBRARIES) $(STATIC_LIBRARIES)
 
